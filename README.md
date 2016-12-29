@@ -392,3 +392,90 @@ so we’ll skip adding a `labels.txt` file:
 ![Upload Pretrained Model](images/upload-pretrained-model.png?raw=true "Upload Pretrained Model")
 
 Repeat this process for both AlexNet and GoogLeNet, as we’ll use them both in the coming steps.
+
+####Fine Tuning AlexNet for Dolphins and Seahorses
+
+Training a network using a pretrained Caffe Model is similar to starting from scratch,
+though we have to make a few adjustments.  First, we’ll adjust the **Base Learning Rate**
+to 0.001 from 0.01, since we don’t need to make such large jumps (i.e., we’re fine tuning).
+We’ll also use a **Pretrained Network**, and **Customize** it.
+
+![New Image Classification](images/new-image-classification-model-attempt2.png?raw=true "New Image Classification")
+
+In the pretrained model’s definition (i.e., prototext), we need to rename all
+references to the final **Fully Connected Layer** (where the end result classifications
+happen).  We do this because we want the model to re-learn new categories from
+our dataset vs. its original training data (i.e., we want to throw away the current
+final layer).  We have to rename the last fully connected layer from “fc8” to
+something else, “fc9” for example.  Finally, we also need to adjust the number
+of categories from `1000` to `2`, by changing `num_output` to `2`.
+
+Here are the changes we need to make:
+
+```diff
+@@ -332,8 +332,8 @@
+ }
+ layer {
+-  name: "fc8"
++  name: "fc9"
+   type: "InnerProduct"
+   bottom: "fc7"
+-  top: "fc8"
++  top: "fc9"
+   param {
+     lr_mult: 1
+@@ -345,5 +345,5 @@
+   }
+   inner_product_param {
+-    num_output: 1000
++    num_output: 2
+     weight_filler {
+       type: "gaussian"
+@@ -359,5 +359,5 @@
+   name: "accuracy"
+   type: "Accuracy"
+-  bottom: "fc8"
++  bottom: "fc9"
+   bottom: "label"
+   top: "accuracy"
+@@ -367,5 +367,5 @@
+   name: "loss"
+   type: "SoftmaxWithLoss"
+-  bottom: "fc8"
++  bottom: "fc9"
+   bottom: "label"
+   top: "loss"
+@@ -375,5 +375,5 @@
+   name: "softmax"
+   type: "Softmax"
+-  bottom: "fc8"
++  bottom: "fc9"
+   top: "softmax"
+   include { stage: "deploy" }
+```
+
+I’ve included the fully modified file I’m using in [src/alexnet-customized.prototxt](src/alexnet-customized.prototxt).
+
+This time our accuracy starts at ~60% and climbs right away to 87.5%, then to 96%
+and all the way up to 100%, with the Loss steadily decreasing. After 5 minutes we
+end up with an accuracy of 100% and a loss of 0.0009.
+
+![Model Attempt 2](images/model-attempt2.png?raw=true "Model Attempt 2")
+
+Testing the same seahorse image our previous network got wrong, we see a complete
+reversal: 100% seahorse.
+
+![Model 2 Classify 1](images/model-attempt2-classify1.png?raw=true "Model 2 Classify 1")
+
+Even a children’s drawing of a seahorse works:
+
+![Model 2 Classify 2](images/model-attempt2-classify2.png?raw=true "Model 2 Classify 2")
+
+The same goes for a dolphin:
+
+![Model 2 Classify 3](images/model-attempt2-classify3.png?raw=true "Model 2 Classify 3")
+
+Even with images that you think might be hard, like this one that has multiple dolphins
+close together, and with their bodies mostly underwater, it does the right thing:
+
+![Model 2 Classify 4](images/model-attempt2-classify4.png?raw=true "Model 2 Classify 4")
