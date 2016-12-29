@@ -479,3 +479,197 @@ Even with images that you think might be hard, like this one that has multiple d
 close together, and with their bodies mostly underwater, it does the right thing:
 
 ![Model 2 Classify 4](images/model-attempt2-classify4.png?raw=true "Model 2 Classify 4")
+
+### Training: Attempt 3, Fine Tuning GoogLeNet
+
+Like the previous AlexNet model we used for fine tuning, we can use GoogLeNet as well.
+Modifying the network is a bit trickier, since you have to redefine three fully
+connected layers instead of just one.
+
+To fine tune GoogLeNet for our use case, we need to once again create a
+new **Classification Model**:
+
+![New Classification Model](images/new-image-classification-model-attempt3.png?raw=true "New Classification Model")
+
+We rename all references to the three fully connected classification layers,
+`loss1/classifier`, `loss2/classifier`, and `loss3/classifier`, and redefine
+the number of categories (`num_output: 2`).  Here are the changes we need to make
+in order to rename the 3 classifier layers, as well as to change from 1000 to 2 categories:
+
+```diff
+@@ -917,10 +917,10 @@
+   exclude { stage: "deploy" }
+ }
+ layer {
+-  name: "loss1/classifier"
++  name: "loss1a/classifier"
+   type: "InnerProduct"
+   bottom: "loss1/fc"
+-  top: "loss1/classifier"
++  top: "loss1a/classifier"
+   param {
+     lr_mult: 1
+     decay_mult: 1
+@@ -930,7 +930,7 @@
+     decay_mult: 0
+   }
+   inner_product_param {
+-    num_output: 1000
++    num_output: 2
+     weight_filler {
+       type: "xavier"
+       std: 0.0009765625
+@@ -945,7 +945,7 @@
+ layer {
+   name: "loss1/loss"
+   type: "SoftmaxWithLoss"
+-  bottom: "loss1/classifier"
++  bottom: "loss1a/classifier"
+   bottom: "label"
+   top: "loss1/loss"
+   loss_weight: 0.3
+@@ -954,7 +954,7 @@
+ layer {
+   name: "loss1/top-1"
+   type: "Accuracy"
+-  bottom: "loss1/classifier"
++  bottom: "loss1a/classifier"
+   bottom: "label"
+   top: "loss1/accuracy"
+   include { stage: "val" }
+@@ -962,7 +962,7 @@
+ layer {
+   name: "loss1/top-5"
+   type: "Accuracy"
+-  bottom: "loss1/classifier"
++  bottom: "loss1a/classifier"
+   bottom: "label"
+   top: "loss1/accuracy-top5"
+   include { stage: "val" }
+@@ -1705,10 +1705,10 @@
+   exclude { stage: "deploy" }
+ }
+ layer {
+-  name: "loss2/classifier"
++  name: "loss2a/classifier"
+   type: "InnerProduct"
+   bottom: "loss2/fc"
+-  top: "loss2/classifier"
++  top: "loss2a/classifier"
+   param {
+     lr_mult: 1
+     decay_mult: 1
+@@ -1718,7 +1718,7 @@
+     decay_mult: 0
+   }
+   inner_product_param {
+-    num_output: 1000
++    num_output: 2
+     weight_filler {
+       type: "xavier"
+       std: 0.0009765625
+@@ -1733,7 +1733,7 @@
+ layer {
+   name: "loss2/loss"
+   type: "SoftmaxWithLoss"
+-  bottom: "loss2/classifier"
++  bottom: "loss2a/classifier"
+   bottom: "label"
+   top: "loss2/loss"
+   loss_weight: 0.3
+@@ -1742,7 +1742,7 @@
+ layer {
+   name: "loss2/top-1"
+   type: "Accuracy"
+-  bottom: "loss2/classifier"
++  bottom: "loss2a/classifier"
+   bottom: "label"
+   top: "loss2/accuracy"
+   include { stage: "val" }
+@@ -1750,7 +1750,7 @@
+ layer {
+   name: "loss2/top-5"
+   type: "Accuracy"
+-  bottom: "loss2/classifier"
++  bottom: "loss2a/classifier"
+   bottom: "label"
+   top: "loss2/accuracy-top5"
+   include { stage: "val" }
+@@ -2435,10 +2435,10 @@
+   }
+ }
+ layer {
+-  name: "loss3/classifier"
++  name: "loss3a/classifier"
+   type: "InnerProduct"
+   bottom: "pool5/7x7_s1"
+-  top: "loss3/classifier"
++  top: "loss3a/classifier"
+   param {
+     lr_mult: 1
+     decay_mult: 1
+@@ -2448,7 +2448,7 @@
+     decay_mult: 0
+   }
+   inner_product_param {
+-    num_output: 1000
++    num_output: 2
+     weight_filler {
+       type: "xavier"
+     }
+@@ -2461,7 +2461,7 @@
+ layer {
+   name: "loss3/loss"
+   type: "SoftmaxWithLoss"
+-  bottom: "loss3/classifier"
++  bottom: "loss3a/classifier"
+   bottom: "label"
+   top: "loss"
+   loss_weight: 1
+@@ -2470,7 +2470,7 @@
+ layer {
+   name: "loss3/top-1"
+   type: "Accuracy"
+-  bottom: "loss3/classifier"
++  bottom: "loss3a/classifier"
+   bottom: "label"
+   top: "accuracy"
+   include { stage: "val" }
+@@ -2478,7 +2478,7 @@
+ layer {
+   name: "loss3/top-5"
+   type: "Accuracy"
+-  bottom: "loss3/classifier"
++  bottom: "loss3a/classifier"
+   bottom: "label"
+   top: "accuracy-top5"
+   include { stage: "val" }
+@@ -2489,7 +2489,7 @@
+ layer {
+   name: "softmax"
+   type: "Softmax"
+-  bottom: "loss3/classifier"
++  bottom: "loss3a/classifier"
+   top: "softmax"
+   include { stage: "deploy" }
+ }
+```
+
+I’ve put the complete file in [src/googlenet-customized.prototxt](src/googlenet-customized.prototxt).
+
+Like we did with fine tuning AlexNet, we also reduce the learning rate by
+10% from `0.01` to `0.001`.  GoogLeNet has a more complicated architecture
+than AlexNet, and fine tuning it requires more time.  On my laptop, it takes
+10 minutes to retrain GoogLeNet with our dataset, achieving 100% accuracy and
+a loss of 0.0070:
+
+![Model Attempt 3](images/model-attempt3.png?raw=true "Model Attempt 3")
+
+Just as we saw with the fine tuned version of AlexNet, our modified GoogLeNet
+performs amazing well--the best so far:
+
+![Model Attempt 3 Classify 1](images/model-attempt3-classify1.png?raw=true "Model Attempt 3 Classify 1")
+
+![Model Attempt 3 Classify 1](images/model-attempt3-classify2.png?raw=true "Model Attempt 3 Classify 2")
+
+![Model Attempt 3 Classify 1](images/model-attempt3-classify3.png?raw=true "Model Attempt 3 Classify 3")
