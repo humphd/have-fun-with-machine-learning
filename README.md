@@ -389,6 +389,6 @@ for GoogLeNet and https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/
 for AlexNet.  We aren’t going to use the classification labels of these networks,
 so we’ll skip adding a `labels.txt` file:
  
-![Upload Pretrained Model](upload-pretrained-model.png?raw=true "Upload Pretrained Model")
+![Upload Pretrained Model](images/upload-pretrained-model.png?raw=true "Upload Pretrained Model")
 
 Repeat this process for both AlexNet and GoogLeNet, as we’ll use them both in the coming steps.
