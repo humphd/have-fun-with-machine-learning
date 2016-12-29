@@ -307,3 +307,88 @@ does so with a high degree of confidence.
 The reality is that our dataset is too small to be useful for training a really good
 neural network.  We really need 10s or 100s of thousands of images, and with that, a
 lot of computing power to process everything.
+
+### Training: Attempt 2, Fine Tuning AlexNet
+
+####How Fine Tuning works
+
+Designing a neural network from scratch, collecting data sufficient to train
+it (e.g., millions of images), and accessing GPUs for weeks to complete the
+training is beyond the reach of most of us.  To make it practical for smaller amounts
+of data to be used, we employ a technique called **Transfer Learning**, or **Fine Tuning**.
+Fine tuning takes advantage of the layout of deep neural networks, and uses
+pretrained networks to do the hard work of initial object detection.
+
+Imagine using a neural network to be like looking at something far away with a 
+pair of binoculars.  You first put the binoculars to your eyes, and everything is
+blurry.  As you adjust the focus, you start to see colours, lines, shapes, and eventually
+you are able to pick out the shape of a bird, then with some more adjustment you can
+identify the species of bird.
+
+In a multi-layered network, the initial layers extract features (e.g., edges), with
+later layers using these features to detect shapes (e.g., a wheel, an eye), which are
+then feed into final classification layers that detect items based on accumulated 
+characteristics from previous layers (e.g., a cat vs. a dog).  A network has to be 
+able to go from pixels to circles to eyes to two eyes placed in a particular orientation, 
+and so on up to being able to finally conclude that an image depicts a cat.
+
+What we’d like to do is to specialize an existing, pretrained network for classifying 
+a new set of image classes instead of the ones on which it was initially trained.  
+Because the network already knows how to “see” features in images, we’d like to retrain 
+it to “see” our particular image types.  We don’t need to start from scratch with the 
+majority of the layers--we want to transfer the learning already done in these layers 
+to our new classification task.  Unlike our previous attempt, which used random weights, 
+we’ll use the existing weights of the final network in our training.  However, we’ll 
+throw away the final classification layer(s) and retrain the network with *our* image 
+dataset, fine tuning it to our image classes.
+
+For this to work, we need a pretrained network that is similar enough to our own data
+that the learned weights will be useful.  Luckily, the networks we’ll use below were 
+trained on millions of natural images from [ImageNet](http://image-net.org/), which 
+is useful across a broad range of classification tasks.
+
+This technique has been used to do interesting things like screening for eye diseases 
+from medical imagery, identifying plankton species from microscopic images collected at 
+sea, to categorizing the artistic style of Flickr images.
+
+Doing this perfectly, like all of machine learning, requires you to understand the
+data and network architecture--you have to be careful with overfitting of the data, 
+might need to fix some of the layers, might need to insert new layers, etc.  
+However, my experience is that it “Just Works” much of the time, and it’s worth 
+you simply doing an experiment to see what you can achieve using our naive approach.
+
+####Uploading Pretrained Networks
+
+In our first attempt, we used AlexNet’s architecture, but started with random
+weights in the network’s layers.  What we’d like to do is download and use a
+version of AlexNet that has already been trained on a massive dataset.
+
+Thankfully we can do exactly this.  A snapshot of AlexNet is available for download: https://github.com/BVLC/caffe/tree/master/models/bvlc_alexnet.
+We need the binary `.caffemodel` file, which is what contains the weights, and it’s
+available for download at http://dl.caffe.berkeleyvision.org/bvlc_alexnet.caffemodel.
+
+While you’re downloading pretrained models, let’s get one more at the same time.
+In 2014, Google won the same ImageNet competition with [GoogLeNet](https://research.google.com/pubs/pub43022.html) (codenamed Inception):
+a 22-layer neural network. A snapshot of GoogLeNet is available for download
+as well, see https://github.com/BVLC/caffe/tree/master/models/bvlc_googlenet.
+Again, we’ll need the `.caffemodel` file with all the pretrained weights,
+which is available for download at http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel. 
+
+With these `.caffemodel` files in hand, we can upload them into DIGITs.  Go to
+the **Pretrained Models** tab in DIGITs home page and choose **Upload Pretrained Model**:
+
+![Load Pretrained Model](images/load-pretrained-model.png?raw=true "Load Pretrained Model")
+
+For both of these pretrained models, we can use the defaults DIGITs provides
+(i.e., colour, squashed images of 256 x 256).  We just need to provide the 
+`Weights (**.caffemodel)` and `Model Definition (original.prototxt)`.
+Click each of those buttons to select a file.
+
+For the model definitions we can use https://github.com/BVLC/caffe/blob/master/models/bvlc_googlenet/train_val.prototxt
+for GoogLeNet and https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt
+for AlexNet.  We aren’t going to use the classification labels of these networks,
+so we’ll skip adding a `labels.txt` file:
+ 
+![Upload Pretrained Model](upload-pretrained-model.png?raw=true "Upload Pretrained Model")
+
+Repeat this process for both AlexNet and GoogLeNet, as we’ll use them both in the coming steps.
