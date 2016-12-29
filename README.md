@@ -178,3 +178,80 @@ or modify the DIGITS startup script(s) to use the proper binary on your system.
 
 Once the server is started, you can do everything else via your web browser at http://localhost:5000, which is what I'll do below.
 
+#Training a Neural Network
+
+Training a neural network involves a few steps:
+
+1. Assemble and prepare a dataset of categorized images
+2. Define the network’s architecture
+3. Train and Validate this network using the prepared dataset
+
+We’re going to do this 3 different ways, in order to show the difference
+between starting from scratch and using a pretrained network, and also to show
+how to work with two popular pretrained networks (AlexNet, GoogLeNet) that are
+commonly used with Caffe and DIGITs.
+
+For our training attempts, we’ll use a small dataset of Dolphins and Seahorses.
+I’ve put the images I used in [data/dolphins-and-seahorses](data/dolphins-and-seahorses).
+You need at least 2 categories, but could have many more (some of the networks
+we’ll use were trained on 1000+ image categories).  Our goal is to be able to
+give an image to our network and have it tell us whether it’s a Dolphin or a Seahorse.
+
+##Prepare the Dataset
+
+The easiest way to begin is to divide your images into a categorized directory layout:
+
+```
+dolphins-and-seahorses/
+    dolphin/
+        image_0001.jpg
+        image_0002.jpg
+        image_0003.jpg
+        ...
+    seahorse/
+        image_0001.jpg
+        image_0002.jpg
+        image_0003.jpg
+        ...
+```
+
+Here each directory is a category we want to classify, and each image within
+that category dir an example we’ll use for training and validation. 
+
+> Q: “Do my images have to be the same size?  What about the filenames, do they matter?”
+
+No to both. The images sizes will be normalized before we feed them into
+the network.  We’ll eventually want colour images of 256 x 256 pixels, but
+DIGITS will crop or squash (we'll squash) our images automatically in a moment.
+The filenames are irrelevant--it’s only important which category they are contained
+within.
+
+> Q: “Can I do more complex segmentation of my categories?”
+
+Yes. See https://github.com/NVIDIA/DIGITS/blob/digits-4.0/docs/ImageFolderFormat.md.
+
+We want to use these images on disk to create a **New Dataset**, and specifically,
+a **Classification Dataset**.
+
+![Create New Dataset](images/create-new-dataset.png?raw=true "Create New Dataset")
+
+We’ll use the defaults DIGITS gives us, and point **Training Images** at the path
+to our [data/dolphins-and-seahorses](data/dolphins-and-seahorses) folder.
+DIGITS will use the categories (`dolphin` and `seahorse`) to create a database
+of squashed, 256 x 256 Training (75%) and Testing (25%) images.
+
+Give your Dataset a name,`dolphins-and-seahorses`, and click **Create**.
+
+![New Image Classification Dataset](images/new-image-classification-dataset.png?raw=true "New Image Classification Dataset")
+
+This will create our dataset, which took only 4s on my laptop.  In the end I
+have 92 Training images (49 dolphin, 43 seahorse) in 2 categories, with 30
+Validation images (16 dolphin, 14 seahorse).  It’s a really small dataset, but perfect
+for our experimentation and learning purposes, because it won’t take forever to train
+and validate a network that uses it. 
+
+You can **Explore the db** if you want to see the images after they have been squashed. 
+
+![Explore the db](images/explore-dataset.png?raw=true "Explore the db")
+
+
