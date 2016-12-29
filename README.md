@@ -144,3 +144,37 @@ caffe/
 At this point, we have everything we need to train, test, and program with neural
 networks.  In the next section we’ll add a user-friendly, web-based front end to
 Caffe called DIGITS, which will make training and testing our networks much easier.
+
+##Installing DIGITS
+
+nVidia’s [Deep Learning GPU Training System, or DIGITS](https://github.com/NVIDIA/DIGITS),
+is BSD-licensed Python web app for training neural networks.  While it’s
+possible to do everything DIGITS does in Caffe at the command-line, or with code,
+using DIGITS makes it a lot easier to get started.  I also found it more fun, due
+to the great visualizations, real-time charts, and other graphical features.
+Since you’re experimenting and trying to learn, I highly recommend beginning with DIGITS.
+
+There are quite a few good docs at https://github.com/NVIDIA/DIGITS/tree/master/docs,
+including a few [Installation](https://github.com/NVIDIA/DIGITS/blob/master/docs/BuildDigits.md),
+[Configuration](https://github.com/NVIDIA/DIGITS/blob/master/docs/Configuration.md),
+and [Getting Started](https://github.com/NVIDIA/DIGITS/blob/master/docs/GettingStarted.md)
+pages.  I’d recommend reading through everything there before you continue, as I’m not
+an expert on everything you can do with DIGITS.
+
+There are various ways to install and run DIGITS, from Docker to pre-baked packages
+on Linux, or you can build it from source. I’m on a Mac, so I built it from source.
+Because it’s just a bunch of Python scripts, it was fairly painless to get working.
+The one thing you need to do is tell DIGITS where your `CAFFE_ROOT` is by setting
+an environment variable before starting the server:
+
+```bash
+export CAFFE_ROOT=/path/to/caffe
+./digits-devserver
+```
+
+NOTE: on Mac I had issues with the server scripts assuming my Python binary was
+called `python2`, where I only have `python2.7`.  You can symlink it in `/usr/bin`
+or modify the DIGITS startup script(s) to use the proper binary on your system.
+
+Once the server is started, you can do everything else via your web browser at http://localhost:5000, which is what I'll do below.
+
