@@ -1,4 +1,6 @@
-#Preface
+# Have Fun with Machine Learning: A Guide for Beginners
+
+##Preface
 
 This is a hands-on guide to machine learning for programmers with
 *no background* in AI. Our goal will be to write a program that can
@@ -31,7 +33,7 @@ important details, please send a pull request.
 
 With all of that out the way, let me show you how to do some tricks on your bike!
 
-#Overview
+##Overview
 
 Here’s what we’re going to explore:
 
@@ -57,9 +59,9 @@ by [Brandon Rohrer](https://www.youtube.com/channel/UCsBKTrp45lTfHa_p49I2AEQ).
 If you’d rather have a bit more theory, I’d recommend [this online book](http://neuralnetworksanddeeplearning.com/chap1.html)
 by [Michael Nielsen](http://michaelnielsen.org/).
 
-#Setup
+##Setup
 
-##Installing Caffe
+###Installing Caffe
 
 First, we’re going to be using the [Caffe deep learning framework](http://caffe.berkeleyvision.org/)
 from the Berkely Vision and Learning Center (BSD licensed).
@@ -145,7 +147,7 @@ At this point, we have everything we need to train, test, and program with neura
 networks.  In the next section we’ll add a user-friendly, web-based front end to
 Caffe called DIGITS, which will make training and testing our networks much easier.
 
-##Installing DIGITS
+###Installing DIGITS
 
 nVidia’s [Deep Learning GPU Training System, or DIGITS](https://github.com/NVIDIA/DIGITS),
 is BSD-licensed Python web app for training neural networks.  While it’s
@@ -178,7 +180,7 @@ or modify the DIGITS startup script(s) to use the proper binary on your system.
 
 Once the server is started, you can do everything else via your web browser at http://localhost:5000, which is what I'll do below.
 
-#Training a Neural Network
+##Training a Neural Network
 
 Training a neural network involves a few steps:
 
@@ -197,7 +199,7 @@ You need at least 2 categories, but could have many more (some of the networks
 we’ll use were trained on 1000+ image categories).  Our goal is to be able to
 give an image to our network and have it tell us whether it’s a Dolphin or a Seahorse.
 
-##Prepare the Dataset
+###Prepare the Dataset
 
 The easiest way to begin is to divide your images into a categorized directory layout:
 
