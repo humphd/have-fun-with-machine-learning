@@ -6,8 +6,6 @@ predict, with a high degree of certainty, whether the images in
 [data/untrained-samples](data/untrained-samples) are of **dolphins**
 or **seahorses** using only the images themselves.
 
-![Alt text](relative/path/to/img.jpg?raw=true "Title")
-
 ![A dolphin](data/untrained-samples/dolphin1.jpg?raw=true "Dolphin")
 ![A seahorse](data/untrained-samples/seahorse1.jpg?raw=true "Seahorse")
 
