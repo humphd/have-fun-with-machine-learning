@@ -256,4 +256,54 @@ You can **Explore the db** if you want to see the images after they have been sq
 
 ![Explore the db](images/explore-dataset.png?raw=true "Explore the db")
 
+### Training: Attempt 1 from Scratch
 
+Back in the DIGITS Home screen, we need to create a new **Classification Model**:
+
+![Create Classification Model](images/create-classification-model.png?raw=true "Create Classification Model")
+
+We’ll start by training a model that uses our `dolphins-and-seahorses` dataset,
+and the default settings DIGITS provides.  For our first network, we’ll choose to
+use one of the standard network architectures, [AlexNet (pdf)](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf). [AlexNet’s design](http://vision.stanford.edu/teaching/cs231b_spring1415/slides/alexnet_tugce_kyunghee.pdf)
+won a major computer vision competition called ImageNet in 2012.  The competition
+required categorizing 1000+ image categories across 1.2 million images.
+ 
+Caffe uses structured text files to define network architectures.  These text files
+are based on [Google’s Protocol Buffers](https://developers.google.com/protocol-buffers/).
+You can read the [full schema](https://github.com/BVLC/caffe/blob/master/src/caffe/proto/caffe.proto) Caffe uses.
+For the most part we’re not going to work with this, but it’s good to be aware of their
+existence, since we’ll have to modify them in later steps.  The AlexNet prototxt file
+looks like this, for example: https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt. 
+
+We’ll train our network for **30 epochs**, which means that it will learn (with our
+training images) then test itself (using our validation images), and adjust the
+network’s weights depending on how well it’s doing, and repeat this process 30 times.
+Each time it completes a cycle we’ll get info about **Accuracy** (0% to 100%,
+where higher is better) and what our **Loss** is (the sum of all the mistakes that were
+made, where lower is better).  Ideally we want a network that is able to predict with
+high accuracy, and with few errors (small loss).
+
+Initially, our network’s accuracy is 50%.  This makes sense, because at first it’s
+just “guessing” between two categories using randomly assigned weights.  Over time
+it’s able to achieve 87.5% accuracy, with a loss of 0.37.  The entire 30 epoch run
+took me just under 6 minutes.
+
+![Model Attempt 1](images/model-attempt1.png?raw=true "Model Attempt 1")
+
+We can test our model using an image we upload or a URL to an image on the web.
+Let’s test it on a few examples that weren’t in our training/validation dataset:
+
+![Model 1 Classify 1](images/model-attempt1-classify1.png?raw=true "Model 1 Classify 1")
+
+![Model 1 Classify 2](images/model-attempt1-classify2.png?raw=true "Model 1 Classify 2")
+
+It almost seems perfect, until we try another:
+
+![Model 1 Classify 3](images/model-attempt1-classify3.png?raw=true "Model 1 Classify 3")
+
+Here it falls down completely, and confuses a seahorse for a dolphin, and worse,
+does so with a high degree of confidence.
+
+The reality is that our dataset is too small to be useful for training a really good
+neural network.  We really need 10s or 100s of thousands of images, and with that, a
+lot of computing power to process everything.
