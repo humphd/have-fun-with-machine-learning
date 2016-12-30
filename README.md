@@ -3,11 +3,11 @@
 ##Preface
 
 This is a **hands-on guide** to machine learning for programmers with *no background* in
-AI. If you’re like me, you’re never going to be be good enough at the underlying
-math and theory to advance the state of AI.  But *using* a neural network doesn’t
-require a PhD, and you don’t need to be the person who makes the next breakthrough
-in AI in order to *use* what exists today.  What we have now is already breathtaking,
-and highly usable.  Play with this stuff like you would any other open source technology.
+AI. Using a neural network doesn’t require a PhD, and you don’t need to be the person who
+makes the next breakthrough in AI in order to *use* what exists today.  What we have now
+is already breathtaking, and highly usable.  I believe that more of us need to play with
+this stuff like we would any other open source technology, instead of treating it like a
+research topic.
 
 In this guide our goal will be to write a program that uses machine learning to predict, with a
 high degree of certainty, whether the images in [data/untrained-samples](data/untrained-samples)
@@ -20,7 +20,7 @@ having seen them before.  Here are two example images we'll use:
 To do that we’re going to train and use a [Convolutional Neural Network (CNN)](https://en.wikipedia.org/wiki/Convolutional_neural_network).
 We’re going to approach this from the point of view of a practitioner vs.
 from first principles. There is so much excitement about AI right now,
-but much of what’s being written feels a bit like being taught to do
+but much of what’s being written feels like being taught to do
 tricks on your bike by a physics professor at a chalkboard instead
 of your friends in the park.
 
@@ -48,8 +48,8 @@ or use a single mathematical expression.  I don’t pretend to understand most o
 what I’m going to show you.  Instead, we’re going to use existing things in
 interesting ways to solve a hard problem.
 
-> Q: I know you said we won’t talk about the theory of neural networks, but I’m
-> feeling like I’d at least like an overview before we get going.  Where should I start?
+> Q: "I know you said we won’t talk about the theory of neural networks, but I’m
+> feeling like I’d at least like an overview before we get going.  Where should I start?"
 
 There are literally hundreds of introductions to this, from short posts to full
 online courses.  Depending on how you like to learn, here are three options
@@ -57,7 +57,8 @@ for a good starting point:
 
 * This fantastic [blog post](https://jalammar.github.io/visual-interactive-guide-basics-neural-networks/) by J Alammar,
 which introduces the concepts of neural networks using intuitive examples.
-* Similarly, [this video](https://www.youtube.com/watch?v=FmpDIaiMIeA) introduction by [Brandon Rohrer](https://www.youtube.com/channel/UCsBKTrp45lTfHa_p49I2AEQ) is a really good intro to CNN like we'll be using
+* Similarly, [this video](https://www.youtube.com/watch?v=FmpDIaiMIeA) introduction by [Brandon Rohrer](https://www.youtube.com/channel/UCsBKTrp45lTfHa_p49I2AEQ) is a really good intro to
+Convolutional Neural Networks like we'll be using
 * If you’d rather have a bit more theory, I’d recommend [this online book](http://neuralnetworksanddeeplearning.com/chap1.html) by [Michael Nielsen](http://michaelnielsen.org/).
 
 ##Setup
@@ -75,13 +76,12 @@ options.  [TensorFlow](https://www.tensorflow.org/) is great, and you should
 play with it.  However, I’m using Caffe for a number of reasons:
 
 * It’s tailormade for computer vision problems
-* It has support for C++, Python, (with [node.js support](https://github.com/silklabs/node-caffe))
+* It has support for C++, Python, (with [node.js support](https://github.com/silklabs/node-caffe) coming)
 * It’s fast and stable
 
-But the **number one reason** I’m using Caffe is that you don’t need to
-write any code to work with it.  You can do everything declaratively
-(Caffe uses structured text files to define the network architecture) and using
-command-line tools.  Also, you can use some nice front-ends for Caffe to make
+But the **number one reason** I’m using Caffe is that you **don’t need to write any code** to work
+with it.  You can do everything declaratively (Caffe uses structured text files to define the
+network architecture) and using command-line tools.  Also, you can use some nice front-ends for Caffe to make
 training and validating your network a lot easier.  We’ll be using
 [nVidia’s DIGITS](https://developer.nvidia.com/digits) tool below for just this purpose.
 
@@ -91,8 +91,7 @@ for various platforms, including some prebuilt Docker or AWS configurations.
 On a Mac it can be frustrating to get working, with version issues halting
 your progress at various steps in the build.  It took me a couple of days
 of trial and error.  There are a dozen guides I followed, each with slightly
-different problems.  In the end I found [this one](https://gist.github.com/doctorpangloss/f8463bddce2a91b949639522ea1dcbe4) to be the closest:
-
+different problems.  In the end I found [this one](https://gist.github.com/doctorpangloss/f8463bddce2a91b949639522ea1dcbe4) to be the closest.
 I’d also recommend [this post](https://eddiesmo.wordpress.com/2016/12/20/how-to-set-up-caffe-environment-and-pycaffe-on-os-x-10-12-sierra/),
 which is quite recent and links to many of the same discussions I saw.
 
@@ -257,7 +256,7 @@ You can **Explore the db** if you want to see the images after they have been sq
 
 ![Explore the db](images/explore-dataset.png?raw=true "Explore the db")
 
-### Training: Attempt 1 from Scratch
+### Training: Attempt 1, from Scratch
 
 Back in the DIGITS Home screen, we need to create a new **Classification Model**:
 
@@ -269,10 +268,12 @@ use one of the standard network architectures, [AlexNet (pdf)](http://papers.nip
 won a major computer vision competition called ImageNet in 2012.  The competition
 required categorizing 1000+ image categories across 1.2 million images.
  
+![New Classification Model 1](images/new-image-classification-model-attempt1.png?raw=true "Model 1")
+
 Caffe uses structured text files to define network architectures.  These text files
 are based on [Google’s Protocol Buffers](https://developers.google.com/protocol-buffers/).
 You can read the [full schema](https://github.com/BVLC/caffe/blob/master/src/caffe/proto/caffe.proto) Caffe uses.
-For the most part we’re not going to work with this, but it’s good to be aware of their
+For the most part we’re not going to work with these, but it’s good to be aware of their
 existence, since we’ll have to modify them in later steps.  The AlexNet prototxt file
 looks like this, for example: https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt. 
 
@@ -354,9 +355,9 @@ sea, to categorizing the artistic style of Flickr images.
 
 Doing this perfectly, like all of machine learning, requires you to understand the
 data and network architecture--you have to be careful with overfitting of the data, 
-might need to fix some of the layers, might need to insert new layers, etc.  
-However, my experience is that it “Just Works” much of the time, and it’s worth 
-you simply doing an experiment to see what you can achieve using our naive approach.
+might need to fix some of the layers, might need to insert new layers, etc. However,
+my experience is that it “Just Works” much of the time, and it’s worth you simply doing
+an experiment to see what you can achieve using our naive approach.
 
 ####Uploading Pretrained Networks
 
@@ -365,7 +366,7 @@ weights in the network’s layers.  What we’d like to do is download and use a
 version of AlexNet that has already been trained on a massive dataset.
 
 Thankfully we can do exactly this.  A snapshot of AlexNet is available for download: https://github.com/BVLC/caffe/tree/master/models/bvlc_alexnet.
-We need the binary `.caffemodel` file, which is what contains the weights, and it’s
+We need the binary `.caffemodel` file, which is what contains the trained weights, and it’s
 available for download at http://dl.caffe.berkeleyvision.org/bvlc_alexnet.caffemodel.
 
 While you’re downloading pretrained models, let’s get one more at the same time.
@@ -705,9 +706,9 @@ With our network trained and tested, it’s time to download and use it.  Each o
 we trained in DIGITS has a **Download Model** button, as well as a way to select different
 snapshots within our training run (e.g., `Epoch #30`):
 
-[Trained Models](images/trained-model.png?raw=true “Trained Models”)
+![Trained Models](images/trained-model.png?raw=true “Trained Models”)
 
-Clicking **Download Model** downloads a `tar.gz` file containing the following files:
+Clicking **Download Model** downloads a `tar.gz` archive containing the following files:
 
 ```
 deploy.prototxt
@@ -793,7 +794,7 @@ data:
 ![Seahorse 2](data/untrained-samples/seahorse2.jpg?raw=true "Seahorse 2")
 ![Seahorse 3](data/untrained-samples/seahorse3.jpg?raw=true "Seahorse 3")
 
-Let's look at how each of our three attempts did with this challenge.
+Let's look at how each of our three attempts did with this challenge:
 
 ### Model Attempt 1: AlexNet from Scratch (3rd Place)
 
