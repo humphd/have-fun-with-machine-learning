@@ -283,7 +283,7 @@ where higher is better) and what our **Loss** is (the sum of all the mistakes th
 made, where lower is better).  Ideally we want a network that is able to predict with
 high accuracy, and with few errors (small loss).
 
-Initially, our network’s accuracy is 50%.  This makes sense, because at first it’s
+Initially, our network’s accuracy is a bit below 50%.  This makes sense, because at first it’s
 just “guessing” between two categories using randomly assigned weights.  Over time
 it’s able to achieve 87.5% accuracy, with a loss of 0.37.  The entire 30 epoch run
 took me just under 6 minutes.
