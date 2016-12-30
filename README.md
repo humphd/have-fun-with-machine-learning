@@ -333,8 +333,8 @@ able to go from pixels to circles to eyes to two eyes placed in a particular ori
 and so on up to being able to finally conclude that an image depicts a cat.
 
 What we’d like to do is to specialize an existing, pretrained network for classifying 
-a new set of image classes instead of the ones on which it was initially trained.  
-Because the network already knows how to “see” features in images, we’d like to retrain 
+a new set of image classes instead of the ones on which it was initially trained. Because
+the network already knows how to “see” features in images, we’d like to retrain 
 it to “see” our particular image types.  We don’t need to start from scratch with the 
 majority of the layers--we want to transfer the learning already done in these layers 
 to our new classification task.  Unlike our previous attempt, which used random weights, 
