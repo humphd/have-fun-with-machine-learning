@@ -670,9 +670,9 @@ performs amazing well--the best so far:
 
 ![Model Attempt 3 Classify 1](images/model-attempt3-classify1.png?raw=true "Model Attempt 3 Classify 1")
 
-![Model Attempt 3 Classify 1](images/model-attempt3-classify2.png?raw=true "Model Attempt 3 Classify 2")
+![Model Attempt 3 Classify 2](images/model-attempt3-classify2.png?raw=true "Model Attempt 3 Classify 2")
 
-![Model Attempt 3 Classify 1](images/model-attempt3-classify3.png?raw=true "Model Attempt 3 Classify 3")
+![Model Attempt 3 Classify 3](images/model-attempt3-classify3.png?raw=true "Model Attempt 3 Classify 3")
 
 ## Results
 
