@@ -673,3 +673,56 @@ performs amazing well--the best so far:
 ![Model Attempt 3 Classify 1](images/model-attempt3-classify2.png?raw=true "Model Attempt 3 Classify 2")
 
 ![Model Attempt 3 Classify 1](images/model-attempt3-classify3.png?raw=true "Model Attempt 3 Classify 3")
+
+## Results
+
+At the beginning we said that our goal was to write a program that used a neural network to
+correctly classify all of the images in [data/untrained-samples](data/untrained-samples).
+These are images of dolphins and seahorses that were never used in the training or validation
+data:
+
+### Untrained Dolphin Images
+
+![Dolphin 1](images/data/untrained-images/dolphin1.jpg?raw=true "Dolphin 1")
+![Dolphin 1](images/data/untrained-images/dolphin1.jpg?raw=true "Dolphin 2")
+![Dolphin 1](images/data/untrained-images/dolphin1.jpg?raw=true "Dolphin 3")
+
+### Untrained Seahorse Images
+
+![Seahorse 1](images/data/untrained-images/seahorse1.jpg?raw=true "Seahorse 1")
+![Seahorse 2](images/data/untrained-images/seahorse2.jpg?raw=true "Seahorse 2")
+![Seahorse 3](images/data/untrained-images/seahorse3.jpg?raw=true "Seahorse 3")
+
+Let's look at how each of our three attempts did with this challenge.
+
+### Model Attempt 1: AlexNet from Scratch (3rd Place)
+
+| Image | Dolphin | Seahorse | Result | 
+|-------|---------|----------|--------|
+|[data/untrained-images/dolphin1.jpg](data/untrained-images/dolphin1.jpg)| 71.11% | 28.89% | :expressionless: |
+|[data/untrained-images/dolphin2.jpg](data/untrained-images/dolphin2.jpg)| 99.2% | 0.8% | :sunglasses: |
+|[data/untrained-images/dolphin1.jpg](data/untrained-images/dolphin3.jpg)| 63.3% | 36.7% | :confused: |
+|[data/untrained-images/seahorse1.jpg](data/untrained-images/seahorse1.jpg)| 95.04% | 4.96% | :disappointed: |
+|[data/untrained-images/seahorse2.jpg](data/untrained-images/seahorse2.jpg)| 56.64% | 43.36 |  :confused: |
+|[data/untrained-images/seahorse3.jpg](data/untrained-images/seahorse3.jpg)| 7.06% | 92.94% |  :grin: |
+
+### Model Attempt 2: Fine Tuned AlexNet (2nd Place)
+
+| Image | Dolphin | Seahorse | Result | 
+|-------|---------|----------|--------|
+|[data/untrained-images/dolphin1.jpg](data/untrained-images/dolphin1.jpg)| 99.1% | 0.09% |  :sunglasses: |
+|[data/untrained-images/dolphin2.jpg](data/untrained-images/dolphin2.jpg)| 99.5% | 0.05% |  :sunglasses: |
+|[data/untrained-images/dolphin1.jpg](data/untrained-images/dolphin3.jpg)| 91.48% | 8.52% |  :grin: |
+|[data/untrained-images/seahorse1.jpg](data/untrained-images/seahorse1.jpg)| 0% | 100% |  :sunglasses: |
+|[data/untrained-images/seahorse2.jpg](data/untrained-images/seahorse2.jpg)| 0% | 100% |  :sunglasses: |
+|[data/untrained-images/seahorse3.jpg](data/untrained-images/seahorse3.jpg)| 0% | 100% |  :sunglasses: |
+
+### Model Attempt 3: Fine Tuned GoogLeNet (1st Place)
+
+| Image | Dolphin | Seahorse | Result | 
+|-------|---------|----------|--------|
+|[data/untrained-images/dolphin1.jpg](data/untrained-images/dolphin1.jpg)| 99.86% | 0.14% |  :sunglasses: |
+|[data/untrained-images/dolphin2.jpg](data/untrained-images/dolphin2.jpg)| 100% | 0% |  :sunglasses: |
+|[data/untrained-images/seahorse1.jpg](data/untrained-images/seahorse1.jpg)| 0.5% | 99.5% |  :sunglasses: |
+|[data/untrained-images/seahorse2.jpg](data/untrained-images/seahorse2.jpg)| 0% | 1000% |  :sunglasses: |
+|[data/untrained-images/seahorse3.jpg](data/untrained-images/seahorse3.jpg)| 0.02% | 99.98% |  :sunglasses: |
