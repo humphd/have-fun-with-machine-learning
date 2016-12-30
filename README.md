@@ -394,6 +394,11 @@ so we’ll skip adding a `labels.txt` file:
 
 Repeat this process for both AlexNet and GoogLeNet, as we’ll use them both in the coming steps.
 
+> Q: "Are there other networks that would be good as a basis for fine tuning?"
+
+The [Caffe Model Zoo](http://caffe.berkeleyvision.org/model_zoo.html) has quite a few other
+pretrained networks that could be used, see https://github.com/BVLC/caffe/wiki/Model-Zoo.
+
 ####Fine Tuning AlexNet for Dolphins and Seahorses
 
 Training a network using a pretrained Caffe Model is similar to starting from scratch,
@@ -658,11 +663,30 @@ in order to rename the 3 classifier layers, as well as to change from 1000 to 2 
 
 I’ve put the complete file in [src/googlenet-customized.prototxt](src/googlenet-customized.prototxt).
 
+> Q: "What about changes to the prototext definitions of these networks?
+> We changed the fully connected layer name(s), and the number of categories.
+> What else could, or should be changed, and in what circumstances?"
+
+Great question, and it's something I'm wondering, too.  For example, I know that we can
+["fix" certain layers](https://github.com/BVLC/caffe/wiki/Fine-Tuning-or-Training-Certain-Layers-Exclusively)
+so the weights don't change.  Doing other things involves understanding how the layers work,
+which is beyond this guide, and also beyond its author at present!
+
 Like we did with fine tuning AlexNet, we also reduce the learning rate by
-10% from `0.01` to `0.001`.  GoogLeNet has a more complicated architecture
-than AlexNet, and fine tuning it requires more time.  On my laptop, it takes
-10 minutes to retrain GoogLeNet with our dataset, achieving 100% accuracy and
-a loss of 0.0070:
+10% from `0.01` to `0.001`.
+
+> Q: "What other changes would make sense when fine tuning these networks?
+> What about different numbers of epochs, batch sizes, solver types (Adam, AdaDelta, AdaGrad, etc),
+> learning rates, policies (Exponential Decay, Inverse Decay, Sigmoid Decay, etc),
+> step sizes, and gamma values?"
+
+Great question, and one that I wonder about as well.  I only have a vague understanding of these
+and it’s likely that there are improvements we can make if you know how to alter these
+values when training.  This is something that needs better documentation.
+
+Because GoogLeNet has a more complicated architecture than AlexNet, fine tuning it requires
+more time.  On my laptop, it takes 10 minutes to retrain GoogLeNet with our dataset,
+achieving 100% accuracy and a loss of 0.0070:
 
 ![Model Attempt 3](images/model-attempt3.png?raw=true "Model Attempt 3")
 
@@ -674,6 +698,81 @@ performs amazing well--the best so far:
 ![Model Attempt 3 Classify 2](images/model-attempt3-classify2.png?raw=true "Model Attempt 3 Classify 2")
 
 ![Model Attempt 3 Classify 3](images/model-attempt3-classify3.png?raw=true "Model Attempt 3 Classify 3")
+
+##Using our Model
+
+With our network trained and tested, it’s time to download and use it.  Each of the models
+we trained in DIGITS has a **Download Model** button, as well as a way to select different
+snapshots within our training run (e.g., `Epoch #30`):
+
+[Trained Models](images/trained-model.png?raw=true “Trained Models”)
+
+Clicking **Download Model** downloads a `tar.gz` file containing the following files:
+
+```
+deploy.prototxt
+mean.binaryproto
+solver.prototxt
+info.json
+original.prototxt
+labels.txt
+snapshot_iter_90.caffemodel
+train_val.prototxt
+```
+
+There’s a [nice description](https://github.com/BVLC/caffe/wiki/Using-a-Trained-Network:-Deploy) in
+the Caffe documentation about how to use the model we just built.  It says:
+
+> A network is defined by its design (.prototxt), and its weights (.caffemodel). As a network is
+> being trained, the current state of that network's weights are stored in a .caffemodel. With both
+> of these we can move from the train/test phase into the production phase.
+>
+> In its current state, the design of the network is not designed for deployment. Before we can
+> release our network as a product, we often need to alter it in a few ways:
+>
+> 1. Remove the data layer that was used for training, as for in the case of classification we are no longer providing labels for our data.
+> 2. Remove any layer that is dependent upon data labels.
+> 3. Set the network up to accept data.
+> 4. Have the network output the result.
+
+DIGITS has already done the work for us, separating out the different versions of our `prototxt` files.
+The files we’ll care about when using this network are:
+
+* `deploy.prototxt` - the definition of our network, ready for accepting image input data
+* `mean.binaryproto` - our model will need us to subtract the image mean from each image that it processes, and this is the mean image.
+* `labels.txt` - a list of our labels (`dolphin`, `seahorse`) in case we want to print them vs. just the category number
+* `snapshot_iter_90.caffemodel` - these are the trained weights for our network
+
+We can use these files in a number of ways to classify new images.  For example, in our
+`CAFFE_ROOT` we can use `build/examples/cpp_classification/classification.bin` to classify one image:
+
+```bash
+$ cd $CAFFE_ROOT/build/examples/cpp_classification
+$ ./classification.bin deploy.prototxt snapshot_iter_90.caffemodel mean.binaryproto labels.txt dolphin1.jpg
+```
+
+This will spit out a bunch of debug text, followed by the predictions for each of our two categories:
+
+```
+0.9997 - “dolphin”
+0.0003 - “seahorse”
+```
+
+You can read the [complete C++ source](https://github.com/BVLC/caffe/tree/master/examples/cpp_classification)
+for this in the [Caffe examples](https://github.com/BVLC/caffe/tree/master/examples).
+
+For a classification version that uses the Python interface, DIGITS includes a [nice example](https://github.com/NVIDIA/DIGITS/tree/master/examples/classification).
+
+I wish I had more and better documented code examples, APIs, premade modules, etc to show you here.
+To be honest, most of the code examples I’ve found are terse, and poorly documented--Caffe’s
+documentation is spotty, and assumes a lot.  It seems to me like there’s an opportunity for someone
+to build higher-level tools on top of the Caffe interfaces for beginners.  It would be great if
+there were more simple modules in high-level languages that I could point you at that “did the
+right thing” with our model; someone could/should take this on, and make *using* Caffe
+models as easy as DIGITS makes *training* them.  I’d love to have something I could use in node.js,
+for example.  Ideally one shouldn’t be required to know so much about the internals of the model or Caffe.
+I haven’t used it yet, but [DeepDetect](https://deepdetect.com/) looks interesting on this front,
+and there are likely many other tools I don’t know about.
 
 ## Results
 
@@ -728,3 +827,20 @@ Let's look at how each of our three attempts did with this challenge.
 |[seahorse1.jpg](data/untrained-samples/seahorse1.jpg)| 0.5% | 99.5% |  :sunglasses: |
 |[seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 0% | 1000% |  :sunglasses: |
 |[seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 0.02% | 99.98% |  :sunglasses: |
+
+##Conclusion
+
+It’s amazing how well our model works, and what’s possible by fine tuning a pretrained network.
+Obviously our dolphin vs. seahorse example is contrived, and the dataset overly limited--we really
+do want more and better data if we want our network to be robust.  But since our goal was to examine
+the tools and workflows of neural networks, it’s turned out to be an ideal case, especially since it
+didn’t require expensive equipment or massive amounts of time.
+
+Above all I hope that this experience helps to remove the overwhelming fear of getting started.
+Deciding whether or not it’s worth investing time in learning the theories of machine learning and
+neural networks is easier when you’ve been able to see it work in a small way.  Now that you’ve got
+a setup and a working approach, you can try doing other sorts of classifications.  You might also look
+at the other types of things you can do with Caffe and DIGITS, for example, finding objects within an
+image, or doing segmentation.
+
+Have fun with machine learning!
