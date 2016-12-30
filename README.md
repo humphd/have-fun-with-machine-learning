@@ -161,7 +161,7 @@ including a few [Installation](https://github.com/NVIDIA/DIGITS/blob/master/docs
 [Configuration](https://github.com/NVIDIA/DIGITS/blob/master/docs/Configuration.md),
 and [Getting Started](https://github.com/NVIDIA/DIGITS/blob/master/docs/GettingStarted.md)
 pages.  I’d recommend reading through everything there before you continue, as I’m not
-an expert on everything you can do with DIGITS.
+an expert on everything you can do with DIGITS.  There's also a public [DIGITS User Group](https://groups.google.com/forum/#!forum/digits-users) if you have questions you need to ask.
 
 There are various ways to install and run DIGITS, from Docker to pre-baked packages
 on Linux, or you can build it from source. I’m on a Mac, so I built it from source.
