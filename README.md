@@ -52,11 +52,13 @@ interesting ways to solve a hard problem.
 > feeling like I’d at least like an overview before we get going.  Where should I start?
 
 There are literally hundreds of introductions to this, from short posts to full
-online courses.  If you want a good intro to what we’re going to be doing that
-won’t get overly mathmatical, I’d recommend [this video](https://www.youtube.com/watch?v=FmpDIaiMIeA)
-by [Brandon Rohrer](https://www.youtube.com/channel/UCsBKTrp45lTfHa_p49I2AEQ).
-If you’d rather have a bit more theory, I’d recommend [this online book](http://neuralnetworksanddeeplearning.com/chap1.html)
-by [Michael Nielsen](http://michaelnielsen.org/).
+online courses.  Depending on how you like to learn, here are three options
+for a good starting point:
+
+* This fantastic [blog post](https://jalammar.github.io/visual-interactive-guide-basics-neural-networks/) by J Alammar,
+which introduces the concepts of neural networks using intuitive examples.
+* Similarly, [this video](https://www.youtube.com/watch?v=FmpDIaiMIeA) introduction by [Brandon Rohrer](https://www.youtube.com/channel/UCsBKTrp45lTfHa_p49I2AEQ) is a really good intro to CNN like we'll be using
+* If you’d rather have a bit more theory, I’d recommend [this online book](http://neuralnetworksanddeeplearning.com/chap1.html) by [Michael Nielsen](http://michaelnielsen.org/).
 
 ##Setup
 
@@ -698,31 +700,31 @@ Let's look at how each of our three attempts did with this challenge.
 
 | Image | Dolphin | Seahorse | Result | 
 |-------|---------|----------|--------|
-|[data/untrained-samples/dolphin1.jpg](data/untrained-samples/dolphin1.jpg)| 71.11% | 28.89% | :expressionless: |
-|[data/untrained-samples/dolphin2.jpg](data/untrained-samples/dolphin2.jpg)| 99.2% | 0.8% | :sunglasses: |
-|[data/untrained-samples/dolphin3.jpg](data/untrained-samples/dolphin3.jpg)| 63.3% | 36.7% | :confused: |
-|[data/untrained-samples/seahorse1.jpg](data/untrained-samples/seahorse1.jpg)| 95.04% | 4.96% | :disappointed: |
-|[data/untrained-samples/seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 56.64% | 43.36 |  :confused: |
-|[data/untrained-samples/seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 7.06% | 92.94% |  :grin: |
+|[dolphin1.jpg](data/untrained-samples/dolphin1.jpg)| 71.11% | 28.89% | :expressionless: |
+|[dolphin2.jpg](data/untrained-samples/dolphin2.jpg)| 99.2% | 0.8% | :sunglasses: |
+|[dolphin3.jpg](data/untrained-samples/dolphin3.jpg)| 63.3% | 36.7% | :confused: |
+|[seahorse1.jpg](data/untrained-samples/seahorse1.jpg)| 95.04% | 4.96% | :disappointed: |
+|[seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 56.64% | 43.36 |  :confused: |
+|[seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 7.06% | 92.94% |  :grin: |
 
 ### Model Attempt 2: Fine Tuned AlexNet (2nd Place)
 
 | Image | Dolphin | Seahorse | Result | 
 |-------|---------|----------|--------|
-|[data/untrained-samples/dolphin1.jpg](data/untrained-samples/dolphin1.jpg)| 99.1% | 0.09% |  :sunglasses: |
-|[data/untrained-samples/dolphin2.jpg](data/untrained-samples/dolphin2.jpg)| 99.5% | 0.05% |  :sunglasses: |
-|[data/untrained-samples/dolphin3.jpg](data/untrained-samples/dolphin3.jpg)| 91.48% | 8.52% |  :grin: |
-|[data/untrained-samples/seahorse1.jpg](data/untrained-samples/seahorse1.jpg)| 0% | 100% |  :sunglasses: |
-|[data/untrained-samples/seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 0% | 100% |  :sunglasses: |
-|[data/untrained-samples/seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 0% | 100% |  :sunglasses: |
+|[dolphin1.jpg](data/untrained-samples/dolphin1.jpg)| 99.1% | 0.09% |  :sunglasses: |
+|[dolphin2.jpg](data/untrained-samples/dolphin2.jpg)| 99.5% | 0.05% |  :sunglasses: |
+|[dolphin3.jpg](data/untrained-samples/dolphin3.jpg)| 91.48% | 8.52% |  :grin: |
+|[seahorse1.jpg](data/untrained-samples/seahorse1.jpg)| 0% | 100% |  :sunglasses: |
+|[seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 0% | 100% |  :sunglasses: |
+|[seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 0% | 100% |  :sunglasses: |
 
 ### Model Attempt 3: Fine Tuned GoogLeNet (1st Place)
 
 | Image | Dolphin | Seahorse | Result | 
 |-------|---------|----------|--------|
-|[data/untrained-samples/dolphin1.jpg](data/untrained-samples/dolphin1.jpg)| 99.86% | 0.14% |  :sunglasses: |
-|[data/untrained-samples/dolphin2.jpg](data/untrained-samples/dolphin2.jpg)| 100% | 0% |  :sunglasses: |
-|[data/untrained-samples/dolphin3.jpg](data/untrained-samples/dolphin3.jpg)| 100% | 0% |  :sunglasses: |
-|[data/untrained-samples/seahorse1.jpg](data/untrained-samples/seahorse1.jpg)| 0.5% | 99.5% |  :sunglasses: |
-|[data/untrained-samples/seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 0% | 1000% |  :sunglasses: |
-|[data/untrained-samples/seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 0.02% | 99.98% |  :sunglasses: |
+|[dolphin1.jpg](data/untrained-samples/dolphin1.jpg)| 99.86% | 0.14% |  :sunglasses: |
+|[dolphin2.jpg](data/untrained-samples/dolphin2.jpg)| 100% | 0% |  :sunglasses: |
+|[dolphin3.jpg](data/untrained-samples/dolphin3.jpg)| 100% | 0% |  :sunglasses: |
+|[seahorse1.jpg](data/untrained-samples/seahorse1.jpg)| 0.5% | 99.5% |  :sunglasses: |
+|[seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 0% | 1000% |  :sunglasses: |
+|[seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 0.02% | 99.98% |  :sunglasses: |
