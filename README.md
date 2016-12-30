@@ -2,11 +2,17 @@
 
 ##Preface
 
-This is a hands-on guide to machine learning for programmers with
-*no background* in AI. Our goal will be to write a program that can
-predict, with a high degree of certainty, whether the images in
-[data/untrained-samples](data/untrained-samples) are of **dolphins**
-or **seahorses** using only the images themselves.
+This is a **hands-on guide** to machine learning for programmers with *no background* in
+AI. If you’re like me, you’re never going to be be good enough at the underlying
+math and theory to advance the state of AI.  But *using* a neural network doesn’t
+require a PhD, and you don’t need to be the person who makes the next breakthrough
+in AI in order to *use* what exists today.  What we have now is already breathtaking,
+and highly usable.  Play with this stuff like you would any other open source technology.
+
+In this guide our goal will be to write a program that uses machine learning to predict, with a
+high degree of certainty, whether the images in [data/untrained-samples](data/untrained-samples)
+are of **dolphins** or **seahorses** using only the images themselves, and without
+having seen them before.  Here are two example images we'll use:
 
 ![A dolphin](data/untrained-samples/dolphin1.jpg?raw=true "Dolphin")
 ![A seahorse](data/untrained-samples/seahorse1.jpg?raw=true "Seahorse")
@@ -18,13 +24,7 @@ but much of what’s being written feels a bit like being taught to do
 tricks on your bike by a physics professor at a chalkboard instead
 of your friends in the park.
 
-If you’re like me, you’re never going to be be good enough at the underlying
-math and theory to advance the state of AI.  But using a neural network doesn’t
-require a PhD, and you don’t need to be the person who makes the next breakthrough
-in AI in order to *use* what exists today.  What we have now is already breathtaking,
-and highly usable.  Play with this stuff like you would any other open source technology.
-
-Speaking of open source, I’ve decided to write this on Github vs. as a blog post
+I’ve decided to write this on Github vs. as a blog post
 because I’m sure that some of what I’ve written below is misleading, naive, or
 just plain wrong.  I’m still learning myself, and I’ve found the lack of solid
 beginner documentation an obstacle.  If you see me making a mistake or missing
