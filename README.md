@@ -20,9 +20,8 @@ of your friends in the park.
 
 If you’re like me, you’re never going to be be good enough at the underlying
 math and theory to advance the state of AI.  But using a neural network doesn’t
-require a PhD, and you don’t need to be a data scientist at Google or Uber.
-It turns out that you don’t need to be the person who makes the next breakthrough
-in AI in order to use what exists today.  What we have now is already breathtaking,
+require a PhD, and you don’t need to be the person who makes the next breakthrough
+in AI in order to *use* what exists today.  What we have now is already breathtaking,
 and highly usable.  Play with this stuff like you would any other open source technology.
 
 Speaking of open source, I’ve decided to write this on Github vs. as a blog post
@@ -41,8 +40,8 @@ Here’s what we’re going to explore:
 * Create a dataset of images
 * Train a neural network from scratch
 * Test our neural network on images it has never seen before
-* Improve our neural network’s accuracy by fine tuning existing neural networks
-* Deploy and use our neural network in a simple Python script
+* Improve our neural network’s accuracy by fine tuning existing neural networks (AlexNet and GoogLeNet)
+* Deploy and use our neural network
 
 This guide won’t teach you how neural networks are designed, cover much theory,
 or use a single mathematical expression.  I don’t pretend to understand most of
