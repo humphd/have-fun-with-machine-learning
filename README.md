@@ -764,6 +764,8 @@ for this in the [Caffe examples](https://github.com/BVLC/caffe/tree/master/examp
 
 For a classification version that uses the Python interface, DIGITS includes a [nice example](https://github.com/NVIDIA/DIGITS/tree/master/examples/classification).
 
+Finally, there's a fairly [well documented Python walkthrough](https://github.com/BVLC/caffe/blob/master/examples/00-classification.ipynb) in the Caffe examples.
+
 I wish I had more and better documented code examples, APIs, premade modules, etc to show you here.
 To be honest, most of the code examples I’ve found are terse, and poorly documented--Caffe’s
 documentation is spotty, and assumes a lot.  It seems to me like there’s an opportunity for someone
