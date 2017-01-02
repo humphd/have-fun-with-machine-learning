@@ -88,6 +88,9 @@ training and validating your network a lot easier.  We’ll be using
 Caffe can be a bit of work to get installed.  There are [installation instructions](http://caffe.berkeleyvision.org/installation.html)
 for various platforms, including some prebuilt Docker or AWS configurations.
 
+**NOTE:** when making my walkthrough, I used the following non-released version of Caffe from their Github repo:
+https://github.com/BVLC/caffe/commit/5a201dd960840c319cefd9fa9e2a40d2c76ddd73
+
 On a Mac it can be frustrating to get working, with version issues halting
 your progress at various steps in the build.  It took me a couple of days
 of trial and error.  There are a dozen guides I followed, each with slightly
@@ -165,6 +168,10 @@ an expert on everything you can do with DIGITS.  There's also a public [DIGITS U
 
 There are various ways to install and run DIGITS, from Docker to pre-baked packages
 on Linux, or you can build it from source. I’m on a Mac, so I built it from source.
+
+**NOTE:** In my walkthrough I've used the following non-released version of DIGITS
+from their Github repo: https://github.com/NVIDIA/DIGITS/commit/81be5131821ade454eb47352477015d7c09753d9
+
 Because it’s just a bunch of Python scripts, it was fairly painless to get working.
 The one thing you need to do is tell DIGITS where your `CAFFE_ROOT` is by setting
 an environment variable before starting the server:
