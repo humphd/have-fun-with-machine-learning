@@ -828,7 +828,7 @@ Let's look at how each of our three attempts did with this challenge:
 |[dolphin2.jpg](data/untrained-samples/dolphin2.jpg)| 100% | 0% |  :sunglasses: |
 |[dolphin3.jpg](data/untrained-samples/dolphin3.jpg)| 100% | 0% |  :sunglasses: |
 |[seahorse1.jpg](data/untrained-samples/seahorse1.jpg)| 0.5% | 99.5% |  :sunglasses: |
-|[seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 0% | 1000% |  :sunglasses: |
+|[seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 0% | 100% |  :sunglasses: |
 |[seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 0.02% | 99.98% |  :sunglasses: |
 
 ##Conclusion
