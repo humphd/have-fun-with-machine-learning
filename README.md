@@ -887,12 +887,36 @@ image = caffe.io.load_image(fullpath)
 net.blobs['data'].data[...] = transformer.preprocess('data', image)
 ```
 
-Next we run the image data through our network and read out the probabilities from our
-final layer, which will be in order by our categories:
+> Q: "How could I use images (i.e., frames) from a camera or video stream instead of files?"
+
+Great question, here's a skeleton to get you started:
+
+```python
+import cv2
+...
+# Get the shape of our input data layer, so we can resize the image
+input_shape = net.blobs['data'].data.shape
+...
+webCamCap = cv2.VideoCapture(0) # could also be a URL, filename
+if webCamCap.isOpened():
+    rval, frame = webCamCap.read()
+else:
+    rval = False
+
+while rval:
+    rval, frame = webCamCap.read()
+    net.blobs['data'].data[...] = transformer.preprocess('data', frame)
+    ...
+
+webCamCap.release()
+```
+
+Back to our problem, we next need to run the image data through our network and read out
+the probabilities from our network's final `'softmax'` layer, which will be in order by label category:
 
 ```python
 # Run the image's pixel data through the network
-net.forward()
+out = net.forward()
 # Extract the probabilities of our two categories from the final layer
 softmax_layer = out['softmax']
 # Here we're converting to Python types from ndarray floats
