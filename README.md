@@ -769,14 +769,163 @@ This will spit out a bunch of debug text, followed by the predictions for each o
 You can read the [complete C++ source](https://github.com/BVLC/caffe/tree/master/examples/cpp_classification)
 for this in the [Caffe examples](https://github.com/BVLC/caffe/tree/master/examples).
 
-For a classification version that uses the Python interface, DIGITS includes a [nice example](https://github.com/NVIDIA/DIGITS/tree/master/examples/classification).
+For a classification version that uses the Python interface, DIGITS includes a [nice example](https://github.com/NVIDIA/DIGITS/tree/master/examples/classification).  There's also a fairly
+[well documented Python walkthrough](https://github.com/BVLC/caffe/blob/master/examples/00-classification.ipynb) in the Caffe examples.
 
-Finally, there's a fairly [well documented Python walkthrough](https://github.com/BVLC/caffe/blob/master/examples/00-classification.ipynb) in the Caffe examples.
+###Python example
 
-I wish I had more and better documented code examples, APIs, premade modules, etc to show you here.
-To be honest, most of the code examples I’ve found are terse, and poorly documented--Caffe’s
-documentation is spotty, and assumes a lot.  It seems to me like there’s an opportunity for someone
-to build higher-level tools on top of the Caffe interfaces for beginners.  It would be great if
+Let's write a program that uses our fine-tuned GoogLeNet model to classify the untrained images
+we have in [data/untrained-samples](data/untrained-samples).  I've cobbled this together based on
+the examples above, as well as the `caffe` [Python module's source](https://github.com/BVLC/caffe/tree/master/python),
+which you should prefer to anything I'm about to say.
+
+A full version of what I'm going to discuss is available in [src/classify-samples.py](src/classify-samples.py).
+Let's begin!
+
+First, we'll need the [NumPy](http://www.numpy.org/) module.  In a moment we'll be using [NumPy](http://www.numpy.org/)
+to work with [`ndarray`s](https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html), which Caffe uses a lot.
+If you haven't used them before, as I had not, you'd do well to begin by reading this
+[Quickstart tutorial](https://docs.scipy.org/doc/numpy-dev/user/quickstart.html).
+
+Second, we'll need to load the `caffe` module from our `CAFFE_ROOT` dir.  If it's not already included
+in your Python environment, you can force it to load by adding it manually. Along with it we'll
+also import caffe's protobuf module:
+
+```python
+import numpy as np
+
+caffe_root = '/path/to/your/caffe_root'
+sys.path.insert(0, os.path.join(caffe_root, 'python'))
+import caffe
+from caffe.proto import caffe_pb2
+```
+
+Next we need to tell Caffe whether to [use the CPU or GPU](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L50-L52).
+For our experiments, the CPU is fine:
+
+```python
+caffe.set_mode_cpu()
+```
+
+Now we can use `caffe` to load our trained network.  To do so, we'll need some of the files we downloaded
+from DIGITS, namely:
+
+* `deploy.prototxt` - our "network file", the description of the network.
+* `snapshot_iter_90.caffemodel` - our trained "weights"
+
+We obviously need to provide the full path, and I'll assume that my files are in a dir called `model/`:
+
+```python
+model_dir = 'model'
+deploy_file = os.path.join(model_dir, 'deploy.prototxt')
+weights_file = os.path.join(model_dir, 'snapshot_iter_90.caffemodel')
+net = caffe.Net(deploy_file, caffe.TEST, weights=weights_file)
+```
+
+The `caffe.Net()` [constructor](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L91-L117)
+takes a network file, a phase (`caffe.TEST` or `caffe.TRAIN`), as well as an optional weights filename.  When
+we provide a weights file, the `Net` will automatically load them for us. The `Net` has a number of
+[methods and attributes](https://github.com/BVLC/caffe/blob/master/python/caffe/pycaffe.py) you can use.
+
+**Note:** There is also a [deprecated version of this constructor](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L119-L134),
+which seems to get used often in sample code on the web. It looks like this, in case you encounter it:
+
+```python
+net = caffe.Net(str(deploy_file), str(model_file), caffe.TEST)
+```
+
+We're interested in loading images of various sizes into our network for testing. As a result,
+we'll need to *transform* them into a shape that our network can use (i.e., colour, 256x256).
+Caffe provides the [`Transformer` class](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L98)
+for this purpose.  We'll use it to create a transformation appropriate for our images/network:
+
+```python
+transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
+# set_transpose: https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L187
+transformer.set_transpose('data', (2, 0, 1))
+# set_raw_scale: https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L221
+transformer.set_raw_scale('data', 255)
+# set_channel_swap: https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L203
+transformer.set_channel_swap('data', (2, 1, 0))
+```
+
+We can also use the `mean.binaryproto` file DIGITS gave us to set our transformer's mean:
+
+```python
+# This code for setting the mean from https://github.com/NVIDIA/DIGITS/tree/master/examples/classification
+mean_file = os.path.join(model_dir, 'mean.binaryproto')
+with open(mean_file, 'rb') as infile:
+    blob = caffe_pb2.BlobProto()
+    blob.MergeFromString(infile.read())
+    if blob.HasField('shape'):
+        blob_dims = blob.shape
+        assert len(blob_dims) == 4, 'Shape should have 4 dimensions - shape is %s' % blob.shape
+    elif blob.HasField('num') and blob.HasField('channels') and \
+            blob.HasField('height') and blob.HasField('width'):
+        blob_dims = (blob.num, blob.channels, blob.height, blob.width)
+    else:
+        raise ValueError('blob does not provide shape or 4d dimensions')
+    pixel = np.reshape(blob.data, blob_dims[1:]).mean(1).mean(1)
+    transformer.set_mean('data', pixel)
+```
+
+If we had a lot of labels, we might also choose to read in our labels file, which we can use
+later by looking up the label for a probability using its position (e.g., 0=dolphin, 1=seahorse):
+
+```python
+labels_file = os.path.join(model_dir, 'labels.txt')
+labels = np.loadtxt(labels_file, str, delimiter='\n')
+``` 
+
+Now we're ready to classify an image.  We'll use [`caffe.io.load_image()`](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L279)
+to read our image file, then use our transformer to reshape it and set it as our network's data layer:
+
+```python
+# Load the image from disk using caffe's built-in I/O module
+image = caffe.io.load_image(fullpath)
+# Preprocess the image into the proper format for feeding into the model
+net.blobs['data'].data[...] = transformer.preprocess('data', image)
+```
+
+Next we run the image data through our network and read out the probabilities from our
+final layer, which will be in order by our categories:
+
+```python
+# Run the image's pixel data through the network
+net.forward()
+# Extract the probabilities of our two categories from the final layer
+softmax_layer = out['softmax']
+# Here we're converting to Python types from ndarray floats
+dolphin_prob = softmax_layer.item(0)
+seahorse_prob = softmax_layer.item(1)
+
+# Print the results. I'm using labels just to show how it's done
+label = labels[0] if dolphin_prob > seahorse_prob else labels[1]
+filename = os.path.basename(fullpath)
+print '%s is a %s dolphin=%.3f%% seahorse=%.3f%%' % (filename, label, dolphin_prob*100, seahorse_prob*100)
+```
+
+Running the full version of this (see [src/classify-samples.py](src/classify-samples.py)) using our
+fine-tuned GoogLeNet network on our [data/untrained-samples](data/untrained-samples) images gives
+me the following output:
+
+```
+[...truncated caffe network output...]
+dolphin1.jpg is a dolphin dolphin=99.968% seahorse=0.032%
+dolphin2.jpg is a dolphin dolphin=99.997% seahorse=0.003%
+dolphin3.jpg is a dolphin dolphin=99.943% seahorse=0.057%
+seahorse1.jpg is a seahorse dolphin=0.365% seahorse=99.635%
+seahorse2.jpg is a seahorse dolphin=0.000% seahorse=100.000%
+seahorse3.jpg is a seahorse dolphin=0.014% seahorse=99.986%
+```
+
+I'm still trying to learn all the best practices for working with models in code. I wish I had more
+and better documented code examples, APIs, premade modules, etc to show you here. To be honest,
+most of the code examples I’ve found are terse, and poorly documented--Caffe’s
+documentation is spotty, and assumes a lot.
+
+It seems to me like there’s an opportunity for someone to build higher-level tools on top of the
+Caffe interfaces for beginners and basic workflows like we've done here.  It would be great if
 there were more simple modules in high-level languages that I could point you at that “did the
 right thing” with our model; someone could/should take this on, and make *using* Caffe
 models as easy as DIGITS makes *training* them.  I’d love to have something I could use in node.js,

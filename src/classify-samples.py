@@ -10,7 +10,7 @@ class ImageClassifier:
         self.model_dir = model_dir
         deploy_file = os.path.join(model_dir, 'deploy.prototxt')
         weights_file = os.path.join(model_dir, 'snapshot_iter_90.caffemodel')
-        self.net = caffe.Net(deploy_file, 1, weights=weights_file)
+        self.net = caffe.Net(deploy_file, caffe.TEST, weights=weights_file)
 
     def setup(self):
         mean_file = os.path.join(self.model_dir, 'mean.binaryproto')
