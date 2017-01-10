@@ -169,14 +169,9 @@ dolphins-and-seahorses/
 
 ![新的影像辨識資料集](images/new-image-classification-dataset.png?raw=true "新的影像辨識資料集")
 
+這會建立我們的資料集，在我的筆電上只用了 4 秒就跑完了。最後我在兩個類別裡共有 92 個訓練用圖片（49 個海豚和 43 個海馬）和 30 個驗證用圖片（16 個海豚和 43 海馬）。這是個十分小的資料集，不過對於我們的實驗和學習用途十分完美——這不會花我們一輩子的時間來訓練及驗證一個用這個資料集的網絡。
 
-This will create our dataset, which took only 4s on my laptop.  In the end I
-have 92 Training images (49 dolphin, 43 seahorse) in 2 categories, with 30
-Validation images (16 dolphin, 14 seahorse).  It’s a really small dataset, but perfect
-for our experimentation and learning purposes, because it won’t take forever to train
-and validate a network that uses it.
-
-You can **Explore the db** if you want to see the images after they have been squashed.
+如果你想看看縮放之後的圖片，你可以**瀏覽資料庫**。
 
 ![Explore the db](images/explore-dataset.png?raw=true "Explore the db")
 
