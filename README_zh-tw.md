@@ -63,47 +63,24 @@
 
 **注意：** 當我在寫這篇時，我使用了這個非正式版本的 Caffe：https://github.com/BVLC/caffe/commit/5a201dd960840c319cefd9fa9e2a40d2c76ddd73
 
-On a Mac it can be frustrating to get working, with version issues halting
-your progress at various steps in the build.  It took me a couple of days
-of trial and error.  There are a dozen guides I followed, each with slightly
-different problems.  In the end I found [this one](https://gist.github.com/doctorpangloss/f8463bddce2a91b949639522ea1dcbe4) to be the closest.
-I’d also recommend [this post](https://eddiesmo.wordpress.com/2016/12/20/how-to-set-up-caffe-environment-and-pycaffe-on-os-x-10-12-sierra/),
-which is quite recent and links to many of the same discussions I saw. For readers of Chinese,
-[BirkhoffLee](https://github.com/BirkhoffLee) has also suggested his
-[complete guide](https://blog.birkhoff.me/macos-sierra-10-12-2-build-caffe) for how to build Caffe on macOS Sierra, written in Chinese.
+想在 Mac 上安裝它很容易讓你感到挫敗，在編譯 Caffe 時會有很多版本問題，我試了很多天。我跟隨了很多教學，每次都有一些稍微不一樣的問題。最後我找到了最接近的[這篇](https://gist.github.com/doctorpangloss/f8463bddce2a91b949639522ea1dcbe4)。我也推薦[最近的這篇文章](https://eddiesmo.wordpress.com/2016/12/20/how-to-set-up-caffe-environment-and-pycaffe-on-os-x-10-12-sierra/)，裡面也連結到很多我看到的討論串。對於中文讀者來說，[BirkhoffLee](https://github.com/BirkhoffLee) 也推薦了他的[完整中文版教學](https://blog.birkhoff.me/macos-sierra-10-12-2-build-caffe)，教你如何在 macOS Sierra 上編譯 Caffe。
 
-Getting Caffe installed is by far the hardest thing we'll do, which is pretty
-neat, since you’d assume the AI aspects would be harder!  Don’t give up if you have
-issues, it’s worth the pain.  If I was doing this again, I’d probably use an Ubuntu VM
-instead of trying to do it on Mac directly.  There's also a [Caffe Users](https://groups.google.com/forum/#!forum/caffe-users) group, if you need answers.
+將 Caffe 安裝好是到目前為止我們將做的最難的事情，這很好，因為你可能會認為人工智慧方面的問題會更難。如果你遇到問題，千萬不要放棄，這是值得的。如果要讓我再做一次，我不會直接在 Mac 上安裝它，而是在一台 Ubuntu 虛擬機器上安裝。如果你有問題，這裡是 [Caffe 使用者群組](https://groups.google.com/forum/#!forum/caffe-users)，你可以在此提問。
 
-> Q: “Do I need powerful hardware to train a neural network? What if I don’t have
-> access to fancy GPUs?”
+> 問：「訓練一個類神經網絡需不需要很好的硬體？如果我沒有很棒的 GPU 呢？」
 
-It’s true, deep neural networks require a lot of computing power and energy to
-train...if you’re training them from scratch and using massive datasets.
-We aren’t going to do that.  The secret is to use a pretrained network that someone
-else has already invested hundreds of hours of compute time training, and then to fine
-tune it to your particular dataset.  We’ll look at how to do this below, but suffice
-it to say that everything I’m going to show you, I’m doing on a year old MacBook
-Pro without a fancy GPU.
+事實上沒錯。訓練一個深度類神經網絡需要非常大量的預算能力和精力...前提是你要用非常大量的資料集從頭開始訓練。我們不會這樣做。我們的秘訣是用一個別人事先以上百小時訓練好的類神經網絡，然後我們再針對我們的資料集進行微調。下面的教學將會教你如何這樣做。簡單來說，下面我所做的事情，都是我在一臺一歲的 MacBook Pro 上做的（這台沒有很好的 GPU）。
 
-As an aside, because I have an integrated Intel graphics card vs. an nVidia GPU,
-I decided to use the [OpenCL Caffe branch](https://github.com/BVLC/caffe/tree/opencl),
-and it’s worked great on my laptop.
+順便說一下，因為我的 MacBook Pro 只有 Intel 整合繪圖處理器（即內建顯示核心），它沒有 nVidia 的 GPU，所以我決定使用 [Caffe 的 OpenCL 版本](https://github.com/BVLC/caffe/tree/opencl)，而且它在我的筆電上跑的很不錯。
 
-When you’re done installing Caffe, you should have, or be able to do all of the following:
+當你把 Caffe 搞定之後，你應該有，或能做這些東西：
 
-* A directory that contains your built caffe.  If you did this in the standard way,
-there will be a `build/` dir which contains everything you need to run caffe,
-the Python bindings, etc.  The parent dir that contains `build/` will be your
-`CAFFE_ROOT` (we’ll need this later).
-* Running `make test && make runtest` should pass
-* After installing all the Python deps (doing `for req in $(cat requirements.txt); do pip install $req; done` in `python/`),
-running `make pycaffe && make pytest` should pass
-* You should also run `make distribute` in order to create a distributable version of caffe with all necessary headers, binaries, etc. in `distribute/`.
+* 一個資料夾，裡面有你編譯好的 Caffe。如果你用了標準的方法來編譯它，裡面會有一個叫做「`build/`」的資料夾，它裡面有你跑 Caffe 所需要的所有東西，像是 Python 的綁定什麼的。那個包含 `build/` 的資料夾就是你的「`CAFFE_ROOT`」（我們等一下會用到這個）。
+* 執行 `make test && make runtest` 要能通過測試
+* 安裝完所有 Python 相依性套件之後（在 `python/` 內執行 `for req in $(cat requirements.txt); do pip install $req; done`），執行 `make pycaffe && make pytest` 要能通過測試
+* 你也應該執行 `make distribute` 以建立一個含有所有必須的 header、binary 之類東西的可散佈版的 Caffe。
 
-On my machine, with Caffe fully built, I’ve got the following basic layout in my CAFFE_ROOT dir:
+在我的機器上，我已經完整的編譯好 Caffe 了。我的 CAFFE_ROOT 裡面的基本結構看起來長這樣：
 
 ```
 caffe/
@@ -111,7 +88,7 @@ caffe/
         python/
         lib/
         tools/
-            caffe ← this is our main binary
+            caffe ← 這是我們主要使用的二進位檔案
     distribute/
         python/
         lib/
@@ -120,18 +97,11 @@ caffe/
         proto/
 ```
 
-At this point, we have everything we need to train, test, and program with neural
-networks.  In the next section we’ll add a user-friendly, web-based front end to
-Caffe called DIGITS, which will make training and testing our networks much easier.
+現在，我們已經萬事俱全，可以訓練、測試我們的神經網絡以及為它編寫程式了。在下一節我們將為 Caffe 添加一個十分友好的網頁介面——「DIGITS」，這樣我們訓練及測試我們的類神經網絡時將變得更簡單。
 
-###Installing DIGITS
+###安裝 DIGITS
 
-nVidia’s [Deep Learning GPU Training System, or DIGITS](https://github.com/NVIDIA/DIGITS),
-is BSD-licensed Python web app for training neural networks.  While it’s
-possible to do everything DIGITS does in Caffe at the command-line, or with code,
-using DIGITS makes it a lot easier to get started.  I also found it more fun, due
-to the great visualizations, real-time charts, and other graphical features.
-Since you’re experimenting and trying to learn, I highly recommend beginning with DIGITS.
+nVidia 的[深度學習 GPU 訓練系統（DIGITS）](https://github.com/NVIDIA/DIGITS)是個 BSD 協議的 Python 網頁應用程式，專門拿來訓練類神經網絡用的。雖然我們可以在命令行（或是自己寫程式）完成任何 DIGITS 對 Caffe 做的事，但是用 DIGITS 將讓我們更容易上手。我發現 DIGITS 的視覺化資料、即時圖表和其他類似的功能讓這一切都變得更有趣了。因為你還在實驗及試著學習，我非常推薦以 DIGITS 上手。
 
 There are quite a few good docs at https://github.com/NVIDIA/DIGITS/tree/master/docs,
 including a few [Installation](https://github.com/NVIDIA/DIGITS/blob/master/docs/BuildDigits.md),
