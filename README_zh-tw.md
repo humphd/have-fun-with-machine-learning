@@ -3,7 +3,7 @@
 > 原作者：[David Humphrey](https://github.com/humphd)  
   中文（繁體）語系譯者：[Birkhoff Lee](https://fb.me/birkhofflee)。歡迎改進翻譯，譯者還只是個國中生。
 
-##序言
+## 序言
 
 這是一個提供給**無人工智慧背景知識**程式員的機器學習**實作教學**。使用類神經網絡事實上並不需要博士學位，而且你也不需要成為下一個在人工智慧領域有極大突破的人，而且我們現在的成就已經十分驚人，且具有高可用性。我相信我們這些人之中是想玩這個東西——就跟我們玩開源軟體一樣——而不是將它視為一個研究議題。
 
@@ -22,7 +22,7 @@
   就範圍大小區分，第一原理可以是解釋所有事件的終極真理，也可以視為一個系統一致性、連貫性的
   一種根源性的解釋。
 
-##概覽
+## 概覽
 
 以下是我們將要探索的內容：
 
@@ -43,9 +43,9 @@
 * 類似的，這部由 [Brandon Rohrer](https://www.youtube.com/channel/UCsBKTrp45lTfHa_p49I2AEQ) 所拍攝的 [介紹影片](https://www.youtube.com/watch?v=FmpDIaiMIeA) 是個很不錯的關於卷積神經網絡（我們將會使用它）的介紹。
 * 如果你想了解更多其背後的理論，我會推薦你[這本書](http://neuralnetworksanddeeplearning.com/chap1.html)，它由 [Michael Nielsen](http://michaelnielsen.org/) 所著。
 
-##設定
+## 設定
 
-###安裝 Caffe
+### 安裝 Caffe
 
 首先，我們將會使用到來自 Berkely Vision 及 Learning Center 的 [Caffe 深度學習框架](http://caffe.berkeleyvision.org/)（BSD 協議）。
 
@@ -97,62 +97,43 @@ caffe/
         proto/
 ```
 
-現在，我們已經萬事俱全，可以訓練、測試我們的神經網絡以及為它編寫程式了。在下一節我們將為 Caffe 添加一個十分友好的網頁介面——「DIGITS」，這樣我們訓練及測試我們的類神經網絡時將變得更簡單。
+現在，我們已經萬事俱全，可以訓練、測試我們的網絡以及為它編寫程式了。在下一節我們將為 Caffe 添加一個十分友好的網頁介面——「DIGITS」，這樣我們訓練及測試我們的網絡時將變得更簡單。
 
-###安裝 DIGITS
+### 安裝 DIGITS
 
 nVidia 的[深度學習 GPU 訓練系統（DIGITS）](https://github.com/NVIDIA/DIGITS)是個 BSD 協議的 Python 網頁應用程式，專門拿來訓練類神經網絡用的。雖然我們可以在命令行（或是自己寫程式）完成任何 DIGITS 對 Caffe 做的事，但是用 DIGITS 將讓我們更容易上手。我發現 DIGITS 的視覺化資料、即時圖表和其他類似的功能讓這一切都變得更有趣了。因為你還在實驗及試著學習，我非常推薦以 DIGITS 上手。
 
-There are quite a few good docs at https://github.com/NVIDIA/DIGITS/tree/master/docs,
-including a few [Installation](https://github.com/NVIDIA/DIGITS/blob/master/docs/BuildDigits.md),
-[Configuration](https://github.com/NVIDIA/DIGITS/blob/master/docs/Configuration.md),
-and [Getting Started](https://github.com/NVIDIA/DIGITS/blob/master/docs/GettingStarted.md)
-pages.  I’d recommend reading through everything there before you continue, as I’m not
-an expert on everything you can do with DIGITS.  There's also a public [DIGITS User Group](https://groups.google.com/forum/#!forum/digits-users) if you have questions you need to ask.
+https://github.com/NVIDIA/DIGITS/tree/master/docs 有一些十分不錯的文檔供你參考，裡面也有[安裝](https://github.com/NVIDIA/DIGITS/blob/master/docs/BuildDigits.md)、[設定](https://github.com/NVIDIA/DIGITS/blob/master/docs/Configuration.md)及[供你上手](https://github.com/NVIDIA/DIGITS/blob/master/docs/GettingStarted.md)的資料。我建議在你開始之前，先把所有東西都稍微看一遍，因為我並不是 DIGITS 的專家——我並不知道它能做的所有事情。如果你有什麼問題想問，公開的 [DIGITS 使用者群組](https://groups.google.com/forum/#!forum/digits-users)是一個不錯的地方。
 
-There are various ways to install and run DIGITS, from Docker to pre-baked packages
-on Linux, or you can build it from source. I’m on a Mac, so I built it from source.
+要安裝且執行 DIGITS 有很多方法，有 Docker image、預先包裝好的 Linux 套件，或者你也可以自行編譯它。我使用的是 Mac，所以我選擇自行編譯它。
 
-**NOTE:** In my walkthrough I've used the following non-released version of DIGITS
-from their Github repo: https://github.com/NVIDIA/DIGITS/commit/81be5131821ade454eb47352477015d7c09753d9
+**注意：** 當我在寫這篇時，我使用了這個非正式版本的 DIGITS：https://github.com/NVIDIA/DIGITS/commit/81be5131821ade454eb47352477015d7c09753d9
 
-Because it’s just a bunch of Python scripts, it was fairly painless to get working.
-The one thing you need to do is tell DIGITS where your `CAFFE_ROOT` is by setting
-an environment variable before starting the server:
+DIGITS 很容易安裝，因為他就只是一堆 Python 腳本。你需要告訴 DIGITS 的唯一一件事就是告訴它你的 `CAFFE_ROOT` 在哪裡。你可以用環境變數搞定這件事，然後就可以啟動伺服器了：
 
 ```bash
 export CAFFE_ROOT=/path/to/caffe
 ./digits-devserver
 ```
 
-NOTE: on Mac I had issues with the server scripts assuming my Python binary was
-called `python2`, where I only have `python2.7`.  You can symlink it in `/usr/bin`
-or modify the DIGITS startup script(s) to use the proper binary on your system.
+注意：在 Mac 上我在啟動伺服器時發生了一些問題——啟動伺服器的腳本直接默認了我的 Python 執行檔叫做 `python2`，但是我只有 `python2.7`。你可以建立一個到 `/usr/bin` 的符號連結或是修改 DIGITS 的啟動腳本來使用正確的 Python 執行檔。
 
-Once the server is started, you can do everything else via your web browser at http://localhost:5000, which is what I'll do below.
+當你啟動了伺服器之後，你可以透過你的網頁瀏覽器在這個網址做所有其他的事情（我們等下會做的事）了：http://localhost:5000。
 
-##Training a Neural Network
+## 訓練類神經網絡
 
-Training a neural network involves a few steps:
+訓練一個類神經網絡涉及到這些步驟：
+1. 組合及準備一個分類好的照片的資料集
+2. 定義這個類神經網絡的架構
+3. 用準備好的資料集訓練及驗證這個網絡
 
-1. Assemble and prepare a dataset of categorized images
-2. Define the network’s architecture
-3. Train and Validate this network using the prepared dataset
+我們將用三種方法做這件事以體現出從頭開始訓練與使用一個預先訓練好的網絡之間的差別，順便了解如何使用 AlexNet 與 GoogLeNet 這兩個相當受歡迎的預先訓練好的網絡，他們常常與 Caffe 和 DIGITS 搭配使用。
 
-We’re going to do this 3 different ways, in order to show the difference
-between starting from scratch and using a pretrained network, and also to show
-how to work with two popular pretrained networks (AlexNet, GoogLeNet) that are
-commonly used with Caffe and DIGITs.
+我們將使用一個包含了海豚與海馬的小資料集來嘗試訓練。我已經把我使用的照片放在了 [data/dolphins-and-seahorses](data/dolphins-and-seahorses)。你需要最少兩個分類，不過你可以有更多（有些你將會用到的網絡是以一千多個影像分類訓練而成的）。我們的目標是當我們給我們的網絡一個圖片，它能告訴我們他是隻海豚還是海馬。
 
-For our training attempts, we’ll use a small dataset of Dolphins and Seahorses.
-I’ve put the images I used in [data/dolphins-and-seahorses](data/dolphins-and-seahorses).
-You need at least 2 categories, but could have many more (some of the networks
-we’ll use were trained on 1000+ image categories).  Our goal is to be able to
-give an image to our network and have it tell us whether it’s a Dolphin or a Seahorse.
+### 準備資料集
 
-###Prepare the Dataset
-
-The easiest way to begin is to divide your images into a categorized directory layout:
+要開始，最簡單的方法是將你的圖片分成這個分類好的資料夾樣式：
 
 ```
 dolphins-and-seahorses/
@@ -168,34 +149,26 @@ dolphins-and-seahorses/
         ...
 ```
 
-Here each directory is a category we want to classify, and each image within
-that category dir an example we’ll use for training and validation.
+這裡的每個資料夾都是一個我們想辨識的類別（category），在裡面的每個圖片都將被我們用來訓練及驗證我們的網絡。
 
-> Q: “Do my images have to be the same size?  What about the filenames, do they matter?”
+> 問：「照片都要一樣的大小嗎？那檔案名稱呢？」
 
-No to both. The images sizes will be normalized before we feed them into
-the network.  We’ll eventually want colour images of 256 x 256 pixels, but
-DIGITS will crop or squash (we'll squash) our images automatically in a moment.
-The filenames are irrelevant--it’s only important which category they are contained
-within.
+兩個都不用管他。在我們餵食網絡之前，圖片的大小都會被一般化。我們會希望我們的照片尺寸是 256 x 256 像素，DIGITS 等一下會自動裁切或縮放（我們選擇縮放）我們的圖片。那些檔案名稱你要怎麼取根本沒差——重要的是它們是在什麼分類裡。
 
-> Q: “Can I do more complex segmentation of my categories?”
+> 問：「我可以再細分我的分類嗎？」
 
-Yes. See https://github.com/NVIDIA/DIGITS/blob/digits-4.0/docs/ImageFolderFormat.md.
+可以。詳閱 https://github.com/NVIDIA/DIGITS/blob/digits-4.0/docs/ImageFolderFormat.md 。
 
-We want to use these images on disk to create a **New Dataset**, and specifically,
-a **Classification Dataset**.
+我們將使用這些在硬碟上的照片來建立一個**新的資料集**，而且是一個**辨識用資料集**。
 
-![Create New Dataset](images/create-new-dataset.png?raw=true "Create New Dataset")
+![建立一個資料集](images/create-new-dataset.png?raw=true "建立一個資料集")
 
-We’ll use the defaults DIGITS gives us, and point **Training Images** at the path
-to our [data/dolphins-and-seahorses](data/dolphins-and-seahorses) folder.
-DIGITS will use the categories (`dolphin` and `seahorse`) to create a database
-of squashed, 256 x 256 Training (75%) and Testing (25%) images.
+我們將使用 DIGITS 的默認設定，然後將 **Training Images** 指向我們 [data/dolphins-and-seahorses](data/dolphins-and-seahorses) 的資料夾。DIGITS 將會以 `dolphin` 與 `seahorse` 這兩個分類來建立一個縮放好（256 x 256）的資料集，其中的 75% 用來訓練，另外的 25% 用來測試。
 
-Give your Dataset a name,`dolphins-and-seahorses`, and click **Create**.
+給你的資料集取個名字：`dolphins-and-seahorses`，然後點選 **Create**。
 
-![New Image Classification Dataset](images/new-image-classification-dataset.png?raw=true "New Image Classification Dataset")
+![新的影像辨識資料集](images/new-image-classification-dataset.png?raw=true "新的影像辨識資料集")
+
 
 This will create our dataset, which took only 4s on my laptop.  In the end I
 have 92 Training images (49 dolphin, 43 seahorse) in 2 categories, with 30
