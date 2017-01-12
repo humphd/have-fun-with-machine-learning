@@ -1,7 +1,11 @@
 # 機器學習動手玩：給新手的教學
 
 > 原作者：[David Humphrey](https://github.com/humphd)  
-  中文（繁體）語系譯者：[Birkhoff Lee](https://fb.me/birkhofflee)。歡迎改進翻譯，譯者還只是個國中生。
+  中文（繁體）語系譯者：[Birkhoff Lee](https://fb.me/birkhofflee)。
+
+### 譯者有話要說 Translator's Note
+
+各位好。這是一篇很棒的教學，小弟希望能夠幫助到中文讀者，於是利用自己課後的時間（我還是個國中生）來翻譯這篇文章。在這篇文章裡有很多專業的術語，而有些是我不曾聽聞的——例如「Transfer Learning」——我遇到這些我不清楚的術語時，我使用 Google 來搜尋相關的中文文獻以期得到該術語現有的翻譯。還有一些內容是無法直接從英文翻到中文的，必須重建語境來翻譯，因此我會盡可能地不偏離原文的意思。如果您發現哪裡的翻譯有問題或是可以翻譯地更好，您可以開一個 issue 或是直接發一個 pull request 來協助修正翻譯，謝謝。
 
 ## 序言
 
@@ -69,7 +73,7 @@
 
 > 問：「訓練一個類神經網絡需不需要很好的硬體？如果我沒有很棒的 GPU 呢？」
 
-事實上沒錯。訓練一個深度類神經網絡需要非常大量的預算能力和精力...前提是你要用非常大量的資料集從頭開始訓練。我們不會這樣做。我們的秘訣是用一個別人事先以上百小時訓練好的類神經網絡，然後我們再針對我們的資料集進行微調。下面的教學將會教你如何這樣做。簡單來說，下面我所做的事情，都是我在一臺一歲的 MacBook Pro 上做的（這台沒有很好的 GPU）。
+事實上沒錯。訓練一個深層類神經網絡需要非常大量的預算能力和精力...前提是你要用非常大量的資料集從頭開始訓練。我們不會這樣做。我們的秘訣是用一個別人事先以上百小時訓練好的類神經網絡，然後我們再針對我們的資料集進行微調。下面的教學將會教你如何這樣做。簡單來說，下面我所做的事情，都是我在一臺一歲的 MacBook Pro 上做的（這台沒有很好的 GPU）。
 
 順便說一下，因為我的 MacBook Pro 只有 Intel 整合繪圖處理器（即內建顯示核心），它沒有 nVidia 的 GPU，所以我決定使用 [Caffe 的 OpenCL 版本](https://github.com/BVLC/caffe/tree/opencl)，而且它在我的筆電上跑的很不錯。
 
@@ -123,8 +127,9 @@ export CAFFE_ROOT=/path/to/caffe
 ## 訓練類神經網絡
 
 訓練一個類神經網絡涉及到這些步驟：
-1. 組合及準備一個分類好的照片的資料集
-2. 定義這個類神經網絡的架構
+
+1. 組合及準備一個分類好的照片的資料集  
+2. 定義這個類神經網絡的架構  
 3. 用準備好的資料集訓練及驗證這個網絡
 
 我們將用三種方法做這件事以體現出從頭開始訓練與使用一個預先訓練好的網絡之間的差別，順便了解如何使用 AlexNet 與 GoogLeNet 這兩個相當受歡迎的預先訓練好的網絡，他們常常與 Caffe 和 DIGITS 搭配使用。
@@ -149,7 +154,7 @@ dolphins-and-seahorses/
         ...
 ```
 
-這裡的每個資料夾都是一個我們想辨識的類別（category），在裡面的每個圖片都將被我們用來訓練及驗證我們的網絡。
+這裡的每個資料夾都是一個我們想分類的類別（category），在裡面的每個圖片都將被我們用來訓練及驗證我們的網絡。
 
 > 問：「照片都要一樣的大小嗎？那檔案名稱呢？」
 
@@ -159,7 +164,7 @@ dolphins-and-seahorses/
 
 可以。詳閱 https://github.com/NVIDIA/DIGITS/blob/digits-4.0/docs/ImageFolderFormat.md 。
 
-我們將使用這些在硬碟上的照片來建立一個**新的資料集**，而且是一個**辨識用資料集**。
+我們將使用這些在硬碟上的照片來建立一個**新的資料集**，而且是一個**分類用資料集**。
 
 ![建立一個資料集](images/create-new-dataset.png?raw=true "建立一個資料集")
 
@@ -169,114 +174,64 @@ dolphins-and-seahorses/
 
 ![新的影像辨識資料集](images/new-image-classification-dataset.png?raw=true "新的影像辨識資料集")
 
-這會建立我們的資料集，在我的筆電上只用了 4 秒就跑完了。最後我在兩個類別裡共有 92 個訓練用圖片（49 個海豚和 43 個海馬）和 30 個驗證用圖片（16 個海豚和 43 海馬）。這是個十分小的資料集，不過對於我們的實驗和學習用途十分完美——這不會花我們一輩子的時間來訓練及驗證一個用這個資料集的網絡。
+這會建立我們的資料集，在我的筆電上只用了 4 秒就跑完了。最後我在兩個類別裡共有 92 個訓練用圖片（49 個海豚和 43 個海馬）和 30 個驗證用圖片（16 個海豚和 43 海馬）。這是個十分小的資料集，不過對於我們的實驗和學習用途十分完美——訓練及驗證一個用這個資料集的網絡不會花我們一輩子的時間。
 
 如果你想看看縮放之後的圖片，你可以**瀏覽資料庫**。
 
 ![Explore the db](images/explore-dataset.png?raw=true "Explore the db")
 
-### Training: Attempt 1, from Scratch
+### 訓練：嘗試 1，從頭開始訓練
 
-Back in the DIGITS Home screen, we need to create a new **Classification Model**:
+回到 DIGITS 的主畫面，我們需要先建立一個新的**分類用模型**：
 
-![Create Classification Model](images/create-classification-model.png?raw=true "Create Classification Model")
+![建立分類用模型](images/create-classification-model.png?raw=true "建立分類用模型")
 
-We’ll start by training a model that uses our `dolphins-and-seahorses` dataset,
-and the default settings DIGITS provides.  For our first network, we’ll choose to
-use one of the standard network architectures, [AlexNet (pdf)](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf). [AlexNet’s design](http://vision.stanford.edu/teaching/cs231b_spring1415/slides/alexnet_tugce_kyunghee.pdf)
-won a major computer vision competition called ImageNet in 2012.  The competition
-required categorizing 1000+ image categories across 1.2 million images.
+我們將從訓練一個使用我們 `dolphins-and-seahorses` 資料集的模型開始，我們將以 DIGITS 給的默認設定值來訓練它。這是我們的第一個網絡，我們選擇使用一個標準的網絡架構——「[AlexNet (pdf)](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)」。[AlexNet 的設計](http://vision.stanford.edu/teaching/cs231b_spring1415/slides/alexnet_tugce_kyunghee.pdf) 在 2012 年贏得了一個大型的電腦視覺比賽——ImageNet。這個比賽的要求將一百二十萬個圖像分類到一千多種不同的分類中。
 
-![New Classification Model 1](images/new-image-classification-model-attempt1.png?raw=true "Model 1")
+![新的分類用模型 1](images/new-image-classification-model-attempt1.png?raw=true "新的分類用模型 1")
 
-Caffe uses structured text files to define network architectures.  These text files
-are based on [Google’s Protocol Buffers](https://developers.google.com/protocol-buffers/).
-You can read the [full schema](https://github.com/BVLC/caffe/blob/master/src/caffe/proto/caffe.proto) Caffe uses.
-For the most part we’re not going to work with these, but it’s good to be aware of their
-existence, since we’ll have to modify them in later steps.  The AlexNet prototxt file
-looks like this, for example: https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt.
+Caffe 使用結構化的文字檔案來定義網絡架構。這些檔案使用的是 [Google 的 Protocol Buffers](https://developers.google.com/protocol-buffers/)。你可以閱讀 Caffe 使用的[整個架構](https://github.com/BVLC/caffe/blob/master/src/caffe/proto/caffe.proto)。
+這不是我們主要要處理的部分，不過他們的存在值得我們注意，因為我們等會要修改他們。AlexNet 的 prototxt 檔案長這樣，例如：https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt 。
 
-We’ll train our network for **30 epochs**, which means that it will learn (with our
-training images) then test itself (using our validation images), and adjust the
-network’s weights depending on how well it’s doing, and repeat this process 30 times.
-Each time it completes a cycle we’ll get info about **Accuracy** (0% to 100%,
-where higher is better) and what our **Loss** is (the sum of all the mistakes that were
-made, where lower is better).  Ideally we want a network that is able to predict with
-high accuracy, and with few errors (small loss).
+我們將會訓練我們的網絡 **30 個循環週期**。這表示網絡會使用我們的訓練圖片來學習，接著使用驗證圖片來測試他自己，然後根據結果來調整網絡的權重，然後重複這整個過程三十遍。當它每次完成一個循環之後我們會得到它的**準確度（_accuracy_）**（0% ~ 100%，越高越好）以及**誤差值（_loss_）**（所有錯誤的總和，值越低越好）。對於一個網路而言，最理想的狀況是有高準確度與最低的誤差。
 
-Initially, our network’s accuracy is a bit below 50%.  This makes sense, because at first it’s
-just “guessing” between two categories using randomly assigned weights.  Over time
-it’s able to achieve 87.5% accuracy, with a loss of 0.37.  The entire 30 epoch run
-took me just under 6 minutes.
+一開始，我們網路的準確度大致低於 50%。這十分合理，因為它一開始只是在用隨機的權重值來在兩個分類之間進行猜測。隨著訓練的時間增加，它的準確度可以達到 87.5%，且誤差值為 0.37。我的電腦用了不到六分鐘的時間就跑完這 30 個循環週期了。
 
-![Model Attempt 1](images/model-attempt1.png?raw=true "Model Attempt 1")
+![模型 嘗試 1](images/model-attempt1.png?raw=true "模型 嘗試 1")
 
-We can test our model using an image we upload or a URL to an image on the web.
-Let’s test it on a few examples that weren’t in our training/validation dataset:
+我們可以上傳一張照片或一個圖片的 URL 來測試我們的模型。讓我們使用一些不在我們資料集的圖片來測試看看：
 
-![Model 1 Classify 1](images/model-attempt1-classify1.png?raw=true "Model 1 Classify 1")
+![模型 1 分類 1](images/model-attempt1-classify1.png?raw=true "模型 1 分類 1")
 
-![Model 1 Classify 2](images/model-attempt1-classify2.png?raw=true "Model 1 Classify 2")
+![模型 1 分類 2](images/model-attempt1-classify2.png?raw=true "模型 1 分類 2")
 
-It almost seems perfect, until we try another:
+看起來還蠻不錯的，但是這一張的話 ...：
 
-![Model 1 Classify 3](images/model-attempt1-classify3.png?raw=true "Model 1 Classify 3")
+![模型 1 分類 3](images/model-attempt1-classify3.png?raw=true "模型 1 分類 3")
 
-Here it falls down completely, and confuses a seahorse for a dolphin, and worse,
-does so with a high degree of confidence.
+我們的網絡在這張圖上完全失敗了，而且將海馬混淆成了海豚，更糟糕的是，它十分自信地認為這張圖是海豚。
 
-The reality is that our dataset is too small to be useful for training a really good
-neural network.  We really need 10s or 100s of thousands of images, and with that, a
-lot of computing power to process everything.
+事實上其實是我們的資料集太小了，沒辦法訓練一個很好的類神經網絡。我們很需要上萬張或上千萬張照片來訓練，如果要這樣，我們還會需要十分強大的運算能力來處理這些照片。
 
-### Training: Attempt 2, Fine Tuning AlexNet
+### 訓練：嘗試 2，微調 AlexNet
 
-####How Fine Tuning works
+#### 微調背後的原理 
 
-Designing a neural network from scratch, collecting data sufficient to train
-it (e.g., millions of images), and accessing GPUs for weeks to complete the
-training is beyond the reach of most of us.  To make it practical for smaller amounts
-of data to be used, we employ a technique called **Transfer Learning**, or **Fine Tuning**.
-Fine tuning takes advantage of the layout of deep neural networks, and uses
-pretrained networks to do the hard work of initial object detection.
+> 譯者有話要說（Translator's Note）：本段的內容較為複雜（很多專業術語），因此我的翻譯可能沒有很好。如果你願意，你可以看看原文，並希望你能順便幫忙改進翻譯，謝謝。
 
-Imagine using a neural network to be like looking at something far away with a
-pair of binoculars.  You first put the binoculars to your eyes, and everything is
-blurry.  As you adjust the focus, you start to see colours, lines, shapes, and eventually
-you are able to pick out the shape of a bird, then with some more adjustment you can
-identify the species of bird.
+從頭開始設計一個類神經網絡、取得足夠的資料來訓練它（例如上百萬張照片）以及用好幾周的時間使用 GPU 來運算已經超出我們大多數人的能力範圍了。如果要使用較少的資料來訓練，我們會採用一個叫做「**遷移學習（_Transfer Learning_）**」的技術，也有人稱之為「**微調（_Fine Tuning_）**」。「微調」利用深層類神經網絡的架構及事先訓練好的網絡來達成一開始的物件偵測。
 
-In a multi-layered network, the initial layers extract features (e.g., edges), with
-later layers using these features to detect shapes (e.g., a wheel, an eye), which are
-then feed into final classification layers that detect items based on accumulated
-characteristics from previous layers (e.g., a cat vs. a dog).  A network has to be
-able to go from pixels to circles to eyes to two eyes placed in a particular orientation,
-and so on up to being able to finally conclude that an image depicts a cat.
+想像一下你一拿起望遠鏡要看很遠很遠的東西的時候，你會先將望遠鏡貼近你的眼睛，接著你看到的一切都是模糊的。隨著望遠鏡的焦距的調整，你會慢慢開始看見顏色、線條、形狀…… 慢慢地你就能看清楚一隻鳥的形狀。再稍微調整一下，你就能辨識這隻鳥的種類了。這就是使用一個類神經網絡的過程。
 
-What we’d like to do is to specialize an existing, pretrained network for classifying
-a new set of image classes instead of the ones on which it was initially trained. Because
-the network already knows how to “see” features in images, we’d like to retrain
-it to “see” our particular image types.  We don’t need to start from scratch with the
-majority of the layers--we want to transfer the learning already done in these layers
-to our new classification task.  Unlike our previous attempt, which used random weights,
-we’ll use the existing weights of the final network in our training.  However, we’ll
-throw away the final classification layer(s) and retrain the network with *our* image
-dataset, fine tuning it to our image classes.
+在一個多層網絡中，初始層（_layer_）提取一些特徵（例如：邊緣），接下來的層使用這些特徵來偵測形狀（例如輪子與眼睛），然後送到以在之前的層累積的特徵來偵測物件的最終分類層（例如一隻貓跟一隻狗）。一個網絡必須能夠從像素點開始掃描，到圓形、到眼睛、到朝著特定方向的兩個眼睛等等，直到最終能夠斷定這個照片內描繪的是一隻貓。
 
-For this to work, we need a pretrained network that is similar enough to our own data
-that the learned weights will be useful.  Luckily, the networks we’ll use below were
-trained on millions of natural images from [ImageNet](http://image-net.org/), which
-is useful across a broad range of classification tasks.
+我們想做的是讓一個現有的、事先訓練好的網絡能夠專門來分類一些全新的影像分類，而不是讓它來分類當初用來訓練這個網絡的圖形。之所以這樣做是因為這種網絡已經知道如何「看見」圖形中的特徵，然後我們要重新訓練它來讓它能「看見」我們要他分類的特殊圖形。我們不需要從頭開始設定大多數的層——我們想要轉移這些已經學習好的層到我們的新分類任務。不像我們之前的訓練嘗試使用的是隨機的權重，我們這次要使用最終網絡中已有的權重來進行訓練。總而言之，我們將把最終的分類層丟掉，然後用**我們自己**的影像資料集來重新訓練它，將他微調到我們自己的影像分類。
 
-This technique has been used to do interesting things like screening for eye diseases
-from medical imagery, identifying plankton species from microscopic images collected at
-sea, to categorizing the artistic style of Flickr images.
+如果要這樣做，我們需要一個跟我們自己的資料足夠相似的事先訓練好的網絡，這樣它學習到的權重對我們來說才會有用處。幸運的是我們接下來將使用的網絡是曾使用上百萬個來自 [ImageNet](http://image-net.org/) 大自然的照片來進行訓練的網絡，因此它對非常多種不同的分類任務都十分的有用處。
 
-Doing this perfectly, like all of machine learning, requires you to understand the
-data and network architecture--you have to be careful with overfitting of the data,
-might need to fix some of the layers, might need to insert new layers, etc. However,
-my experience is that it “Just Works” much of the time, and it’s worth you simply doing
-an experiment to see what you can achieve using our naive approach.
+這項技術常被用來做有趣的事情，例如從自醫學圖像中掃描是否有眼部疾病、識別從海上採集的浮游生物顯微圖像，到分類 Flickr 網站圖片的藝術風格。
+
+跟所有的機器學習一樣，如果你想做到完美，你需要了解你的資料以及網絡架構——你必須注意資料是否會過擬合（_overfitting_）、你可能需要修復一些層，或是你可能需要加入一些新的層，諸如此類。總之，我的經驗是它在大多數的時候是可行的，你值得實驗看看，看你用我們的方法能做得如何。
 
 ####Uploading Pretrained Networks
 
