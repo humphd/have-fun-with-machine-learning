@@ -180,7 +180,7 @@ dolphins-and-seahorses/
 
 ![Explore the db](images/explore-dataset.png?raw=true "Explore the db")
 
-### 訓練：嘗試 1，從頭開始訓練
+### 訓練：第一次嘗試，從頭開始訓練
 
 回到 DIGITS 的主畫面，我們需要先建立一個新的**分類用模型**：
 
@@ -193,9 +193,9 @@ dolphins-and-seahorses/
 Caffe 使用結構化的文字檔案來定義網絡架構。這些檔案使用的是 [Google 的 Protocol Buffers](https://developers.google.com/protocol-buffers/)。你可以閱讀 Caffe 使用的[整個架構](https://github.com/BVLC/caffe/blob/master/src/caffe/proto/caffe.proto)。
 這不是我們主要要處理的部分，不過他們的存在值得我們注意，因為我們等會要修改他們。AlexNet 的 prototxt 檔案長這樣，例如：https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt 。
 
-我們將會訓練我們的網絡 **30 個循環週期**。這表示網絡會使用我們的訓練圖片來學習，接著使用驗證圖片來測試他自己，然後根據結果來調整網絡的權重，然後重複這整個過程三十遍。當它每次完成一個循環之後我們會得到它的**準確度（_accuracy_）**（0% ~ 100%，越高越好）以及**誤差值（_loss_）**（所有錯誤的總和，值越低越好）。對於一個網路而言，最理想的狀況是有高準確度與最低的誤差。
+我們將會訓練我們的網絡 **30 個循環週期**。這表示網絡會使用我們的訓練圖片來學習，接著使用驗證圖片來測試他自己，然後根據結果來調整網絡的權重，然後重複這整個過程三十遍。當它每次完成一個循環之後我們會得到它的**準確度（_accuracy_）**（0% ~ 100%，越高越好）以及**損失（_loss_）**（所有錯誤的總和，值越低越好）。對於一個網路而言，最理想的狀況是有高準確度與最低的損失。
 
-一開始，我們網路的準確度大致低於 50%。這十分合理，因為它一開始只是在用隨機的權重值來在兩個分類之間進行猜測。隨著訓練的時間增加，它的準確度可以達到 87.5%，且誤差值為 0.37。我的電腦用了不到六分鐘的時間就跑完這 30 個循環週期了。
+一開始，我們網路的準確度大致低於 50%。這十分合理，因為它一開始只是在用隨機的權重值來在兩個分類之間進行猜測。隨著訓練的時間增加，它的準確度可以達到 87.5%，且損失為 0.37。我的電腦用了不到六分鐘的時間就跑完這 30 個循環週期了。
 
 ![模型 嘗試 1](images/model-attempt1.png?raw=true "模型 嘗試 1")
 
@@ -213,7 +213,7 @@ Caffe 使用結構化的文字檔案來定義網絡架構。這些檔案使用�
 
 事實上其實是我們的資料集太小了，沒辦法訓練一個很好的類神經網絡。我們很需要上萬張或上千萬張照片來訓練，如果要這樣，我們還會需要十分強大的運算能力來處理這些照片。
 
-### 訓練：嘗試 2，微調 AlexNet
+### 訓練：第二次嘗試，微調 AlexNet
 
 #### 微調背後的原理 
 
@@ -261,7 +261,7 @@ GoogLeNet 的模型定義檔案我們使用 https://github.com/BVLC/caffe/blob/m
 
 #### 針對海豚與海馬來微調 AlexNet
 
-用一個已訓練好的 Caffe 模型來訓練一個網絡還蠻像是從頭開始訓練的，只不過我們需要做一些細微的調整。首先，我們將調整**學習步長**（_**Base Learning Rate**_），因為我們不需要很大的變動（我們在微調），因此我們將把它從 0.01 改為 0.001。接下來選取下面的「**Pretrained Network**（**事先訓練好的網絡**）」，然後選擇 **Customize**（**自定義**）。
+用一個已訓練好的 Caffe 模型來訓練一個網絡還蠻像是從頭開始訓練的，只不過我們需要做一些細微的調整。首先，我們將調整**基礎學習速率**（_**Base Learning Rate**_），因為我們不需要很大的變動（我們在微調），因此我們將把它從 0.01 改為 0.001。接下來選取下面的「**Pretrained Network**（**事先訓練好的網絡**）」，然後選擇 **Customize**（**自定義**）。
 
 ![新的圖像分類用模型](images/new-image-classification-model-attempt2.png?raw=true "新的圖像分類用模型")
 
@@ -311,47 +311,38 @@ GoogLeNet 的模型定義檔案我們使用 https://github.com/BVLC/caffe/blob/m
    include { stage: "deploy" }
 ```
 
-I’ve included the fully modified file I’m using in [src/alexnet-customized.prototxt](src/alexnet-customized.prototxt).
+這裡有一份我實際在使用的修改過後的檔案：[src/alexnet-customized.prototxt](src/alexnet-customized.prototxt)。
 
-This time our accuracy starts at ~60% and climbs right away to 87.5%, then to 96%
-and all the way up to 100%, with the Loss steadily decreasing. After 5 minutes we
-end up with an accuracy of 100% and a loss of 0.0009.
+這次我們的準確度從 60% 上下然後立刻爬升到 87.5%，接著再到 96% 然後一路上升到 100%，損失也穩定地下降。五分鐘之後我們的結果是 100% 的準確度與 0.0009 的損失。
 
-![Model Attempt 2](images/model-attempt2.png?raw=true "Model Attempt 2")
+![模型訓練嘗試 2](images/model-attempt2.png?raw=true "模型訓練嘗試 2")
 
-Testing the same seahorse image our previous network got wrong, we see a complete
-reversal: 100% seahorse.
+測試我們前一個網絡判斷錯誤的同一張照片，我們可以看到一個極大的差距：這次的結果是 100% 海馬。
 
-![Model 2 Classify 1](images/model-attempt2-classify1.png?raw=true "Model 2 Classify 1")
+![模型 2 分類 1](images/model-attempt2-classify1.png?raw=true "模型 2 分類 1")
 
-Even a children’s drawing of a seahorse works:
+就算是一個小孩畫的海馬都可以：
 
-![Model 2 Classify 2](images/model-attempt2-classify2.png?raw=true "Model 2 Classify 2")
+![模型 2 分類 2](images/model-attempt2-classify2.png?raw=true "模型 2 分類 2")
 
-The same goes for a dolphin:
+海豚的結果也一樣：
 
-![Model 2 Classify 3](images/model-attempt2-classify3.png?raw=true "Model 2 Classify 3")
+![模型 2 分類 3](images/model-attempt2-classify3.png?raw=true "模型 2 分類 3")
 
-Even with images that you think might be hard, like this one that has multiple dolphins
-close together, and with their bodies mostly underwater, it does the right thing:
+甚至你覺得可能很難判斷的照片，像是這張照片裡面有很多隻海豚靠在一起，且他們的身體幾乎都在水下，我們的網絡還是能給出正確的答案：
 
-![Model 2 Classify 4](images/model-attempt2-classify4.png?raw=true "Model 2 Classify 4")
+![模型 2 分類 4](images/model-attempt2-classify4.png?raw=true "模型 2 分類 4")
 
-### Training: Attempt 3, Fine Tuning GoogLeNet
 
-Like the previous AlexNet model we used for fine tuning, we can use GoogLeNet as well.
-Modifying the network is a bit trickier, since you have to redefine three fully
-connected layers instead of just one.
+### 訓練：第三次嘗試，微調 GoogLeNet
 
-To fine tune GoogLeNet for our use case, we need to once again create a
-new **Classification Model**:
+像是前面被我們拿來微調的的 AlexNet 模型，我們一樣可以用在 GoogLeNet 上。要修改 GoogLeNet 有點棘手，因為你需要重新定義三個全連結層，上次我們只重新定義了一個。
 
-![New Classification Model](images/new-image-classification-model-attempt3.png?raw=true "New Classification Model")
+我們要再一次建立一個新的**分類用模型**（_**Classification Model**_）以微調 GoogLeNet 至我們想要的狀態。
 
-We rename all references to the three fully connected classification layers,
-`loss1/classifier`, `loss2/classifier`, and `loss3/classifier`, and redefine
-the number of categories (`num_output: 2`).  Here are the changes we need to make
-in order to rename the 3 classifier layers, as well as to change from 1000 to 2 categories:
+![新的分類用模型](images/new-image-classification-model-attempt3.png?raw=true "新的分類用模型")
+
+我們將重新命名所有到這三個全連結辨識層的參考：`loss1/classifier`、`loss2/classifier` 和 `loss3/classifier`。接著我們要重新設定類別的數量（`num_output: 2`）。以下是我們需要更動的地方以修改上述設定：
 
 ```diff
 @@ -917,10 +917,10 @@
@@ -512,53 +503,37 @@ in order to rename the 3 classifier layers, as well as to change from 1000 to 2 
  }
 ```
 
-I’ve put the complete file in [src/googlenet-customized.prototxt](src/googlenet-customized.prototxt).
+我已經將完整的檔案放在了 [src/googlenet-customized.prototxt](src/googlenet-customized.prototxt)。
 
-> Q: "What about changes to the prototext definitions of these networks?
-> We changed the fully connected layer name(s), and the number of categories.
-> What else could, or should be changed, and in what circumstances?"
+> 問：「那對於這些網絡的 prototext 定義修改呢？我們已經修改了全連接層的名字還有類別的數量，還有什麼是我們可以或是應該要修改的東西，且是在什麼情況下？」
 
-Great question, and it's something I'm wondering, too.  For example, I know that we can
-["fix" certain layers](https://github.com/BVLC/caffe/wiki/Fine-Tuning-or-Training-Certain-Layers-Exclusively)
-so the weights don't change.  Doing other things involves understanding how the layers work,
-which is beyond this guide, and also beyond its author at present!
+很棒的問題，這也是我很想知道的事情。舉例來說，我知道我們可以[「修復」特定的「層」](https://github.com/BVLC/caffe/wiki/Fine-Tuning-or-Training-Certain-Layers-Exclusively)，這樣權重值就不會變動。做別的事情需要理解這些層背後的原理，這已經超出本教學的範圍，也已經超出本教學作者的知識範圍！
 
-Like we did with fine tuning AlexNet, we also reduce the learning rate by
-10% from `0.01` to `0.001`.
+就像我們對 AlexNet 所做的微調，我們也降低了 10% 的學習速率（_learning rate_），即從 `0.01` 降低到 `0.001`。
 
-> Q: "What other changes would make sense when fine tuning these networks?
-> What about different numbers of epochs, batch sizes, solver types (Adam, AdaDelta, AdaGrad, etc),
-> learning rates, policies (Exponential Decay, Inverse Decay, Sigmoid Decay, etc),
-> step sizes, and gamma values?"
+> 問：「在微調時，還有哪些有意義的其他的更動？例如不同的循環週期數（_epochs_）怎麼樣？批尺寸（_batch sizes_）、求解方法（Adam、AdaDelta、AdaGrad 之類的）呢？學習速率（_learning rates_）、策略（Exponential Decay、Inverse Decay 和 Sigmoid Decay 等等）、步長和 gamma 值呢？」
 
-Great question, and one that I wonder about as well.  I only have a vague understanding of these
-and it’s likely that there are improvements we can make if you know how to alter these
-values when training.  This is something that needs better documentation.
+很好的問題，而且也是個我很好奇的問題。我對這些東西也只有很模糊的理解，如果你知道訓練時要如何調整這些數值，我們的設定也應該可以做出一些改進。這東西需要更好的說明文件。
 
-Because GoogLeNet has a more complicated architecture than AlexNet, fine tuning it requires
-more time.  On my laptop, it takes 10 minutes to retrain GoogLeNet with our dataset,
-achieving 100% accuracy and a loss of 0.0070:
+因為 GoogLeNet 的結構比 AlexNet 複雜得多，微調它要花上更多時間。我用了十分鐘用我們的資料集重新在我的筆電上訓練它，達到了 100% 的準確度以及 0.0070 的損失。
 
-![Model Attempt 3](images/model-attempt3.png?raw=true "Model Attempt 3")
+![模型 第三次訓練嘗試](images/model-attempt3.png?raw=true "模型 第三次訓練嘗試 3 辨識 3")
 
-Just as we saw with the fine tuned version of AlexNet, our modified GoogLeNet
-performs amazing well--the best so far:
+跟我們看到微調後 AlexNet 的表現一樣，我們修改過的 GoogLeNet 表現的也十分出色——它是我們目前訓練出最好的模型。
 
-![Model Attempt 3 Classify 1](images/model-attempt3-classify1.png?raw=true "Model Attempt 3 Classify 1")
+![模型 第三次訓練嘗試 3 辨識 1](images/model-attempt3-classify1.png?raw=true "模型 第三次訓練嘗試 3 辨識 1")
 
-![Model Attempt 3 Classify 2](images/model-attempt3-classify2.png?raw=true "Model Attempt 3 Classify 2")
+![模型 第三次訓練嘗試 3 辨識 2](images/model-attempt3-classify2.png?raw=true "模型 第三次訓練嘗試 3 辨識 2")
 
-![Model Attempt 3 Classify 3](images/model-attempt3-classify3.png?raw=true "Model Attempt 3 Classify 3")
+![模型 第三次訓練嘗試 3 辨識 3](images/model-attempt3-classify3.png?raw=true "模型 第三次訓練嘗試 3 辨識 3")
 
-##Using our Model
+## 使用我們的模型
 
-With our network trained and tested, it’s time to download and use it.  Each of the models
-we trained in DIGITS has a **Download Model** button, as well as a way to select different
-snapshots within our training run (e.g., `Epoch #30`):
+我們已經訓練並測試好了我們的網絡，是時候下載並實際使用它了。每個我們在 DIGITS 內訓練的模型都有個 **Download Model**（**下載模型**） 的按鈕，也可以用來選擇不同的訓練時快照——例如 `Epoch #30`（`循環週期 #30`）：
 
-![Trained Models](images/trained-models.png?raw=true “Trained Models”)
+![訓練完成的模型](images/trained-models.png?raw=true “訓練完成的模型”)
 
-Clicking **Download Model** downloads a `tar.gz` archive containing the following files:
+按下 **Download Model** 將會下載一個 `tar.gz` 壓縮檔，裡面有這些檔案：
 
 ```
 deploy.prototxt
@@ -571,51 +546,47 @@ snapshot_iter_90.caffemodel
 train_val.prototxt
 ```
 
-There’s a [nice description](https://github.com/BVLC/caffe/wiki/Using-a-Trained-Network:-Deploy) in
-the Caffe documentation about how to use the model we just built.  It says:
+這裡有個對於如何使用我們剛訓練好的模型的一個[不錯的說明](https://github.com/BVLC/caffe/wiki/Using-a-Trained-Network:-Deploy)，裡面談到了：
 
-> A network is defined by its design (.prototxt), and its weights (.caffemodel). As a network is
-> being trained, the current state of that network's weights are stored in a .caffemodel. With both
-> of these we can move from the train/test phase into the production phase.
+> 一個網絡是以其設計（.prototxt）及其權重（.caffemodel）來定義的。
+> 當一個網絡在訓練時，該網絡目前的權重狀態存在一個 .caffemodel 檔案中。
+> 當有了這兩個檔案，我們就可以從訓練及測試階段進入產品階段（_production phase_）了。
 >
-> In its current state, the design of the network is not designed for deployment. Before we can
-> release our network as a product, we often need to alter it in a few ways:
+> 在它目前的狀態下，這個網絡的設計還沒有為部署準備好。在我們將我們的網絡釋出為產品前，我們常需要用以下的方法來調整它：
 >
-> 1. Remove the data layer that was used for training, as for in the case of classification we are no longer providing labels for our data.
-> 2. Remove any layer that is dependent upon data labels.
-> 3. Set the network up to accept data.
-> 4. Have the network output the result.
+> 1. 將用來訓練的資料層刪除，因為在分類時我們將不會再為我們的資料提供標籤。
+> 2. 刪除依賴於資料標籤的任何層。
+> 3. 將網絡設定為可接受資料。
+> 4. 確認網絡可以輸出結果。
 
-DIGITS has already done the work for us, separating out the different versions of our `prototxt` files.
-The files we’ll care about when using this network are:
+DIGITS 已經幫我們把這些問題都解決了，也幫我們分離了不同的 `prototxt` 檔案版本。當我們在使用這個網絡的時候我們將會用到以下檔案：
 
-* `deploy.prototxt` - the definition of our network, ready for accepting image input data
-* `mean.binaryproto` - our model will need us to subtract the image mean from each image that it processes, and this is the mean image.
-* `labels.txt` - a list of our labels (`dolphin`, `seahorse`) in case we want to print them vs. just the category number
-* `snapshot_iter_90.caffemodel` - these are the trained weights for our network
+* `deploy.prototxt` —— 網絡的定義檔案，準備好接受影像輸入資料
+* `mean.binaryproto` —— 我們的模型會需要我們為每個它要處理的影像減去影像平均值（_image mean_），且這是平均影像資料（_the mean image_）。
+* `labels.txt` —— 一個放了我們所有標籤的列表（`dolphin` 與 `seahorse`），如果我們想看到網絡輸出的是這些標籤而不是類別編號時，這個派的上用場。
+* `snapshot_iter_90.caffemodel` —— 這是我們網絡訓練好的權重
 
-We can use these files in a number of ways to classify new images.  For example, in our
-`CAFFE_ROOT` we can use `build/examples/cpp_classification/classification.bin` to classify one image:
+我們可以用不少方式以這些檔案來分類新的影像。例如，在我們的 `CAFFE_ROOT` 下，我們可以使用 `build/examples/cpp_classification/classification.bin` 來分類一個影像：
 
 ```bash
 $ cd $CAFFE_ROOT/build/examples/cpp_classification
 $ ./classification.bin deploy.prototxt snapshot_iter_90.caffemodel mean.binaryproto labels.txt dolphin1.jpg
 ```
 
-This will spit out a bunch of debug text, followed by the predictions for each of our two categories:
+這會噴出一堆 debug 資訊，接下來是分別對兩個類別的預測結果：
 
 ```
 0.9997 - “dolphin”
 0.0003 - “seahorse”
 ```
 
-You can read the [complete C++ source](https://github.com/BVLC/caffe/tree/master/examples/cpp_classification)
-for this in the [Caffe examples](https://github.com/BVLC/caffe/tree/master/examples).
+你可以在 [Caffe 範例](https://github.com/BVLC/caffe/tree/master/examples)中閱讀這個東西的[完整 C++ 原始碼](https://github.com/BVLC/caffe/tree/master/examples/cpp_classification)。
 
-For a classification version that uses the Python interface, DIGITS includes a [nice example](https://github.com/NVIDIA/DIGITS/tree/master/examples/classification).  There's also a fairly
-[well documented Python walkthrough](https://github.com/BVLC/caffe/blob/master/examples/00-classification.ipynb) in the Caffe examples.
+對於 Python 應用程式來說，DIGITS 也有提供一個[不錯的範例](https://github.com/NVIDIA/DIGITS/tree/master/examples/classification)。Caffe 範例中也有一個[十分詳細的 Python 版教學](https://github.com/BVLC/caffe/blob/master/examples/00-classification.ipynb)。
 
-###Python example
+### Python 示例
+
+我們來寫一個用圖像分類程式，使用我們微調過的 GoogLeNet 模型來分類我們有的未訓練過的圖片，它們在 [data/untrained-samples](data/untrained-samples) 裡。
 
 Let's write a program that uses our fine-tuned GoogLeNet model to classify the untrained images
 we have in [data/untrained-samples](data/untrained-samples).  I've cobbled this together based on
@@ -800,30 +771,27 @@ for example.  Ideally one shouldn’t be required to know so much about the inte
 I haven’t used it yet, but [DeepDetect](https://deepdetect.com/) looks interesting on this front,
 and there are likely many other tools I don’t know about.
 
-## Results
+## 結果
 
-At the beginning we said that our goal was to write a program that used a neural network to
-correctly classify all of the images in [data/untrained-samples](data/untrained-samples).
-These are images of dolphins and seahorses that were never used in the training or validation
-data:
+在最初我們說了我們的目標是寫一個能夠使用一個類神經網絡來正確分類 [data/untrained-samples](data/untrained-samples) 中的所有照片的程式。這些是在上述過程中從來沒用來訓練或是測試過的海豚或海馬的圖片：
 
-### Untrained Dolphin Images
+### 未訓練的海豚影像
 
-![Dolphin 1](data/untrained-samples/dolphin1.jpg?raw=true "Dolphin 1")
-![Dolphin 2](data/untrained-samples/dolphin2.jpg?raw=true "Dolphin 2")
-![Dolphin 3](data/untrained-samples/dolphin3.jpg?raw=true "Dolphin 3")
+![海豚 1](data/untrained-samples/dolphin1.jpg?raw=true "海豚 1")
+![海豚 2](data/untrained-samples/dolphin2.jpg?raw=true "海豚 2")
+![海豚 3](data/untrained-samples/dolphin3.jpg?raw=true "海豚 3")
 
-### Untrained Seahorse Images
+### 未訓練的海馬影像
 
-![Seahorse 1](data/untrained-samples/seahorse1.jpg?raw=true "Seahorse 1")
-![Seahorse 2](data/untrained-samples/seahorse2.jpg?raw=true "Seahorse 2")
-![Seahorse 3](data/untrained-samples/seahorse3.jpg?raw=true "Seahorse 3")
+![海馬 1](data/untrained-samples/seahorse1.jpg?raw=true "海馬 1")
+![海馬 2](data/untrained-samples/seahorse2.jpg?raw=true "海馬 2")
+![海馬 3](data/untrained-samples/seahorse3.jpg?raw=true "海馬 3")
 
-Let's look at how each of our three attempts did with this challenge:
+讓我們看看我們的三個訓練嘗試分別做得怎麼樣：
 
-### Model Attempt 1: AlexNet from Scratch (3rd Place)
+### 模型第一次訓練嘗試：從頭開始訓練的 AlexNet（第三名）
 
-| Image | Dolphin | Seahorse | Result |
+| 照片 | 海豚 | 海馬 | 結果 |
 |-------|---------|----------|--------|
 |[dolphin1.jpg](data/untrained-samples/dolphin1.jpg)| 71.11% | 28.89% | :expressionless: |
 |[dolphin2.jpg](data/untrained-samples/dolphin2.jpg)| 99.2% | 0.8% | :sunglasses: |
@@ -832,9 +800,9 @@ Let's look at how each of our three attempts did with this challenge:
 |[seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 56.64% | 43.36 |  :confused: |
 |[seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 7.06% | 92.94% |  :grin: |
 
-### Model Attempt 2: Fine Tuned AlexNet (2nd Place)
+### 模型第二次訓練嘗試: 微調後的 AlexNet（第二名）
 
-| Image | Dolphin | Seahorse | Result |
+| 照片 | 海豚 | 海馬 | 結果 |
 |-------|---------|----------|--------|
 |[dolphin1.jpg](data/untrained-samples/dolphin1.jpg)| 99.1% | 0.09% |  :sunglasses: |
 |[dolphin2.jpg](data/untrained-samples/dolphin2.jpg)| 99.5% | 0.05% |  :sunglasses: |
@@ -843,9 +811,9 @@ Let's look at how each of our three attempts did with this challenge:
 |[seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 0% | 100% |  :sunglasses: |
 |[seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 0% | 100% |  :sunglasses: |
 
-### Model Attempt 3: Fine Tuned GoogLeNet (1st Place)
+### 模型第三次訓練嘗試: 微調後的 GoogLeNet（第一名）
 
-| Image | Dolphin | Seahorse | Result |
+| 照片 | 海豚 | 海馬 | 結果 |
 |-------|---------|----------|--------|
 |[dolphin1.jpg](data/untrained-samples/dolphin1.jpg)| 99.86% | 0.14% |  :sunglasses: |
 |[dolphin2.jpg](data/untrained-samples/dolphin2.jpg)| 100% | 0% |  :sunglasses: |
@@ -854,19 +822,10 @@ Let's look at how each of our three attempts did with this challenge:
 |[seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 0% | 100% |  :sunglasses: |
 |[seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 0.02% | 99.98% |  :sunglasses: |
 
-##Conclusion
+## 結論
 
-It’s amazing how well our model works, and what’s possible by fine tuning a pretrained network.
-Obviously our dolphin vs. seahorse example is contrived, and the dataset overly limited--we really
-do want more and better data if we want our network to be robust.  But since our goal was to examine
-the tools and workflows of neural networks, it’s turned out to be an ideal case, especially since it
-didn’t require expensive equipment or massive amounts of time.
+我們的模型跑起來真的十分令人驚訝，微調一個事先訓練好的網絡之後的成效也是。很明顯的，我們使用海豚及海馬作為例子是故意設計好的，且我們的資料集也太有限了——如果我們希望我們的網絡變得很強大，我們真的會需要更多更好的資料。不過既然我們的目的是玩玩看類神經網絡的工具及工作流程，這個結果還是十分理想的，尤其是它不需要昂貴的設備或大量的時間。
 
-Above all I hope that this experience helps to remove the overwhelming fear of getting started.
-Deciding whether or not it’s worth investing time in learning the theories of machine learning and
-neural networks is easier when you’ve been able to see it work in a small way.  Now that you’ve got
-a setup and a working approach, you can try doing other sorts of classifications.  You might also look
-at the other types of things you can do with Caffe and DIGITS, for example, finding objects within an
-image, or doing segmentation.
+我希望以上所有的經驗能讓你拋去所有剛踏進這個領域時產生的的壓倒性恐懼。當你看過機器學習及類神經網絡的實際運作的小例子之後，你應該能更容易地確定你是否值得在這個領域投入時間來學習它們背後的理論。現在你已經有了一個設定好的環境及一個可行的方法，你可以嘗試做做看其他類型的分類。你也可能會想要看看你還能用 Caffe 和 Digits 做什麼事情，例如在一個影像內尋找物件或是執行分割。
 
-Have fun with machine learning!
+「Have fun with machine learning!」
