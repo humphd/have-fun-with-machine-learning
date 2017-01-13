@@ -233,65 +233,41 @@ Caffe 使用結構化的文字檔案來定義網絡架構。這些檔案使用�
 
 跟所有的機器學習一樣，如果你想做到完美，你需要了解你的資料以及網絡架構——你必須注意資料是否會過擬合（_overfitting_）、你可能需要修復一些層，或是你可能需要加入一些新的層，諸如此類。總之，我的經驗是它在大多數的時候是可行的，你值得實驗看看，看你用我們的方法能做得如何。
 
-####Uploading Pretrained Networks
+#### 上傳已事先訓練好的網絡
 
-In our first attempt, we used AlexNet’s architecture, but started with random
-weights in the network’s layers.  What we’d like to do is download and use a
-version of AlexNet that has already been trained on a massive dataset.
+在我們第一次的嘗試中，我們使用了 AlexNet 的架構，但是在該網絡的層中我們以隨機的權重來開始訓練。我們現在希望能夠下載並使用一個已經使用龐大的資料集來訓練過的 AlexNet 版本。
 
-Thankfully we can do exactly this.  A snapshot of AlexNet is available for download: https://github.com/BVLC/caffe/tree/master/models/bvlc_alexnet.
-We need the binary `.caffemodel` file, which is what contains the trained weights, and it’s
-available for download at http://dl.caffe.berkeleyvision.org/bvlc_alexnet.caffemodel.
+令人感激的是我們完全可以這樣做。一個 AlexNet 快照（_snapshot_）可以在這裡下載：https://github.com/BVLC/caffe/tree/master/models/bvlc_alexnet 。
+我們需要 `.caffemodel` 檔案，它裡面包含了已經訓練過的權重。我們可以在此下載它：http://dl.caffe.berkeleyvision.org/bvlc_alexnet.caffemodel 。
 
-While you’re downloading pretrained models, let’s get one more at the same time.
-In 2014, Google won the same ImageNet competition with [GoogLeNet](https://research.google.com/pubs/pub43022.html) (codenamed Inception):
-a 22-layer neural network. A snapshot of GoogLeNet is available for download
-as well, see https://github.com/BVLC/caffe/tree/master/models/bvlc_googlenet.
-Again, we’ll need the `.caffemodel` file with all the pretrained weights,
-which is available for download at http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel.
+當你在下載他們的時候，我們再順便多下載一個吧。在 2014 年，Google 使用了一個 22 層的類神經網絡 [GoogLeNet](https://research.google.com/pubs/pub43022.html) (代號為「Inception」）贏了同一個 ImageNet 比賽：
+GoogLeNet 也有個快照可以下載，在這裡：https://github.com/BVLC/caffe/tree/master/models/bvlc_googlenet 。跟上次一樣，我們會需要含有已訓練過權重的 `.caffemodel` 檔案，你可以在這裡下載它：http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel 。
 
-With these `.caffemodel` files in hand, we can upload them into DIGITs.  Go to
-the **Pretrained Models** tab in DIGITs home page and choose **Upload Pretrained Model**:
+有了這些 `.caffemodel` 檔案，我們就可以把他們上傳到 DIGITS 裡了。在 DIGITS 的首頁選擇「**Pretrained Models**」然後選擇 「**Upload Pretrained Model**」：
 
-![Load Pretrained Model](images/load-pretrained-model.png?raw=true "Load Pretrained Model")
+![載入事先訓練好的模型](images/load-pretrained-model.png?raw=true "載入事先訓練好的模型")
 
-For both of these pretrained models, we can use the defaults DIGITs provides
-(i.e., colour, squashed images of 256 x 256).  We just need to provide the
-`Weights (**.caffemodel)` and `Model Definition (original.prototxt)`.
-Click each of those buttons to select a file.
+這兩個模型我們都使用 DIGITS 提供的預設設定。我們只需要提供 `Weights (**.caffemodel)` ，即權重值檔案 `.caffemodel` 以及 `Model Definition (original.prototxt)` 模型定義檔案 `original.prototxt`。點一下對應的按鈕並選擇你的檔案就可以上傳。
 
-For the model definitions we can use https://github.com/BVLC/caffe/blob/master/models/bvlc_googlenet/train_val.prototxt
-for GoogLeNet and https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt
-for AlexNet.  We aren’t going to use the classification labels of these networks,
-so we’ll skip adding a `labels.txt` file:
+GoogLeNet 的模型定義檔案我們使用 https://github.com/BVLC/caffe/blob/master/models/bvlc_googlenet/train_val.prototxt ，AlexNet 的我們使用 https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt 。我們不會使用到分類標籤（_classification labels_），所以我們將跳過 `labels.txt`。
 
-![Upload Pretrained Model](images/upload-pretrained-model.png?raw=true "Upload Pretrained Model")
+![上傳事先訓練好的模型](images/upload-pretrained-model.png?raw=true "上傳事先訓練好的模型")
 
-Repeat this process for both AlexNet and GoogLeNet, as we’ll use them both in the coming steps.
+記得兩個網絡（AlexNet 與 GoogLeNet）都要上傳，兩個網絡我們下面都會用到。
 
-> Q: "Are there other networks that would be good as a basis for fine tuning?"
+> 問：「有其他可以拿來微調的網絡嗎？」
 
-The [Caffe Model Zoo](http://caffe.berkeleyvision.org/model_zoo.html) has quite a few other
-pretrained networks that could be used, see https://github.com/BVLC/caffe/wiki/Model-Zoo.
+[Caffe Model Zoo](http://caffe.berkeleyvision.org/model_zoo.html) 還有蠻多可以用的已訓練好的網絡，詳閱 https://github.com/BVLC/caffe/wiki/Model-Zoo 。
 
-####Fine Tuning AlexNet for Dolphins and Seahorses
+#### 針對海豚與海馬來微調 AlexNet
 
-Training a network using a pretrained Caffe Model is similar to starting from scratch,
-though we have to make a few adjustments.  First, we’ll adjust the **Base Learning Rate**
-to 0.001 from 0.01, since we don’t need to make such large jumps (i.e., we’re fine tuning).
-We’ll also use a **Pretrained Network**, and **Customize** it.
+用一個已訓練好的 Caffe 模型來訓練一個網絡還蠻像是從頭開始訓練的，只不過我們需要做一些細微的調整。首先，我們將調整**學習步長**（_**Base Learning Rate**_），因為我們不需要很大的變動（我們在微調），因此我們將把它從 0.01 改為 0.001。接下來選取下面的「**Pretrained Network**（**事先訓練好的網絡**）」，然後選擇 **Customize**（**自定義**）。
 
-![New Image Classification](images/new-image-classification-model-attempt2.png?raw=true "New Image Classification")
+![新的圖像分類用模型](images/new-image-classification-model-attempt2.png?raw=true "新的圖像分類用模型")
 
-In the pretrained model’s definition (i.e., prototext), we need to rename all
-references to the final **Fully Connected Layer** (where the end result classifications
-happen).  We do this because we want the model to re-learn new categories from
-our dataset vs. its original training data (i.e., we want to throw away the current
-final layer).  We have to rename the last fully connected layer from “fc8” to
-something else, “fc9” for example.  Finally, we also need to adjust the number
-of categories from `1000` to `2`, by changing `num_output` to `2`.
+在事先訓練好的模型的 prototext 定義中，我們需要將所有參考重命名到最終的**全連結層**（_**Fully Connected Layer_**），全連結層負責最終分類。我們這樣做是因為我們希望模型自我們自己的資料集中重新學習新的分類，而不是使用它原本的訓練資料——我們要把它目前的最終層丟掉。我們必須將最終全連結層的名字「fc8」改為別的名字，就改成「fc9」好了。最後，我們需要把類別數量從 `1000` 改為 `2`，也就是將 `num_output` 改為 `2`。
 
-Here are the changes we need to make:
+這是我們所需要作出的更動：
 
 ```diff
 @@ -332,8 +332,8 @@
