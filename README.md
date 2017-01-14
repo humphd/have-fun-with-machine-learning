@@ -127,7 +127,7 @@ there will be a `build/` dir which contains everything you need to run caffe,
 the Python bindings, etc.  The parent dir that contains `build/` will be your
 `CAFFE_ROOT` (we’ll need this later).
 * Running `make test && make runtest` should pass
-* After installing all the Python deps (doing `for req in $(cat requirements.txt); do pip install $req; done` in `python/`),
+* After installing all the Python deps (doing `pip install -r requirements.txt` in `python/`),
 running `make pycaffe && make pytest` should pass
 * You should also run `make distribute` in order to create a distributable version of caffe with all necessary headers, binaries, etc. in `distribute/`.
 
