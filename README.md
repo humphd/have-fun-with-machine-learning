@@ -1,4 +1,5 @@
 # Have Fun with Machine Learning: A Guide for Beginners
+Also available in [Chinese (Traditional)](README_zh-tw.md).
 
 ##Preface
 
