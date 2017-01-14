@@ -18,7 +18,7 @@
 
 為了進行判定，我們將訓練一個[卷積神經網絡](https://zh.wikipedia.org/wiki/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C)。我們將以實踐者的角度與第一原理\* 的觀點來解決這個問題。人工智慧現在十分令人興奮，但是下面將寫到的內容將讓你感覺像是一個物理教授在黑板上像你講解如何在腳踏車上玩特技，而不是與你的朋友在公園內練習。
 
-我決定在 GitHub 發表這篇文，而不是在我的部落格上。因為我確定以下我所寫的內容有些會誤導讀者，或根本是錯的。我還在自學這一方面的知識，而且我發現一些新手教學會成為障礙。如果你發現我哪裡寫錯了、或是缺少了什麼重要的細節，請建立一個 pull request。
+我決定在 GitHub 發表這篇文章，而不是在我的部落格上。因為我確定以下我所寫的內容有些會誤導讀者，或根本是錯的。我還在自學這一方面的知識，而且我發現一些新手教學會成為障礙。如果你發現我哪裡寫錯了、或是缺少了什麼重要的細節，請建立一個 pull request。
 
 把那些拋諸腦後吧！讓我來教你如何使用這些東西。
 
@@ -59,7 +59,7 @@
 
 * 它專門用來解決電腦視覺相關的問題
 * 它支援 C++、Python，及[即將到來的 Node.js 支援](https://github.com/silklabs/node-caffe)
-* 它快又穩定
+* 它既快又穩定
 
 不過最首要的原因是**你不需要寫任何程式碼**來使用它。你可以用說明的方式做任何事，或是用命令行工具（Caffe 使用結構化文字檔來定義網絡架構）。還有，你可以透過一些不錯的前端介面來使用 Caffe 以訓練及驗證你的網絡，這將變得十分簡單。我們將會使用 [nVidia 公司的 DIGITS](https://developer.nvidia.com/digits) 來當做我們的前端介面。
 
@@ -67,7 +67,7 @@
 
 **注意：** 當我在寫這篇時，我使用了這個非正式版本的 Caffe：https://github.com/BVLC/caffe/commit/5a201dd960840c319cefd9fa9e2a40d2c76ddd73
 
-想在 Mac 上安裝它很容易讓你感到挫敗，在編譯 Caffe 時會有很多版本問題，我試了很多天，也找了很多教學，每次都有不同的問題。最後我找到了最接近的[這篇](https://gist.github.com/doctorpangloss/f8463bddce2a91b949639522ea1dcbe4)。我也推薦[這篇](https://eddiesmo.wordpress.com/2016/12/20/how-to-set-up-caffe-environment-and-pycaffe-on-os-x-10-12-sierra/)更實用的文章，裡面也連結到很多我看到的討論串。對於中文讀者來說，[BirkhoffLee](https://github.com/BirkhoffLee) 也推薦了他完整的[中文版教學](https://blog.birkhoff.me/macos-sierra-10-12-2-build-caffe)，教你如何在 macOS Sierra 上編譯 Caffe。
+想在 Mac 上安裝它很容易讓你感到挫敗，在編譯 Caffe 時會有很多版本問題，我試了很多天，也找了很多教學，每次都有略微不同的問題。最後我找到了最接近的[這篇](https://gist.github.com/doctorpangloss/f8463bddce2a91b949639522ea1dcbe4)。我也推薦[最近發表的這篇](https://eddiesmo.wordpress.com/2016/12/20/how-to-set-up-caffe-environment-and-pycaffe-on-os-x-10-12-sierra/)更實用的文章，裡面也提到很多我看到的討論串。對於中文讀者來說，[BirkhoffLee](https://github.com/BirkhoffLee) 也推薦了他完整的[中文版教學](https://blog.birkhoff.me/macos-sierra-10-12-2-build-caffe)，教你如何在 macOS Sierra 上編譯 Caffe。
 
 將 Caffe 安裝好是到目前為止我們將做的最難的事情，這很好，因為你可能會認為人工智慧方面的問題會更難。如果你遇到問題，千萬不要放棄，這是值得的。如果要讓我再做一次，我不會直接在 Mac 上安裝它，而是在一台 Ubuntu 虛擬機器上安裝。如果你有問題，這裡是 [Caffe 使用者群組](https://groups.google.com/forum/#!forum/caffe-users)，你可以在此提問。
 
@@ -231,7 +231,7 @@ Caffe 使用結構化的文字檔案來定義網絡架構。這些檔案使用�
 
 這項技術常被用來做有趣的事情，例如從自醫學圖像中掃描是否有眼部疾病、識別從海上採集的浮游生物顯微圖像，到分類 Flickr 網站圖片的藝術風格。
 
-跟所有的機器學習一樣，如果你想做到完美，你需要了解你的資料以及網絡架構——你必須注意資料是否會過度學習（_overfitting_）、你可能需要修復其中幾層，或是你可能需要再加入新的幾層，諸如此類。總之，我的經驗是它在大多數的時候是可行的，你值得試試看，看你用這個的方法能做得如何。
+跟所有的機器學習一樣，如果你想做到完美，你需要了解你的資料以及網絡架構——你必須注意這些資料是否會造成過度學習（_overfitting_）、你可能需要修復其中幾層，或是加入新的幾層，諸如此類。總之，我的經驗是它在大多數的時候是可行的，你值得試試看，看你能用我們的方法做得如何。
 
 #### 上傳已事先訓練好的網絡
 
@@ -703,7 +703,7 @@ while rval:
 webCamCap.release()
 ```
 
-回到我們的問題，我們接下來需要將我們的影像資料跑一遍我們的網絡然後再讀取我們網絡最終的 `'softmax'` 層返回的機率值，這個機率會依照我們的標籤分類來排序：
+回到我們的問題，我們接下來需要將我們的影像資料跑一遍我們的網絡然後再讀取我們網絡最終的 `'softmax'` 層返回的概率值，這個機率會依照我們的標籤分類來排序：
 
 ```python
 # Run the image's pixel data through the network
