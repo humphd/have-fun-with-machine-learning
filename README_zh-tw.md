@@ -5,7 +5,7 @@
 
 ### 譯者有話要說 Translator's Note
 
-各位好。這是一篇很棒的教學，小弟希望能夠幫助到中文讀者，於是利用自己課後的時間（我還是個國中生）來翻譯這篇文章。在這篇文章裡有很多專業的術語，而有些是我不曾聽聞的——例如「Transfer Learning」——我遇到這些我不清楚的術語時，我使用 Google 來搜尋相關的中文文獻以期得到該術語現有的翻譯。還有一些內容是無法直接從英文翻到中文的，必須重建語境來翻譯，因此我會盡可能地不偏離原文的意思。如果您發現哪裡的翻譯有問題或是可以翻譯地更好，您可以開一個 issue 或是直接發一個 pull request 來協助修正翻譯，謝謝。
+各位好。這是一篇很棒的教學，小弟希望能夠幫助到中文讀者，於是利用自己課後的時間（我還是個國中生）來翻譯這篇文章。在這篇文章裡有很多專業的術語，而有些是我不曾聽聞的——例如「Transfer Learning」——我遇到這些我不清楚的術語時，我使用 Google 來搜尋相關的中文文獻以期得到該術語現有的翻譯。還有一些內容是無法直接從英文翻到中文的，必須重建語境來翻譯，因此我會盡可能地不偏離原文的意思。如果您發現哪裡的翻譯有問題或是可以翻譯地更好，請開一個 issue 或是直接發一個 pull request 來協助修正翻譯，謝謝。
 
 ## 序言
 
@@ -586,24 +586,13 @@ $ ./classification.bin deploy.prototxt snapshot_iter_90.caffemodel mean.binarypr
 
 ### Python 示例
 
-我們來寫一個用圖像分類程式，使用我們微調過的 GoogLeNet 模型來分類我們有的未訓練過的圖片，它們在 [data/untrained-samples](data/untrained-samples) 裡。
+我們來寫一個用圖像分類程式，使用我們微調過的 GoogLeNet 模型來分類我們現有的未經訓練的圖片，它們在 [data/untrained-samples](data/untrained-samples) 裡。我已經把上面的例子都組合了起來，雖然 `caffe` [Python module 的原始碼](https://github.com/BVLC/caffe/tree/master/python) 也已經有了，但是你應該還是會比較喜歡我接下來要講的範例。
 
-Let's write a program that uses our fine-tuned GoogLeNet model to classify the untrained images
-we have in [data/untrained-samples](data/untrained-samples).  I've cobbled this together based on
-the examples above, as well as the `caffe` [Python module's source](https://github.com/BVLC/caffe/tree/master/python),
-which you should prefer to anything I'm about to say.
+接下來我要講的內容都在 [src/classify-samples.py](src/classify-samples.py) 裡，讓我們開始吧！
 
-A full version of what I'm going to discuss is available in [src/classify-samples.py](src/classify-samples.py).
-Let's begin!
+首先，我們會需要一個叫 [NumPy](http://www.numpy.org/) 的模組（_module_）。我們等下會用它來操作 Caffe 大量使用的 [`ndarray`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html)。如果你還沒使用過他們（我也沒有），你可以先閱讀這篇[快速入門教學](https://docs.scipy.org/doc/numpy-dev/user/quickstart.html)。
 
-First, we'll need the [NumPy](http://www.numpy.org/) module.  In a moment we'll be using [NumPy](http://www.numpy.org/)
-to work with [`ndarray`s](https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html), which Caffe uses a lot.
-If you haven't used them before, as I had not, you'd do well to begin by reading this
-[Quickstart tutorial](https://docs.scipy.org/doc/numpy-dev/user/quickstart.html).
-
-Second, we'll need to load the `caffe` module from our `CAFFE_ROOT` dir.  If it's not already included
-in your Python environment, you can force it to load by adding it manually. Along with it we'll
-also import caffe's protobuf module:
+接下來，我們會需要從 `CAFFE_ROOT` 載入 `caffe` 模組。如果它還沒有被加入到你的 Python 環境裡，你可以手動加入以強制載入它，我們也會順便載入 Caffe 的 protobuf 模組。
 
 ```python
 import numpy as np
@@ -614,20 +603,19 @@ import caffe
 from caffe.proto import caffe_pb2
 ```
 
-Next we need to tell Caffe whether to [use the CPU or GPU](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L50-L52).
-For our experiments, the CPU is fine:
+接下來我們需要告訴 Caffe 要用 [CPU 還是 GPU](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L50-L52)。
+對於我們的實驗來說，CPU 就夠了：
 
 ```python
 caffe.set_mode_cpu()
 ```
 
-Now we can use `caffe` to load our trained network.  To do so, we'll need some of the files we downloaded
-from DIGITS, namely:
+現在我們可以使用 `caffe` 來載入我們訓練的網絡，我們會需要一些我們剛從 DIGITS 下載好的檔案：
 
-* `deploy.prototxt` - our "network file", the description of the network.
-* `snapshot_iter_90.caffemodel` - our trained "weights"
+* `deploy.prototxt` —— 我們的「網絡檔案」，即網絡的描述。
+* `snapshot_iter_90.caffemodel` —— 我們訓練好的「權重」資料
 
-We obviously need to provide the full path, and I'll assume that my files are in a dir called `model/`:
+我們很顯然地需要提供完整的路徑（_full path_），我假設我的這些檔案放在一個叫做 `model/` 的資料夾：
 
 ```python
 model_dir = 'model'
@@ -635,23 +623,15 @@ deploy_file = os.path.join(model_dir, 'deploy.prototxt')
 weights_file = os.path.join(model_dir, 'snapshot_iter_90.caffemodel')
 net = caffe.Net(deploy_file, caffe.TEST, weights=weights_file)
 ```
+`caffe.Net()` 的[構造函數（_constructor_）](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L91-L117)需要一個網絡檔案、一個階段描述（`caffe.TEST` 或 `caffe.TRAIN`）與一個（可選的）權重檔案名稱。當我們提供一個權重檔案時，`Net` 將會自動幫我們載入它。`Net` 有著不少你可以用的[方法與屬性](https://github.com/BVLC/caffe/blob/master/python/caffe/pycaffe.py)。
 
-The `caffe.Net()` [constructor](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L91-L117)
-takes a network file, a phase (`caffe.TEST` or `caffe.TRAIN`), as well as an optional weights filename.  When
-we provide a weights file, the `Net` will automatically load them for us. The `Net` has a number of
-[methods and attributes](https://github.com/BVLC/caffe/blob/master/python/caffe/pycaffe.py) you can use.
-
-**Note:** There is also a [deprecated version of this constructor](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L119-L134),
-which seems to get used often in sample code on the web. It looks like this, in case you encounter it:
+**注：** 這個構造函數也有一個[已棄用的版本](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L119-L134)，它看起來常常在網絡上的範例程式碼中出現。如果你遇到了它，它看起來會像是這樣：
 
 ```python
 net = caffe.Net(str(deploy_file), str(model_file), caffe.TEST)
 ```
 
-We're interested in loading images of various sizes into our network for testing. As a result,
-we'll need to *transform* them into a shape that our network can use (i.e., colour, 256x256).
-Caffe provides the [`Transformer` class](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L98)
-for this purpose.  We'll use it to create a transformation appropriate for our images/network:
+我們之後會將各式各樣大小的照片丟到我們的網絡中進行測試。因此，我們將把這些照片**轉換**成一個我們的網絡可以用的形狀（colour、256x256）。Caffe 提供了一個 [`Transformer` class](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L98) 專門用來處理這種情況。我們將會使用它來建立一個適合我們的影像及網絡的轉換器：
 
 ```python
 transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
@@ -663,7 +643,7 @@ transformer.set_raw_scale('data', 255)
 transformer.set_channel_swap('data', (2, 1, 0))
 ```
 
-We can also use the `mean.binaryproto` file DIGITS gave us to set our transformer's mean:
+我們也可以使用 DIGITS 給了我們的 `mean.binaryproto` 檔案來設定我們的轉換器：
 
 ```python
 # This code for setting the mean from https://github.com/NVIDIA/DIGITS/tree/master/examples/classification
@@ -683,16 +663,14 @@ with open(mean_file, 'rb') as infile:
     transformer.set_mean('data', pixel)
 ```
 
-If we had a lot of labels, we might also choose to read in our labels file, which we can use
-later by looking up the label for a probability using its position (e.g., 0=dolphin, 1=seahorse):
+如果我們有很多標籤，我們也可以選擇讀取我們的標籤檔案以用作稍後輸出概率的標籤（如：0=dolphin，1=seahorse）：
 
 ```python
 labels_file = os.path.join(model_dir, 'labels.txt')
 labels = np.loadtxt(labels_file, str, delimiter='\n')
 ```
 
-Now we're ready to classify an image.  We'll use [`caffe.io.load_image()`](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L279)
-to read our image file, then use our transformer to reshape it and set it as our network's data layer:
+現在我們已經準備好來辨識一個影像了。我們要使用 [`caffe.io.load_image()`](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L279) 來讀取我們的影像檔案，然後再使用我們的轉換器來重塑它，最後將它設定為我們網絡的資料層：
 
 ```python
 # Load the image from disk using caffe's built-in I/O module
@@ -701,9 +679,9 @@ image = caffe.io.load_image(fullpath)
 net.blobs['data'].data[...] = transformer.preprocess('data', image)
 ```
 
-> Q: "How could I use images (i.e., frames) from a camera or video stream instead of files?"
+> 問：「我要怎麼測試來自相機或視訊流（幀）的影像而不是使用檔案來測試？」
 
-Great question, here's a skeleton to get you started:
+很棒的問題，以下是個供你開始的範例：
 
 ```python
 import cv2
@@ -725,8 +703,7 @@ while rval:
 webCamCap.release()
 ```
 
-Back to our problem, we next need to run the image data through our network and read out
-the probabilities from our network's final `'softmax'` layer, which will be in order by label category:
+回到我們的問題，我們接下來需要將我們的影像資料跑一遍我們的網絡然後再讀取我們網絡最終的 `'softmax'` 層返回的概率值，這個概率會依照我們的標籤分類來排序：
 
 ```python
 # Run the image's pixel data through the network
@@ -743,9 +720,7 @@ filename = os.path.basename(fullpath)
 print '%s is a %s dolphin=%.3f%% seahorse=%.3f%%' % (filename, label, dolphin_prob*100, seahorse_prob*100)
 ```
 
-Running the full version of this (see [src/classify-samples.py](src/classify-samples.py)) using our
-fine-tuned GoogLeNet network on our [data/untrained-samples](data/untrained-samples) images gives
-me the following output:
+使用我們微調的 GoogLeNet 以這整個程式（見 [src/classify-samples.py](src/classify-samples.py)）來測試我們的 [data/untrained-samples](data/untrained-samples) 影像，我得到了這些輸出：
 
 ```
 [...truncated caffe network output...]
@@ -757,19 +732,10 @@ seahorse2.jpg is a seahorse dolphin=0.000% seahorse=100.000%
 seahorse3.jpg is a seahorse dolphin=0.014% seahorse=99.986%
 ```
 
-I'm still trying to learn all the best practices for working with models in code. I wish I had more
-and better documented code examples, APIs, premade modules, etc to show you here. To be honest,
-most of the code examples I’ve found are terse, and poorly documented--Caffe’s
-documentation is spotty, and assumes a lot.
+我還在試著學習所有使用程式碼來處理模型的最佳實踐。我很希望我能告訴你們更多更好的程式碼範例、API 與現有的模組等等。
+老實說，我找到的大多數程式碼範例都很簡潔，而且文件都寫的很糟糕——Caffe 的文件有很多問題，而且有著很多的假設。
 
-It seems to me like there’s an opportunity for someone to build higher-level tools on top of the
-Caffe interfaces for beginners and basic workflows like we've done here.  It would be great if
-there were more simple modules in high-level languages that I could point you at that “did the
-right thing” with our model; someone could/should take this on, and make *using* Caffe
-models as easy as DIGITS makes *training* them.  I’d love to have something I could use in node.js,
-for example.  Ideally one shouldn’t be required to know so much about the internals of the model or Caffe.
-I haven’t used it yet, but [DeepDetect](https://deepdetect.com/) looks interesting on this front,
-and there are likely many other tools I don’t know about.
+在我看來，應該有人能夠以 Caffe 介面為基礎來建立更高級別的工具與基本的工作流程，也就是我們以上所做的事情。如果在高級語言中有更多我能夠跟你指出它有「正確地使用我們的模型」的更簡單模組，那一定會很棒；應該有人能夠做到這一點，並且讓*使用* Caffe 模型跟使用 DIGITS 來*訓練*這些模型一樣簡單。舉例來說，我很希望我能夠用 node.js 來操作這些東西。最理想的情況是有一天沒有人會需要知道這麼多有關於模型與 Caffe 的運作模式。[DeepDetect](https://deepdetect.com/) 在這一點看起來十分的有趣，不過我還沒使用過它。而且我認為還有很多我不知道的工具。
 
 ## 結果
 
