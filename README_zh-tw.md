@@ -1,7 +1,7 @@
 # 機器學習動手玩：給新手的教學
 
 > 原作者：[David Humphrey](https://github.com/humphd)  
-  中文（繁體）語系譯者：[Birkhoff Lee](https://fb.me/birkhofflee)。
+  中文（繁體）語系譯者：[Birkhoff Lee](https://fb.me/birkhofflee)
 
 ### 譯者有話要說 Translator's Note
 
