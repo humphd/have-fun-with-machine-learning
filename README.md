@@ -97,9 +97,7 @@ your progress at various steps in the build.  It took me a couple of days
 of trial and error.  There are a dozen guides I followed, each with slightly
 different problems.  In the end I found [this one](https://gist.github.com/doctorpangloss/f8463bddce2a91b949639522ea1dcbe4) to be the closest.
 I’d also recommend [this post](https://eddiesmo.wordpress.com/2016/12/20/how-to-set-up-caffe-environment-and-pycaffe-on-os-x-10-12-sierra/),
-which is quite recent and links to many of the same discussions I saw. For readers of Chinese,
-[BirkhoffLee](https://github.com/BirkhoffLee) has also suggested his
-[complete guide](https://blog.birkhoff.me/macos-sierra-10-12-2-build-caffe) for how to build Caffe on macOS Sierra, written in Chinese.
+which is quite recent and links to many of the same discussions I saw. 
 
 Getting Caffe installed is by far the hardest thing we'll do, which is pretty
 neat, since you’d assume the AI aspects would be harder!  Don’t give up if you have
