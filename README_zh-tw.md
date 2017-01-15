@@ -1,6 +1,6 @@
 # 機器學習動手玩：給新手的教學
 
-> Author: David Humphrey ([original English version](README.md))  
+> Author: David Humphrey (original [English version](README.md))  
   中文（繁體）語系譯者：[Birkhoff Lee](https://fb.me/birkhofflee)
 
 ### 譯者有話要說 Translator's Note
