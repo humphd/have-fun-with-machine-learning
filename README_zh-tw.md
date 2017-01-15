@@ -81,7 +81,7 @@
 
 * 一個資料夾，裡面有你編譯好的 Caffe。如果你用了標準的方法來編譯它，裡面會有一個叫做「`build/`」的資料夾，它裡面有你跑 Caffe 所需要的所有東西，像是 Python 的綁定什麼的。那個包含 `build/` 的資料夾就是你的「`CAFFE_ROOT`」（我們等一下會用到這個）。
 * 執行 `make test && make runtest` 要能通過測試
-* 安裝完所有 Python 相依性套件之後（在 `python/` 內執行 `for req in $(cat requirements.txt); do pip install $req; done`），執行 `make pycaffe && make pytest` 要能通過測試
+* 安裝完所有 Python 相依性套件之後（在 `python/` 內執行 `pip install -r requirements.txt`），執行 `make pycaffe && make pytest` 要能通過測試
 * 你也應該執行 `make distribute` 以建立一個含有所有必須的 header、binary 之類東西的可散佈版的 Caffe。
 
 在我的機器上，我已經完整的編譯好 Caffe 了。我的 CAFFE_ROOT 裡面的基本結構看起來長這樣：
