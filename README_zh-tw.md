@@ -663,7 +663,7 @@ with open(mean_file, 'rb') as infile:
     transformer.set_mean('data', pixel)
 ```
 
-如果我們有很多標籤，我們也可以選擇讀取我們的標籤檔案以用作稍後輸出概率的標籤（如：0=dolphin，1=seahorse）：
+如果我們有很多標籤，我們也可以選擇讀取我們的標籤檔案以用作稍後輸出機率的標籤（如：0=dolphin，1=seahorse）：
 
 ```python
 labels_file = os.path.join(model_dir, 'labels.txt')
@@ -703,7 +703,7 @@ while rval:
 webCamCap.release()
 ```
 
-回到我們的問題，我們接下來需要將我們的影像資料跑一遍我們的網絡然後再讀取我們網絡最終的 `'softmax'` 層返回的概率值，這個機率會依照我們的標籤分類來排序：
+回到我們的問題，我們接下來需要將我們的影像資料跑一遍我們的網絡然後再讀取我們網絡最終的 `'softmax'` 層返回的機率值，這個機率會依照我們的標籤分類來排序：
 
 ```python
 # Run the image's pixel data through the network
