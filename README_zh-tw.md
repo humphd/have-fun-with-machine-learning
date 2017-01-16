@@ -16,9 +16,9 @@
 ![一隻海豚](data/untrained-samples/dolphin1.jpg?raw=true "Dolphin")
 ![一隻海馬](data/untrained-samples/seahorse1.jpg?raw=true "Seahorse")
 
-為了進行判定，我們將訓練一個[卷積神經網絡](https://zh.wikipedia.org/wiki/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C)。我們將以實踐者的角度與第一原理* 的觀點來解決這個問題。人工智慧現在十分令人興奮，但是下面將寫到的內容將讓你感覺像是一個物理教授在黑板上像你講解如何在腳踏車上玩特技，而不是與你的朋友在公園內練習。
+為了進行判定，我們將訓練一個[卷積神經網絡](https://zh.wikipedia.org/wiki/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C)。我們將以實踐者的角度與第一原理\* 的觀點來解決這個問題。人工智慧現在十分令人興奮，但是下面將寫到的內容將讓你感覺像是一個物理教授在黑板上像你講解如何在腳踏車上玩特技，而不是與你的朋友在公園內練習。
 
-我決定不在部落格寫這篇文，而是在 GitHub 上。因為我確定以下我所寫的內容有些會誤導讀者，或根本是錯的。我還在自學這一方面的知識，而且我發現一些新手教學會成為障礙。 如果你發現我哪裡寫錯了、或是缺少了什麼重要的細節，請建立一個 pull request。
+我決定在 GitHub 發表這篇文章，而不是在我的部落格上。因為我確定以下我所寫的內容有些會誤導讀者，或根本是錯的。我還在自學這一方面的知識，而且我發現一些新手教學會成為障礙。如果你發現我哪裡寫錯了、或是缺少了什麼重要的細節，請建立一個 pull request。
 
 把那些拋諸腦後吧！讓我來教你如何使用這些東西。
 
@@ -58,8 +58,8 @@
 我們有很多很棒的選擇，而且你應該都稍微了解一下他們。[TensorFlow](https://www.tensorflow.org/) 是很不錯，而且你也應該玩玩看。不過，由於以下這些原因我選擇使用 Caffe：
 
 * 它專門用來解決電腦視覺相關的問題
-* 它支援 C++、Python，及[即將到來的 Node.js 支援]((https://github.com/silklabs/node-caffe)
-* 它又快又穩定
+* 它支援 C++、Python，及[即將到來的 Node.js 支援](https://github.com/silklabs/node-caffe)
+* 它既快又穩定
 
 不過最首要的原因是**你不需要寫任何程式碼**來使用它。你可以用說明的方式做任何事，或是用命令行工具（Caffe 使用結構化文字檔來定義網絡架構）。還有，你可以透過一些不錯的前端介面來使用 Caffe 以訓練及驗證你的網絡，這將變得十分簡單。我們將會使用 [nVidia 公司的 DIGITS](https://developer.nvidia.com/digits) 來當做我們的前端介面。
 
@@ -67,7 +67,7 @@
 
 **注意：** 當我在寫這篇時，我使用了這個非正式版本的 Caffe：https://github.com/BVLC/caffe/commit/5a201dd960840c319cefd9fa9e2a40d2c76ddd73
 
-想在 Mac 上安裝它很容易讓你感到挫敗，在編譯 Caffe 時會有很多版本問題，我試了很多天。我跟隨了很多教學，每次都有一些稍微不一樣的問題。最後我找到了最接近的[這篇](https://gist.github.com/doctorpangloss/f8463bddce2a91b949639522ea1dcbe4)。我也推薦[最近的這篇文章](https://eddiesmo.wordpress.com/2016/12/20/how-to-set-up-caffe-environment-and-pycaffe-on-os-x-10-12-sierra/)，裡面也連結到很多我看到的討論串。對於中文讀者來說，[BirkhoffLee](https://github.com/BirkhoffLee) 也推薦了他的[完整中文版教學](https://blog.birkhoff.me/macos-sierra-10-12-2-build-caffe)，教你如何在 macOS Sierra 上編譯 Caffe。
+想在 Mac 上安裝它很容易讓你感到挫敗，在編譯 Caffe 時會有很多版本問題，我試了很多天，也找了很多教學，每次都有略微不同的問題。最後我找到了最接近的[這篇](https://gist.github.com/doctorpangloss/f8463bddce2a91b949639522ea1dcbe4)。我也推薦[最近發表的這篇](https://eddiesmo.wordpress.com/2016/12/20/how-to-set-up-caffe-environment-and-pycaffe-on-os-x-10-12-sierra/)文章，裡面也提到很多我看到的討論串。對於中文讀者來說，[BirkhoffLee](https://github.com/BirkhoffLee) 也推薦了他完整的[中文版教學](https://blog.birkhoff.me/macos-sierra-10-12-2-build-caffe)，教你如何在 macOS Sierra 上編譯 Caffe。
 
 將 Caffe 安裝好是到目前為止我們將做的最難的事情，這很好，因為你可能會認為人工智慧方面的問題會更難。如果你遇到問題，千萬不要放棄，這是值得的。如果要讓我再做一次，我不會直接在 Mac 上安裝它，而是在一台 Ubuntu 虛擬機器上安裝。如果你有問題，這裡是 [Caffe 使用者群組](https://groups.google.com/forum/#!forum/caffe-users)，你可以在此提問。
 
@@ -92,7 +92,7 @@ caffe/
         python/
         lib/
         tools/
-            caffe ← 這是我們主要使用的二進位檔案
+            caffe ← 這是我們主要使用的執行檔
     distribute/
         python/
         lib/
@@ -105,7 +105,7 @@ caffe/
 
 ### 安裝 DIGITS
 
-nVidia 的[深度學習 GPU 訓練系統（DIGITS）](https://github.com/NVIDIA/DIGITS)是個 BSD 協議的 Python 網頁應用程式，專門拿來訓練類神經網絡用的。雖然我們可以在命令行（或是自己寫程式）完成任何 DIGITS 對 Caffe 做的事，但是用 DIGITS 將讓我們更容易上手。我發現 DIGITS 的視覺化資料、即時圖表和其他類似的功能讓這一切都變得更有趣了。因為你還在實驗及試著學習，我非常推薦以 DIGITS 上手。
+nVidia 的[深度學習 GPU 訓練系統（DIGITS）](https://github.com/NVIDIA/DIGITS)是個 BSD 協議的 Python 網頁應用程式，專門用來訓練類神經網絡。雖然我們可以在命令行（或是自己寫程式）完成任何 DIGITS 對 Caffe 做的事，但是用 DIGITS 將讓我們更容易上手。我發現 DIGITS 的視覺化資料、即時圖表和其他類似的功能讓這一切都變得更有趣了。因為你還在實驗及嘗試學習，我非常推薦以 DIGITS 上手。
 
 https://github.com/NVIDIA/DIGITS/tree/master/docs 有一些十分不錯的文檔供你參考，裡面也有[安裝](https://github.com/NVIDIA/DIGITS/blob/master/docs/BuildDigits.md)、[設定](https://github.com/NVIDIA/DIGITS/blob/master/docs/Configuration.md)及[供你上手](https://github.com/NVIDIA/DIGITS/blob/master/docs/GettingStarted.md)的資料。我建議在你開始之前，先把所有東西都稍微看一遍，因為我並不是 DIGITS 的專家——我並不知道它能做的所有事情。如果你有什麼問題想問，公開的 [DIGITS 使用者群組](https://groups.google.com/forum/#!forum/digits-users)是一個不錯的地方。
 
@@ -113,7 +113,7 @@ https://github.com/NVIDIA/DIGITS/tree/master/docs 有一些十分不錯的文檔
 
 **注意：** 當我在寫這篇時，我使用了這個非正式版本的 DIGITS：https://github.com/NVIDIA/DIGITS/commit/81be5131821ade454eb47352477015d7c09753d9
 
-DIGITS 很容易安裝，因為他就只是一堆 Python 腳本。你需要告訴 DIGITS 的唯一一件事就是告訴它你的 `CAFFE_ROOT` 在哪裡。你可以用環境變數搞定這件事，然後就可以啟動伺服器了：
+DIGITS 很容易安裝，因為他就只是一堆 Python 腳本。你唯一需要告訴 DIGITS 的一件事就是你的 `CAFFE_ROOT` 在哪裡。你可以用環境變數搞定這件事，然後就可以啟動伺服器了：
 
 ```bash
 export CAFFE_ROOT=/path/to/caffe
@@ -158,7 +158,7 @@ dolphins-and-seahorses/
 
 > 問：「照片都要一樣的大小嗎？那檔案名稱呢？」
 
-兩個都不用管他。在我們餵食網絡之前，圖片的大小都會被一般化。我們會希望我們的照片尺寸是 256 x 256 像素，DIGITS 等一下會自動裁切或縮放（我們選擇縮放）我們的圖片。那些檔案名稱你要怎麼取根本沒差——重要的是它們是在什麼分類裡。
+兩個都不用管他。在我們餵食網絡之前，圖片的大小都會被一般化。我們會希望我們的照片尺寸是 256 x 256 像素，DIGITS 等一下會自動裁切或縮放（這裡選擇縮放）我們的圖片。那些檔案名稱你要怎麼取根本沒差——重要的是它們是在什麼分類裡。
 
 > 問：「我可以再細分我的分類嗎？」
 
@@ -186,7 +186,7 @@ dolphins-and-seahorses/
 
 ![建立分類用模型](images/create-classification-model.png?raw=true "建立分類用模型")
 
-我們將從訓練一個使用我們 `dolphins-and-seahorses` 資料集的模型開始，我們將以 DIGITS 給的默認設定值來訓練它。這是我們的第一個網絡，我們選擇使用一個標準的網絡架構——「[AlexNet (pdf)](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)」。[AlexNet 的設計](http://vision.stanford.edu/teaching/cs231b_spring1415/slides/alexnet_tugce_kyunghee.pdf) 在 2012 年贏得了一個大型的電腦視覺比賽——ImageNet。這個比賽的要求將一百二十萬個圖像分類到一千多種不同的分類中。
+我們將從訓練一個使用我們 `dolphins-and-seahorses` 資料集的模型開始，我們將以 DIGITS 給的默認設定值來訓練它。這是我們的第一個網絡，我們選擇使用一個標準的網絡架構——「[AlexNet (pdf)](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)」。[AlexNet 的設計](http://vision.stanford.edu/teaching/cs231b_spring1415/slides/alexnet_tugce_kyunghee.pdf) 在 2012 年贏得了一個大型的電腦視覺比賽——ImageNet。這個比賽要求將一百二十萬個圖像分類到一千多種不同的分類中。
 
 ![新的分類用模型 1](images/new-image-classification-model-attempt1.png?raw=true "新的分類用模型 1")
 
@@ -211,7 +211,7 @@ Caffe 使用結構化的文字檔案來定義網絡架構。這些檔案使用�
 
 我們的網絡在這張圖上完全失敗了，而且將海馬混淆成了海豚，更糟糕的是，它十分自信地認為這張圖是海豚。
 
-事實上其實是我們的資料集太小了，沒辦法訓練一個很好的類神經網絡。我們很需要上萬張或上千萬張照片來訓練，如果要這樣，我們還會需要十分強大的運算能力來處理這些照片。
+事實上其實是我們的資料集太小了，沒辦法訓練一個很好的類神經網絡。我們很需要上萬甚至數十萬張照片來訓練，如果要這樣，我們還會需要十分強大的運算能力來處理這些照片。
 
 ### 訓練：第二次嘗試，微調 AlexNet
 
@@ -223,15 +223,15 @@ Caffe 使用結構化的文字檔案來定義網絡架構。這些檔案使用�
 
 想像一下你一拿起望遠鏡要看很遠很遠的東西的時候，你會先將望遠鏡貼近你的眼睛，接著你看到的一切都是模糊的。隨著望遠鏡的焦距的調整，你會慢慢開始看見顏色、線條、形狀…… 慢慢地你就能看清楚一隻鳥的形狀。再稍微調整一下，你就能辨識這隻鳥的種類了。這就是使用一個類神經網絡的過程。
 
-在一個多層網絡中，初始層（_layer_）提取一些特徵（例如：邊緣），接下來的層使用這些特徵來偵測形狀（例如輪子與眼睛），然後送到以在之前的層累積的特徵來偵測物件的最終分類層（例如一隻貓跟一隻狗）。一個網絡必須能夠從像素點開始掃描，到圓形、到眼睛、到朝著特定方向的兩個眼睛等等，直到最終能夠斷定這個照片內描繪的是一隻貓。
+在一個多層網絡中，初始層（_initial layer_）提取一些特徵（例如：邊緣），接下來的層使用這些特徵來偵測形狀（例如輪子與眼睛），然後送到以在之前的層累積的特徵來偵測物件的最終分類層（例如一隻貓跟一隻狗）。一個網絡必須能夠從像素點開始掃描，到圓形、到眼睛、到朝著特定方向的兩個眼睛等等，直到最終能夠斷定這個照片內描繪的是一隻貓。
 
 我們想做的是讓一個現有的、事先訓練好的網絡能夠專門來分類一些全新的影像分類，而不是讓它來分類當初用來訓練這個網絡的圖形。之所以這樣做是因為這種網絡已經知道如何「看見」圖形中的特徵，然後我們要重新訓練它來讓它能「看見」我們要他分類的特殊圖形。我們不需要從頭開始設定大多數的層——我們想要轉移這些已經學習好的層到我們的新分類任務。不像我們之前的訓練嘗試使用的是隨機的權重，我們這次要使用最終網絡中已有的權重來進行訓練。總而言之，我們將把最終的分類層丟掉，然後用**我們自己**的影像資料集來重新訓練它，將他微調到我們自己的影像分類。
 
-如果要這樣做，我們需要一個跟我們自己的資料足夠相似的事先訓練好的網絡，這樣它學習到的權重對我們來說才會有用處。幸運的是我們接下來將使用的網絡是曾使用上百萬個來自 [ImageNet](http://image-net.org/) 大自然的照片來進行訓練的網絡，因此它對非常多種不同的分類任務都十分的有用處。
+如果要這樣做，我們需要一個與所需資料足夠相似的現有網絡，這樣它學習到的權重對我們來說才會有用處。幸運的是我們接下來將使用的網絡是曾使用上百萬個來自 [ImageNet](http://image-net.org/) 大自然的照片來進行訓練的網絡，因此它對非常多種不同的分類任務都十分的有用處。
 
 這項技術常被用來做有趣的事情，例如從自醫學圖像中掃描是否有眼部疾病、識別從海上採集的浮游生物顯微圖像，到分類 Flickr 網站圖片的藝術風格。
 
-跟所有的機器學習一樣，如果你想做到完美，你需要了解你的資料以及網絡架構——你必須注意資料是否會過擬合（_overfitting_）、你可能需要修復一些層，或是你可能需要加入一些新的層，諸如此類。總之，我的經驗是它在大多數的時候是可行的，你值得實驗看看，看你用我們的方法能做得如何。
+跟所有的機器學習一樣，如果你想做到完美，你需要了解你的資料以及網絡架構——你必須注意這些資料是否會造成過度學習（_overfitting_）、你可能需要修復其中幾層，或是加入新的幾層，諸如此類。總之，我的經驗是它在大多數的時候是可行的，你值得試試看，看你能用我們的方法做得如何。
 
 #### 上傳已事先訓練好的網絡
 
@@ -265,7 +265,7 @@ GoogLeNet 的模型定義檔案我們使用 https://github.com/BVLC/caffe/blob/m
 
 ![新的圖像分類用模型](images/new-image-classification-model-attempt2.png?raw=true "新的圖像分類用模型")
 
-在事先訓練好的模型的 prototext 定義中，我們需要將所有參考重命名到最終的**全連結層**（_**Fully Connected Layer_**），全連結層負責最終分類。我們這樣做是因為我們希望模型自我們自己的資料集中重新學習新的分類，而不是使用它原本的訓練資料——我們要把它目前的最終層丟掉。我們必須將最終全連結層的名字「fc8」改為別的名字，就改成「fc9」好了。最後，我們需要把類別數量從 `1000` 改為 `2`，也就是將 `num_output` 改為 `2`。
+在事先訓練好的模型的 prototext 定義中，我們需要將所有參考重命名到最終的**全連結層（_Fully Connected Layer_）**，全連結層負責最終分類。我們這樣做是因為我們希望模型自我們自己的資料集中重新學習新的分類，而不是使用它原本的訓練資料——我們要把它目前的最終層丟掉。我們必須將最終全連結層的名字「fc8」改為別的名字，就改成「fc9」好了。最後，我們需要把類別數量從 `1000` 改為 `2`，也就是將 `num_output` 改為 `2`。
 
 這是我們所需要作出的更動：
 
@@ -550,12 +550,12 @@ train_val.prototxt
 
 > 一個網絡是以其設計（.prototxt）及其權重（.caffemodel）來定義的。
 > 當一個網絡在訓練時，該網絡目前的權重狀態存在一個 .caffemodel 檔案中。
-> 當有了這兩個檔案，我們就可以從訓練及測試階段進入產品階段（_production phase_）了。
+> 當有了這兩個檔案，我們就可以從訓練及測試階段進入成品階段（_production phase_）了。
 >
 > 在它目前的狀態下，這個網絡的設計還沒有為部署準備好。在我們將我們的網絡釋出為產品前，我們常需要用以下的方法來調整它：
 >
 > 1. 將用來訓練的資料層刪除，因為在分類時我們將不會再為我們的資料提供標籤。
-> 2. 刪除依賴於資料標籤的任何層。
+> 2. 刪除任何依賴於資料標籤的層。
 > 3. 將網絡設定為可接受資料。
 > 4. 確認網絡可以輸出結果。
 
@@ -663,7 +663,7 @@ with open(mean_file, 'rb') as infile:
     transformer.set_mean('data', pixel)
 ```
 
-如果我們有很多標籤，我們也可以選擇讀取我們的標籤檔案以用作稍後輸出概率的標籤（如：0=dolphin，1=seahorse）：
+如果我們有很多標籤，我們也可以選擇讀取我們的標籤檔案以用作稍後輸出機率的標籤（如：0=dolphin，1=seahorse）：
 
 ```python
 labels_file = os.path.join(model_dir, 'labels.txt')
@@ -703,7 +703,7 @@ while rval:
 webCamCap.release()
 ```
 
-回到我們的問題，我們接下來需要將我們的影像資料跑一遍我們的網絡然後再讀取我們網絡最終的 `'softmax'` 層返回的概率值，這個概率會依照我們的標籤分類來排序：
+回到我們的問題，我們接下來需要將我們的影像資料跑一遍我們的網絡然後再讀取我們網絡最終的 `'softmax'` 層返回的機率值，這個機率會依照我們的標籤分類來排序：
 
 ```python
 # Run the image's pixel data through the network
@@ -792,6 +792,6 @@ seahorse3.jpg is a seahorse dolphin=0.014% seahorse=99.986%
 
 我們的模型跑起來真的十分令人驚訝，微調一個事先訓練好的網絡之後的成效也是。很明顯的，我們使用海豚及海馬作為例子是故意設計好的，且我們的資料集也太有限了——如果我們希望我們的網絡變得很強大，我們真的會需要更多更好的資料。不過既然我們的目的是玩玩看類神經網絡的工具及工作流程，這個結果還是十分理想的，尤其是它不需要昂貴的設備或大量的時間。
 
-我希望以上所有的經驗能讓你拋去所有剛踏進這個領域時產生的的壓倒性恐懼。當你看過機器學習及類神經網絡的實際運作的小例子之後，你應該能更容易地確定你是否值得在這個領域投入時間來學習它們背後的理論。現在你已經有了一個設定好的環境及一個可行的方法，你可以嘗試做做看其他類型的分類。你也可能會想要看看你還能用 Caffe 和 Digits 做什麼事情，例如在一個影像內尋找物件或是執行分割。
+我希望以上所有的經驗能讓你拋去所有剛踏進這個領域時產生的壓倒性恐懼。當你看過機器學習及類神經網絡實際運作的小例子之後，你應該能更容易地確定你是否值得在這個領域投入時間來學習它們背後的理論。現在你已經有了一個設定好的環境及一個可行的方法，你可以嘗試做做看其他類型的分類。你也可能會想要看看你還能用 Caffe 和 Digits 做什麼事情，例如在一個影像內尋找物件或是執行分割。
 
 「Have fun with machine learning!」
