@@ -221,6 +221,12 @@ Open your web browser and type localhost followed by your port number http://loc
 
 That's it. You got Caffe + DIGITS working.
 
+To get shell access
+
+```bash
+docker exec -i -t naughty_goldstine /bin/bash
+```
+
 ##Training a Neural Network
 
 Training a neural network involves a few steps:
