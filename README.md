@@ -212,7 +212,7 @@ That's it. You got Caffe + DIGITS working.
 To get shell access
 
 ```bash
-docker exec -i -t name_of_container /bin/bash
+docker exec -i -t $(docker ps -q  --filter=ancestor=kaixhin/digits) /bin/bash
 ```
 
 ##Training a Neural Network
