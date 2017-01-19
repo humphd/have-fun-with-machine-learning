@@ -189,6 +189,38 @@ or modify the DIGITS startup script(s) to use the proper binary on your system.
 
 Once the server is started, you can do everything else via your web browser at http://localhost:5000, which is what I'll do below.
 
+###Docker Quick Start
+
+If you have docker installed then you can skip all the pain of installing Caffe + DIGITS and jump right in.
+
+Pull the docker image from Docker Hub.
+
+```bash
+docker pull kaixhin/digits
+```
+
+Run the docker container.
+
+```bash
+docker run -dP kaixhin/digits
+```
+
+Now that we have our container running we'll have to find the name of container and then find the port on which it's running on. 
+
+To find container name we'll run ```docker ps``` and find name of container which is running with kaixhin/digits image.
+In my case it's ```naughty_goldstine```.
+
+And to find out port number run ```docker port naughty_goldstine```.
+
+```bash
+docker ps
+docker port <container_name>
+```
+
+Open your web browser and type localhost followed by your port number http://localhost:1234
+
+That's it. You got Caffe + DIGITS working.
+
 ##Training a Neural Network
 
 Training a neural network involves a few steps:
