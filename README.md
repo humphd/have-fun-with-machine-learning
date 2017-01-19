@@ -199,32 +199,20 @@ Pull the docker image from Docker Hub.
 docker pull kaixhin/digits
 ```
 
-Run the docker container.
+Run the docker container and get port number.
 
 ```bash
-docker run -dP kaixhin/digits
+docker port $(docker run -dP kaixhin/digits)
 ```
 
-Now that we have our container running we'll have to find the name of container and then find the port on which it's running on. 
-
-To find container name we'll run ```docker ps``` and find name of container which is running with kaixhin/digits image.
-In my case it's ```naughty_goldstine```.
-
-And to find out port number run ```docker port naughty_goldstine```.
-
-```bash
-docker ps
-docker port <container_name>
-```
-
-Open your web browser and type localhost followed by your port number http://localhost:1234
+Now that we have our container running you can open up your web browser and type localhost followed by your port number http://localhost:1234
 
 That's it. You got Caffe + DIGITS working.
 
 To get shell access
 
 ```bash
-docker exec -i -t naughty_goldstine /bin/bash
+docker exec -i -t name_of_container /bin/bash
 ```
 
 ##Training a Neural Network
