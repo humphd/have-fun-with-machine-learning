@@ -13,8 +13,8 @@
 
 在這篇教學中，我們的目標是寫一個程式，能夠使用機器學習來進行精確的判定——僅僅依該圖片來判斷在 [data/untrained-samples](data/untrained-samples) 中的陌生圖案是**海豚**還是**海馬**。以下是兩個我們將會用到的範例圖案：
 
-![一隻海豚](data/untrained-samples/dolphin1.jpg?raw=true "Dolphin")
-![一隻海馬](data/untrained-samples/seahorse1.jpg?raw=true "Seahorse")
+![一隻海豚](data/untrained-samples/dolphin1.jpg?raw=true "海豚")
+![一隻海馬](data/untrained-samples/seahorse1.jpg?raw=true "海馬")
 
 為了進行判定，我們將訓練一個[卷積神經網絡](https://zh.wikipedia.org/wiki/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C)。我們將以實踐者的角度與第一原理\* 的觀點來解決這個問題。人工智慧現在十分令人興奮，但是下面將寫到的內容將讓你感覺像是一個物理教授在黑板上像你講解如何在腳踏車上玩特技，而不是與你的朋友在公園內練習。
 
