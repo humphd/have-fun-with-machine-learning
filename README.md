@@ -86,7 +86,7 @@ training and validating your network a lot easier.  We’ll be using
 [nVidia’s DIGITS](https://developer.nvidia.com/digits) tool below for just this purpose.
 
 Caffe can be a bit of work to get installed.  There are [installation instructions](http://caffe.berkeleyvision.org/installation.html)
-for various platforms, including some prebuilt Docker or AWS configurations.
+for various platforms, including some prebuilt Docker or AWS configurations.  
 
 **NOTE:** when making my walkthrough, I used the following non-released version of Caffe from their Github repo:
 https://github.com/BVLC/caffe/commit/5a201dd960840c319cefd9fa9e2a40d2c76ddd73
@@ -191,28 +191,22 @@ Once the server is started, you can do everything else via your web browser at h
 
 ###Docker Quick Start
 
-If you have docker installed then you can skip all the pain of installing Caffe + DIGITS and jump right in.
+If you have Docker installed (it's really simple) then you can skip all the pain of installing Caffe + DIGITS and jump right in.
 
-Pull the docker image from Docker Hub.
+Pull & run the Docker container. Make sure port 8080 isn't allocated by another program. If so, change it to any other port you want.  
 
 ```bash
-docker pull kaixhin/digits
+docker run --name="digits" -d -p 8080:5000 kaixhin/digits
 ```
 
-Run the docker container and get port number.
+Now that we have our container running you can open up your web browser and open http://localhost:8080.
+
+That's it. You got Caffe and DIGITS working.
+
+If you need shell access:
 
 ```bash
-docker port $(docker run -dP kaixhin/digits)
-```
-
-Now that we have our container running you can open up your web browser and type localhost followed by your port number http://localhost:1234
-
-That's it. You got Caffe + DIGITS working.
-
-To get shell access
-
-```bash
-docker exec -i -t $(docker ps -q  --filter=ancestor=kaixhin/digits) /bin/bash
+docker exec -it digits /bin/bash
 ```
 
 ##Training a Neural Network
