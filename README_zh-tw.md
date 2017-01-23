@@ -139,7 +139,7 @@ docker run --name="digits" -d -p 8080:5000 -v /path/to/this/repository:/data/rep
 
 如果你需要 shell access：
 
-``bash
+```bash
 docker exec -it digits /bin/bash
 ```
 
