@@ -64,7 +64,11 @@ Convolutional Neural Networks like we'll be using
 
 ##Setup
 
-###Installing Caffe
+Installing the software we'll use (Caffe and DIGITS) can be frustrating, depending on your platform
+and OS version.  By far the easiest way to do it is using Docker.  Below we examine how to do it with Docker,
+as well as how to do it natively.
+
+###Option 1a: Installing Caffe Natively
 
 First, we’re going to be using the [Caffe deep learning framework](http://caffe.berkeleyvision.org/)
 from the Berkely Vision and Learning Center (BSD licensed).
@@ -151,7 +155,7 @@ At this point, we have everything we need to train, test, and program with neura
 networks.  In the next section we’ll add a user-friendly, web-based front end to
 Caffe called DIGITS, which will make training and testing our networks much easier.
 
-###Installing DIGITS
+###Option 1b: Installing DIGITS Natively
 
 nVidia’s [Deep Learning GPU Training System, or DIGITS](https://github.com/NVIDIA/DIGITS),
 is BSD-licensed Python web app for training neural networks.  While it’s
@@ -188,21 +192,21 @@ or modify the DIGITS startup script(s) to use the proper binary on your system.
 
 Once the server is started, you can do everything else via your web browser at http://localhost:5000, which is what I'll do below.
 
-###Docker Quick Start
+###Option 2: Caffe and DIGITS using Docker
 
-If you have Docker installed (it's really simple) then you can skip all the pain of installing Caffe + DIGITS and jump right in.
-
-Pull & run the Docker container. Make sure port 8080 isn't allocated by another program. If so, change it to any other port you want.  
+Install [Docker](https://www.docker.com/), if not already installed, then run the following command
+in order to pull and run a full Caffe + Digits container.  A few things to note:
+* make sure port 8080 isn't allocated by another program. If so, change it to any other port you want.
+* change `/path/to/this/repository` to the location of this cloned repo, and `/data/repo` within the container
+will be bound to this directory.  This is useful for accessing the images discussed below.
 
 ```bash
 docker run --name digits -d -p 8080:5000 -v /path/to/this/repository:/data/repo kaixhin/digits
 ```
 
-Now that we have our container running you can open up your web browser and open http://localhost:8080. Everything in the repository is now in the container directory `/data/repo`.
+Now that we have our container running you can open up your web browser and open `http://localhost:8080`. Everything in the repository is now in the container directory `/data/repo`.  That's it. You've now got Caffe and DIGITS working.
 
-That's it. You got Caffe and DIGITS working.
-
-If you need shell access:
+If you need shell access, use the following command:
 
 ```bash
 docker exec -it digits /bin/bash
