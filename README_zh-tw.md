@@ -49,7 +49,9 @@
 
 ## 設定
 
-### 安裝 Caffe
+根據你所使用的平台與作業系統版本，安裝我們將使用到的軟體（Caffe 與 DIGITS）可能會讓你感到十分挫敗。目前為止最簡單的方式是使用 Docker。以下我們將示範如何使用 Docker 來設定，以及如何用原生的方式來設定它。
+
+### 方法 1a：原生安裝 Caffe
 
 首先，我們將會使用到來自 Berkely Vision 及 Learning Center 的 [Caffe 深度學習框架](http://caffe.berkeleyvision.org/)（BSD 協議）。
 
@@ -103,7 +105,7 @@ caffe/
 
 現在，我們已經萬事俱全，可以訓練、測試我們的網絡以及為它編寫程式了。在下一節我們將為 Caffe 添加一個十分友好的網頁介面——「DIGITS」，這樣我們訓練及測試我們的網絡時將變得更簡單。
 
-### 安裝 DIGITS
+### 方法 1b：原生安裝 DIGITS
 
 nVidia 的[深度學習 GPU 訓練系統（DIGITS）](https://github.com/NVIDIA/DIGITS)是個 BSD 協議的 Python 網頁應用程式，專門用來訓練類神經網絡。雖然我們可以在命令行（或是自己寫程式）完成任何 DIGITS 對 Caffe 做的事，但是用 DIGITS 將讓我們更容易上手。我發現 DIGITS 的視覺化資料、即時圖表和其他類似的功能讓這一切都變得更有趣了。因為你還在實驗及嘗試學習，我非常推薦以 DIGITS 上手。
 
@@ -124,20 +126,18 @@ export CAFFE_ROOT=/path/to/caffe
 
 當你啟動了伺服器之後，你可以透過你的網頁瀏覽器在這個網址做所有其他的事情（我們等下會做的事）了：http://localhost:5000。
 
-###以 Docker 快速開始
-如果你已經安裝好了 Docker（這很簡單），那你就不用經歷這些安裝 Caffe 與 DIGITS 的痛苦而直接開始了！
-
-首先，拉取與執行我們的 Docker 容器。請確認 8080 連線埠沒有被其他程式佔用，如果被佔用了你也可以更改以下使用的連線埠號碼。
+###方法 2：用 Docker 執行 Caffe 與 DIGITS
+如果你還沒安裝 [Docker](https://www.docker.com/) 請先安裝它，接著執行以下指令來拉取與執行一個完整的 Caffe + DIGITS 容器。一些需要注意的事項：  
+* 確認 8080 連線埠沒有被其他程式佔用，如果被佔用了你也可以將它改為其他的連線埠號碼。
+* 將這個 repository clone 下來，然後將 `/path/to/this/repository` 改為你 clone 的位置，容器內的 `/data/repo` 會被綁定到這個資料夾上。
 
 ```bash
-docker run --name="digits" -d -p 8080:5000 -v /path/to/this/repository:/data/repo /kaixhin/digits
+docker run --name digits -d -p 8080:5000 -v /path/to/this/repository:/data/repo /kaixhin/digits
 ```
 
-這樣容器就開始執行了，你可以打開你的瀏覽器然後打開 http://localhost:8080。所有在這個 repository 的資料都在容器內的 `/data/repo` 了。
+這樣容器就開始執行了，你可以打開你的瀏覽器然後打開 `http://localhost:8080`。所有在這個 repository 的資料都在容器內的 `/data/repo` 了。就這樣。你已經把 Caffe 與 DIGITS 搞定了。
 
-就這樣。你已經把 Caffe 與 DIGITS 搞定了。
-
-如果你需要 shell access：
+如果你需要 shell access，請使用以下指令：
 
 ```bash
 docker exec -it digits /bin/bash
