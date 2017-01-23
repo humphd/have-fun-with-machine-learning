@@ -87,7 +87,7 @@ training and validating your network a lot easier.  We’ll be using
 [nVidia’s DIGITS](https://developer.nvidia.com/digits) tool below for just this purpose.
 
 Caffe can be a bit of work to get installed.  There are [installation instructions](http://caffe.berkeleyvision.org/installation.html)
-for various platforms, including some prebuilt Docker or AWS configurations.
+for various platforms, including some prebuilt Docker or AWS configurations.  
 
 **NOTE:** when making my walkthrough, I used the following non-released version of Caffe from their Github repo:
 https://github.com/BVLC/caffe/commit/5a201dd960840c319cefd9fa9e2a40d2c76ddd73
@@ -187,6 +187,26 @@ called `python2`, where I only have `python2.7`.  You can symlink it in `/usr/bi
 or modify the DIGITS startup script(s) to use the proper binary on your system.
 
 Once the server is started, you can do everything else via your web browser at http://localhost:5000, which is what I'll do below.
+
+###Docker Quick Start
+
+If you have Docker installed (it's really simple) then you can skip all the pain of installing Caffe + DIGITS and jump right in.
+
+Pull & run the Docker container. Make sure port 8080 isn't allocated by another program. If so, change it to any other port you want.  
+
+```bash
+docker run --name="digits" -d -p 8080:5000 -v /path/to/this/repository:/data/repo /kaixhin/digits
+```
+
+Now that we have our container running you can open up your web browser and open http://localhost:8080. Everything in the repository is now in the container directory `/data/repo`.
+
+That's it. You got Caffe and DIGITS working.
+
+If you need shell access:
+
+```bash
+docker exec -it digits /bin/bash
+```
 
 ##Training a Neural Network
 
