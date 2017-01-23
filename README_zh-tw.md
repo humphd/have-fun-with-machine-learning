@@ -124,6 +124,25 @@ export CAFFE_ROOT=/path/to/caffe
 
 當你啟動了伺服器之後，你可以透過你的網頁瀏覽器在這個網址做所有其他的事情（我們等下會做的事）了：http://localhost:5000。
 
+###以 Docker 快速開始
+如果你已經安裝好了 Docker（這很簡單），那你就不用經歷這些安裝 Caffe 與 DIGITS 的痛苦而直接開始了！
+
+首先，拉取與執行我們的 Docker 容器。請確認 8080 連線埠沒有被其他程式佔用，如果被佔用了你也可以更改以下使用的連線埠號碼。
+
+```bash
+docker run --name="digits" -d -p 8080:5000 -v /path/to/this/repository:/data/repo /kaixhin/digits
+```
+
+這樣容器就開始執行了，你可以打開你的瀏覽器然後打開 http://localhost:8080。所有在這個 repository 的資料都在容器內的 `/data/repo` 了。
+
+就這樣。你已經把 Caffe 與 DIGITS 搞定了。
+
+如果你需要 shell access：
+
+``bash
+docker exec -it digits /bin/bash
+```
+
 ## 訓練類神經網絡
 
 訓練一個類神經網絡涉及到這些步驟：
