@@ -196,10 +196,10 @@ If you have Docker installed (it's really simple) then you can skip all the pain
 Pull & run the Docker container. Make sure port 8080 isn't allocated by another program. If so, change it to any other port you want.  
 
 ```bash
-docker run --name="digits" -d -p 8080:5000 kaixhin/digits
+docker run --name="digits" -d -p 8080:5000 -v /path/to/this/repository:/data/repo /kaixhin/digits
 ```
 
-Now that we have our container running you can open up your web browser and open http://localhost:8080.
+Now that we have our container running you can open up your web browser and open http://localhost:8080. Everything in the repository is now in the container directory `/data/repo`.
 
 That's it. You got Caffe and DIGITS working.
 
