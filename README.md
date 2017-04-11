@@ -1,7 +1,7 @@
 # Have Fun with Machine Learning: A Guide for Beginners
 Also available in [Chinese (Traditional)](README_zh-tw.md).
 
-##Preface
+## Preface
 
 This is a **hands-on guide** to machine learning for programmers with *no background* in
 AI. Using a neural network doesn’t require a PhD, and you don’t need to be the person who
@@ -33,7 +33,7 @@ important details, please send a pull request.
 
 With all of that out the way, let me show you how to do some tricks on your bike!
 
-##Overview
+## Overview
 
 Here’s what we’re going to explore:
 
@@ -62,13 +62,13 @@ which introduces the concepts of neural networks using intuitive examples.
 Convolutional Neural Networks like we'll be using
 * If you’d rather have a bit more theory, I’d recommend [this online book](http://neuralnetworksanddeeplearning.com/chap1.html) by [Michael Nielsen](http://michaelnielsen.org/).
 
-##Setup
+## Setup
 
 Installing the software we'll use (Caffe and DIGITS) can be frustrating, depending on your platform
 and OS version.  By far the easiest way to do it is using Docker.  Below we examine how to do it with Docker,
 as well as how to do it natively.
 
-###Option 1a: Installing Caffe Natively
+### Option 1a: Installing Caffe Natively
 
 First, we’re going to be using the [Caffe deep learning framework](http://caffe.berkeleyvision.org/)
 from the Berkely Vision and Learning Center (BSD licensed).
@@ -155,7 +155,7 @@ At this point, we have everything we need to train, test, and program with neura
 networks.  In the next section we’ll add a user-friendly, web-based front end to
 Caffe called DIGITS, which will make training and testing our networks much easier.
 
-###Option 1b: Installing DIGITS Natively
+### Option 1b: Installing DIGITS Natively
 
 nVidia’s [Deep Learning GPU Training System, or DIGITS](https://github.com/NVIDIA/DIGITS),
 is BSD-licensed Python web app for training neural networks.  While it’s
@@ -192,7 +192,7 @@ or modify the DIGITS startup script(s) to use the proper binary on your system.
 
 Once the server is started, you can do everything else via your web browser at http://localhost:5000, which is what I'll do below.
 
-###Option 2: Caffe and DIGITS using Docker
+### Option 2: Caffe and DIGITS using Docker
 
 Install [Docker](https://www.docker.com/), if not already installed, then run the following command
 in order to pull and run a full Caffe + Digits container.  A few things to note:
@@ -212,7 +212,7 @@ If you need shell access, use the following command:
 docker exec -it digits /bin/bash
 ```
 
-##Training a Neural Network
+## Training a Neural Network
 
 Training a neural network involves a few steps:
 
@@ -231,7 +231,7 @@ You need at least 2 categories, but could have many more (some of the networks
 we’ll use were trained on 1000+ image categories).  Our goal is to be able to
 give an image to our network and have it tell us whether it’s a Dolphin or a Seahorse.
 
-###Prepare the Dataset
+### Prepare the Dataset
 
 The easiest way to begin is to divide your images into a categorized directory layout:
 
@@ -344,7 +344,7 @@ lot of computing power to process everything.
 
 ### Training: Attempt 2, Fine Tuning AlexNet
 
-####How Fine Tuning works
+#### How Fine Tuning works
 
 Designing a neural network from scratch, collecting data sufficient to train
 it (e.g., millions of images), and accessing GPUs for weeks to complete the
@@ -391,7 +391,7 @@ might need to fix some of the layers, might need to insert new layers, etc. Howe
 my experience is that it “Just Works” much of the time, and it’s worth you simply doing
 an experiment to see what you can achieve using our naive approach.
 
-####Uploading Pretrained Networks
+#### Uploading Pretrained Networks
 
 In our first attempt, we used AlexNet’s architecture, but started with random
 weights in the network’s layers.  What we’d like to do is download and use a
@@ -432,7 +432,7 @@ Repeat this process for both AlexNet and GoogLeNet, as we’ll use them both in 
 The [Caffe Model Zoo](http://caffe.berkeleyvision.org/model_zoo.html) has quite a few other
 pretrained networks that could be used, see https://github.com/BVLC/caffe/wiki/Model-Zoo.
 
-####Fine Tuning AlexNet for Dolphins and Seahorses
+#### Fine Tuning AlexNet for Dolphins and Seahorses
 
 Training a network using a pretrained Caffe Model is similar to starting from scratch,
 though we have to make a few adjustments.  First, we’ll adjust the **Base Learning Rate**
@@ -732,7 +732,7 @@ performs amazing well--the best so far:
 
 ![Model Attempt 3 Classify 3](images/model-attempt3-classify3.png?raw=true "Model Attempt 3 Classify 3")
 
-##Using our Model
+## Using our Model
 
 With our network trained and tested, it’s time to download and use it.  Each of the models
 we trained in DIGITS has a **Download Model** button, as well as a way to select different
@@ -797,7 +797,7 @@ for this in the [Caffe examples](https://github.com/BVLC/caffe/tree/master/examp
 For a classification version that uses the Python interface, DIGITS includes a [nice example](https://github.com/NVIDIA/DIGITS/tree/master/examples/classification).  There's also a fairly
 [well documented Python walkthrough](https://github.com/BVLC/caffe/blob/master/examples/00-classification.ipynb) in the Caffe examples.
 
-###Python example
+### Python example
 
 Let's write a program that uses our fine-tuned GoogLeNet model to classify the untrained images
 we have in [data/untrained-samples](data/untrained-samples).  I've cobbled this together based on
@@ -1036,7 +1036,7 @@ Let's look at how each of our three attempts did with this challenge:
 |[seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 0% | 100% |  :sunglasses: |
 |[seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 0.02% | 99.98% |  :sunglasses: |
 
-##Conclusion
+## Conclusion
 
 It’s amazing how well our model works, and what’s possible by fine tuning a pretrained network.
 Obviously our dolphin vs. seahorse example is contrived, and the dataset overly limited--we really
