@@ -738,7 +738,7 @@ With our network trained and tested, it’s time to download and use it.  Each o
 we trained in DIGITS has a **Download Model** button, as well as a way to select different
 snapshots within our training run (e.g., `Epoch #30`):
 
-![Trained Models](images/trained-models.png?raw=true “Trained Models”)
+![Trained Models](images/trained-models.png?raw=true "Trained Models")
 
 Clicking **Download Model** downloads a `tar.gz` archive containing the following files:
 
