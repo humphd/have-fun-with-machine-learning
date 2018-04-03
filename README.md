@@ -7,31 +7,29 @@ This is a **hands-on guide** to machine learning for programmers with *no backgr
 AI. Using a neural network doesn’t require a PhD, and you don’t need to be the person who
 makes the next breakthrough in AI in order to *use* what exists today.  What we have now
 is already breathtaking, and highly usable.  I believe that more of us need to play with
-this stuff like we would any other open source technology, instead of treating it like a
+machine learning like we would play with any other open source technology and not treating it like a
 research topic.
 
-In this guide our goal will be to write a program that uses machine learning to predict, with a
-high degree of certainty, whether the images in [data/untrained-samples](data/untrained-samples)
-are of **dolphins** or **seahorses** using only the images themselves, and without
-having seen them before.  Here are two example images we'll use:
+In this guide, our goal is to write a program that uses machine learning which has a
+high degree of certainty to predict. No matter the images in [data/untrained-samples](data/untrained-samples)
+are of **dolphins** or **seahorses**. Use those images and images that you have not seen before.  Here are two example images we'll use:
 
 ![A dolphin](data/untrained-samples/dolphin1.jpg?raw=true "Dolphin")
 ![A seahorse](data/untrained-samples/seahorse1.jpg?raw=true "Seahorse")
 
-To do that we’re going to train and use a [Convolutional Neural Network (CNN)](https://en.wikipedia.org/wiki/Convolutional_neural_network).
-We’re going to approach this from the point of view of a practitioner vs.
-from first principles. There is so much excitement about AI right now,
-but much of what’s being written feels like being taught to do
-tricks on your bike by a physics professor at a chalkboard instead
-of your friends in the park.
+To do this, we’re going to train and use a [Convolutional Neural Network (CNN)](https://en.wikipedia.org/wiki/Convolutional_neural_network).
+We’re going to approach this from the point of view of a practitioner intead of 
+from the point of view of first principles. AI is got so much excitement now,
+but much of what’s being written feels like being taught on paper on how to do
+bike trick instead of learning in the park physically. 
 
-I’ve decided to write this on Github vs. as a blog post
-because I’m sure that some of what I’ve written below is misleading, naive, or
-just plain wrong.  I’m still learning myself, and I’ve found the lack of solid
-beginner documentation an obstacle.  If you see me making a mistake or missing
+I’ve decided to write this on Github instead of a blog post
+because some of what I’ve written below is misleading, naive, or
+just wrong.  I’m still learning, and I found finding a solid
+beginner documentation challenging.  If you see me made a mistake or missed
 important details, please send a pull request. 
 
-With all of that out the way, let me show you how to do some tricks on your bike!
+With all of that out the way, let me show you how to do some tricks in real!
 
 ## Overview
 
