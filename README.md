@@ -317,6 +317,11 @@ where higher is better) and what our **Loss** is (the sum of all the mistakes th
 made, where lower is better).  Ideally we want a network that is able to predict with
 high accuracy, and with few errors (small loss).
 
+**NOTE:** some people have [reported hitting errors in DIGITS](https://github.com/humphd/have-fun-with-machine-learning/issues/17)
+doing this training run. For many, the problem related to available memory (the process
+needs a lot of memory to work).  If you're using Docker, you might want to try
+increasing the amount of memory available to DIGITS (in Docker, preferences -> advanced -> memory).
+
 Initially, our network’s accuracy is a bit below 50%.  This makes sense, because at first it’s
 just “guessing” between two categories using randomly assigned weights.  Over time
 it’s able to achieve 87.5% accuracy, with a loss of 0.37.  The entire 30 epoch run
