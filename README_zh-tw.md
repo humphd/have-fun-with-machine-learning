@@ -126,13 +126,12 @@ export CAFFE_ROOT=/path/to/caffe
 
 當你啟動了伺服器之後，你可以透過你的網頁瀏覽器在這個網址做所有其他的事情（我們等下會做的事）了：http://localhost:5000。
 
-###方法 2：用 Docker 執行 Caffe 與 DIGITS
-如果你還沒安裝 [Docker](https://www.docker.com/) 請先安裝它，接著執行以下指令來拉取與執行一個完整的 Caffe + DIGITS 容器。一些需要注意的事項：  
-* 確認 8080 連線埠沒有被其他程式佔用，如果被佔用了你也可以將它改為其他的連線埠號碼。
-* 將這個 repository clone 下來，然後將 `/path/to/this/repository` 改為你 clone 的位置，容器內的 `/data/repo` 會被綁定到這個資料夾上。
+### 方法 2：用 Docker 執行 Caffe 與 DIGITS
+如果你還沒安裝 [Docker](https://www.docker.com/) 請先安裝它，接著執行以下指令來拉取與執行一個完整的 Caffe + DIGITS 容器。
 
 ```bash
-docker run --name digits -d -p 8080:5000 -v /path/to/this/repository:/data/repo /kaixhin/digits
+git clone https://github.com/humphd/have-fun-with-machine-learning
+docker run --name digits -d -p 8080:5000 -v $(pwd)/have-fun-with-machine-learning:/data/repo /kaixhin/digits
 ```
 
 這樣容器就開始執行了，你可以打開你的瀏覽器然後打開 `http://localhost:8080`。所有在這個 repository 的資料都在容器內的 `/data/repo` 了。就這樣。你已經把 Caffe 與 DIGITS 搞定了。
