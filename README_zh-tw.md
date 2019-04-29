@@ -131,7 +131,7 @@ export CAFFE_ROOT=/path/to/caffe
 
 ```bash
 git clone https://github.com/humphd/have-fun-with-machine-learning
-docker run --name digits -d -p 8080:5000 -v $(pwd)/have-fun-with-machine-learning:/data/repo /kaixhin/digits
+docker run --name digits -d -p 8080:5000 -v $(pwd)/have-fun-with-machine-learning:/data/repo kaixhin/digits
 ```
 
 這樣容器就開始執行了，你可以打開你的瀏覽器然後打開 `http://localhost:8080`。所有在這個 repository 的資料都在容器內的 `/data/repo` 了。就這樣。你已經把 Caffe 與 DIGITS 搞定了。
