@@ -1,5 +1,8 @@
 # Have Fun with Machine Learning: 초보자를 위한 가이드
 
+> Author: David Humphrey (original [English version](README.md))  
+  
+
 ## 머리말
 
 이것은 인공지능에 대한 *배경지식이 없는* 프로그래머들을 위한 머신러닝 **실습 가이드**입니다. 
