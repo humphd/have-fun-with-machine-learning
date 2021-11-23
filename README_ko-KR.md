@@ -1,6 +1,6 @@
 # Have Fun with Machine Learning: 초보자를 위한 가이드
 
-> Author: David Humphrey (original [English version](README.md))  
+> Author: David Humphrey (original [English version](README.md))   
   
 
 ## 머리말
@@ -10,28 +10,23 @@
 이미 있는 것을 *사용*하면 됩니다. 지금 우리가 가지고 있는 것은 충분히 유용합니다. 저는 이것을 
 다른 오픈소스를 대하는 것처럼 더 많은 사람들이 갖고 놀아야 한다고 생각합니다.   
 
-In this guide our goal will be to write a program that uses machine learning to predict, with a
-high degree of certainty, whether the images in [data/untrained-samples](data/untrained-samples)
-are of **dolphins** or **seahorses** using only the images themselves, and without
-having seen them before.  Here are two example images we'll use:
+이 가이드에서 우리의 목표는 기계학습을 이용하여 [데이터/훈련되지않은 샘플들](data/untrained-samples)
+속 이미지가 **돌고래**인지 **해마**인지 이미지만으로 정확성 있게 예측하는 프로그램을 작성하는 것입니다.
+여기 우리가 사용할 두 가지 예제 사진들이 있습니다:
 
 ![A dolphin](data/untrained-samples/dolphin1.jpg?raw=true "Dolphin")
 ![A seahorse](data/untrained-samples/seahorse1.jpg?raw=true "Seahorse")
 
-To do that we’re going to train and use a [Convolutional Neural Network (CNN)](https://en.wikipedia.org/wiki/Convolutional_neural_network).
-We’re going to approach this from the point of view of a practitioner vs.
-from first principles. There is so much excitement about AI right now,
-but much of what’s being written feels like being taught to do
-tricks on your bike by a physics professor at a chalkboard instead
-of your friends in the park.
+그러기 위해 우리는 [나선형 신경망(CNN)](https://en.wikipedia.org/wiki/Convolutional_neural_network)
+을 훈련시키고 사용할 것입니다. 우리는 이것을 실무자의 관점 또는 첫 번째 원리의 관점에서 접근할 것입니다.
+현재 인공지능에 많은 관심이 쏟아지고 있지만, 쓰여진 대부분은 공원의 친구가 아니라 물리학교수가 자전거로
+트릭을 가르치는 것처럼 느껴집니다.
 
-I’ve decided to write this on Github vs. as a blog post
-because I’m sure that some of what I’ve written below is misleading, naive, or
-just plain wrong.  I’m still learning myself, and I’ve found the lack of solid
-beginner documentation an obstacle.  If you see me making a mistake or missing
-important details, please send a pull request. 
+저는 이것을 블로그 게시물처럼 깃허브 VS.에 작성하기로 결정했습니다. 제가 밑에 쓴 것들 중 오해를 불러일으키거나
+부족하거나 혹은 완전히 잘못된 부분이 있을 수 있습니다. 저는 아직 배워가는 중이고, 견고한 초보자용 문서가 없는 것이
+장애물이라고 생각합니다. 실수가 있거나 중요한 세부사항이 누락된 것을 발견하셨다면, Pull request를 보내주십시오.
 
-With all of that out the way, let me show you how to do some tricks on your bike!
+소개가 끝났으니, 여러분에게 자전거 트릭을 몇 가지 보여드리겠습니다!
 
 ## Overview
 
