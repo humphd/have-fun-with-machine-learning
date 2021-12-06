@@ -32,7 +32,7 @@
 
 지금부터 살펴볼 내용은 다음과 같습니다:
 
-* 특히 기존의 오픈 소스 머신러닝 기술을 설정하고 사용합니다. [Caffe](http://caffe.berkeleyvision.org/) 와 [DIGITS](https://developer.nvidia.com/digits)
+* 특히 기존의 오픈 소스 머신러닝 기술을 설정하고 사용합니다.([Caffe](http://caffe.berkeleyvision.org/)와 [DIGITS](https://developer.nvidia.com/digits))
 * 이미지 데이터 세트를 만듭니다.
 * 신경망을 처음부터 훈련시킵니다.
 * 본 적 없는 이미지로 신경망을 테스트합니다.
