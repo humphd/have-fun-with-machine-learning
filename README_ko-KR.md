@@ -28,52 +28,46 @@
 
 소개가 끝났으니, 여러분에게 자전거 트릭을 몇 가지 보여드리겠습니다!
 
-## Overview
+## 개요
 
-Here’s what we’re going to explore:
+지금부터 살펴볼 내용은 다음과 같습니다:
 
-* Setup and use existing, open source machine learning technologies, specifically [Caffe](http://caffe.berkeleyvision.org/) and [DIGITS](https://developer.nvidia.com/digits)
-* Create a dataset of images
-* Train a neural network from scratch
-* Test our neural network on images it has never seen before
-* Improve our neural network’s accuracy by fine tuning existing neural networks (AlexNet and GoogLeNet)
-* Deploy and use our neural network
+* 특히 기존의 오픈 소스 머신러닝 기술을 설정하고 사용합니다. [Caffe](http://caffe.berkeleyvision.org/) 와 [DIGITS](https://developer.nvidia.com/digits)
+* 이미지 데이터 세트를 만듭니다.
+* 신경망을 처음부터 훈련시킵니다.
+* 본 적 없는 이미지로 신경망을 테스트합니다.
+* 기존 신경망을 미세하게 튜닝해 신경망의 정확성을 향상시킵니다. (AlexNet 와 GoogLeNet)
+* 신경망을 배포하고 사용합니다.
 
-This guide won’t teach you how neural networks are designed, cover much theory,
-or use a single mathematical expression.  I don’t pretend to understand most of
-what I’m going to show you.  Instead, we’re going to use existing things in
-interesting ways to solve a hard problem.
+이 가이드는 신경망이 어떻게 설계되는지, 많은 이론을 다루거나, 수학적 표현을 사용하는 법을
+가르쳐 주진 않습니다. 여러분에게 보여드릴 내용의 대부분을 이해한다고는 말하지 않겠습니다. 
+대신 흥미로운 방식으로 기존의 것들을 사용해 어려운 문제를 해결해 나갈 것입니다.
 
-> Q: "I know you said we won’t talk about the theory of neural networks, but I’m
-> feeling like I’d at least like an overview before we get going.  Where should I start?"
+> Q: "신경망의 이론에 대해서는 이야기하지 않는다고 말씀하셨습니다만, 앞으로 진행하기 전에
+>  적어도 목차(overview)가 필요하다고 생각합니다. 어디서부터 시작해야할까요?"
 
-There are literally hundreds of introductions to this, from short posts to full
-online courses.  Depending on how you like to learn, here are three options
-for a good starting point:
+이에 대한 소개는 짧은 게시물부터 온라인 전체 강좌까지 말 그대로 수백가지가 넘습니다. 여러분이
+배우고 싶은 방법에 따라 좋은 출밤절을 위한 3가지 선택지가 있습니다.:
 
-* This fantastic [blog post](https://jalammar.github.io/visual-interactive-guide-basics-neural-networks/) by J Alammar,
-which introduces the concepts of neural networks using intuitive examples.
-* Similarly, [this video](https://www.youtube.com/watch?v=FmpDIaiMIeA) introduction by [Brandon Rohrer](https://www.youtube.com/channel/UCsBKTrp45lTfHa_p49I2AEQ) is a really good intro to
-Convolutional Neural Networks like we'll be using
-* If you’d rather have a bit more theory, I’d recommend [this online book](http://neuralnetworksanddeeplearning.com/chap1.html) by [Michael Nielsen](http://michaelnielsen.org/).
+* 이 멋진 [블로그 게시물](https://jalammar.github.io/visual-interactive-guide-basics-neural-networks/) 
+은 직관적인 예제들을 이용하여 신경망의 개념을 소개합니다.
+* 비슷하게, [브랜든 로러](https://www.youtube.com/channel/UCsBKTrp45lTfHa_p49I2AEQ)가 소개하는 [이 영상](https://www.youtube.com/watch?v=FmpDIaiMIeA) 은 우리가 사용하게 될 나선형 신경망에 대한 좋은 소개입니다.
+* 이론을 좀 더 알고 싶다면,  [마이클 닐슨](http://michaelnielsen.org/) 의 [온라인 책](http://neuralnetworksanddeeplearning.com/chap1.html) 을 추천합니다.
 
-## Setup
+## 설정
 
-Installing the software we'll use (Caffe and DIGITS) can be frustrating, depending on your platform
-and OS version.  By far the easiest way to do it is using Docker.  Below we examine how to do it with Docker,
-as well as how to do it natively.
+사용할 소프트웨어(Caffe와 DIGITS)는 플랫폼 및 운영체제 버전에 따라 설치가 어려울 수 있습니다. 가장 쉬운 방법은 
+도커(Docker)를 사용하는 것입니다. 아래에서 도커(Docker)로 하는 방법과 기본으로 설치하는 방법을 살펴봅시다.
 
-### Option 1a: Installing Caffe Natively
+### Option 1a: 기본으로 Caffe 설치
 
-First, we’re going to be using the [Caffe deep learning framework](http://caffe.berkeleyvision.org/)
-from the Berkely Vision and Learning Center (BSD licensed).
+먼저, 우리는 버클리 비전 및 학습 센터의 [Caffe 딥러닝 프레임워크](http://caffe.berkeleyvision.org/)
+를 사용할 것입니다.(BSD licensed)
 
-> Q: “Wait a minute, why Caffe? Why not use something like TensorFlow,
-> which everyone is talking about these days…”  
+> Q: “잠깐만요, 왜 Caffe죠? Tensorflow와 같은 것을 사용하는 것은 어떨까요?
+> 요즘 모두가 말하는 것이잖아요...”  
 
-There are a lot of great choices available, and you should look at all the
-options.  [TensorFlow](https://www.tensorflow.org/) is great, and you should
-play with it.  However, I’m using Caffe for a number of reasons:
+좋은 선택지가 많이 있고, 여러분은 모든 선택지를 살펴봐야 합니다. [TensorFlow](https://www.tensorflow.org/) 는 훌륭하고 여러분은 TensorFlow를 사용해도 좋습니다. 하지만 전 여러가지 이유로 Caffe를 사용하고 있습니다:
 
 * It’s tailormade for computer vision problems
 * It has support for C++, Python, (with [node.js support](https://github.com/silklabs/node-caffe) coming)
