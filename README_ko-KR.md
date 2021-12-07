@@ -301,26 +301,24 @@ existence, since we’ll have to modify them in later steps. AlextNet protxt 파
 메모리가 필요합니다). 여러분이 Docker를 사용하고 있다면, DIGITS에서 사용할 수 있는 메모리 양을 
 늘릴 수 있습니다. (Docker에서, 환경설정 -*preferences*- -> 고급 -*preferences*- -> 메모리 -*preferences*- )
 
-Initially, our network’s accuracy is a bit below 50%.  This makes sense, because at first it’s
-just “guessing” between two categories using randomly assigned weights.  Over time
-it’s able to achieve 87.5% accuracy, with a loss of 0.37.  The entire 30 epoch run
-took me just under 6 minutes.
+처음엔, 우리 신경망의 정확도는 50% 미만입니다. 원래 이렇습니다. 처음에는 무작위로 할당된 가중치를 
+사용하여 두 카테고리 중 "추측"하는 것이기 때문입니다. 시간이 지남에 따라 0.37의 loss로 87.5%의 
+정확도를 달성할 수 있습니다. 전체 30 epoch까지 전 6분도 채 걸리지 않았습니다. 
 
 ![Model Attempt 1](images/model-attempt1.png?raw=true "Model Attempt 1")
 
-We can test our model using an image we upload or a URL to an image on the web.
-Let’s test it on a few examples that weren’t in our training/validation dataset:
+우리가 업로드한 이미지나 웹 상의 이미지에 URL을 사용하여 우리의 모델을 테스트할 수 있습니다.
+훈련/검증 데이터셋에 없는 몇 가지 예제를 통해 테스트해 보겠습니다.
 
 ![Model 1 Classify 1](images/model-attempt1-classify1.png?raw=true "Model 1 Classify 1")
 
 ![Model 1 Classify 2](images/model-attempt1-classify2.png?raw=true "Model 1 Classify 2")
 
-It almost seems perfect, until we try another:
+거의 완벽해 보입니다. 다음 시도를 하기 전까지는 말이죠:
 
 ![Model 1 Classify 3](images/model-attempt1-classify3.png?raw=true "Model 1 Classify 3")
 
-Here it falls down completely, and confuses a seahorse for a dolphin, and worse,
-does so with a high degree of confidence.
+여기서 완전히 실패합니다. 해마를 돌고래로 착각하는데, 최악인 것은 높은 자신감으로 해마라고 합니다.  
 
 The reality is that our dataset is too small to be useful for training a really good
 neural network.  We really need 10s or 100s of thousands of images, and with that, a
