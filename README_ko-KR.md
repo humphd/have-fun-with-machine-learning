@@ -34,7 +34,7 @@
 
 * 특히 기존의 오픈 소스 머신러닝 기술을 설정하고 사용합니다.([Caffe](http://caffe.berkeleyvision.org/)와
  [DIGITS](https://developer.nvidia.com/digits))
-* 이미지 데이터 세트를 만듭니다.
+* 이미지 데이터셋를 만듭니다.
 * 신경망을 처음부터 훈련시킵니다.
 * 본 적 없는 이미지로 신경망을 테스트합니다.
 * 기존 신경망을 미세하게 튜닝해 신경망의 정확성을 향상시킵니다. (AlexNet 와 GoogLeNet)
@@ -198,20 +198,20 @@ docker exec -it digits /bin/bash
 
 신경망을 훈련시키는 것은 몇 가지 단계를 수반합니다:
 
-1. 분류된 이미지의 데이터세트를 구성하고 준비하십시오
+1. 분류된 이미지의 데이터셋를 구성하고 준비하십시오
 2. 신경망의 아키텍처를 규정하십시오
-3. 준비된 데이터세트를 사용해 이 신경망을 훈련시키고 검증하십시오.
+3. 준비된 데이터셋를 사용해 이 신경망을 훈련시키고 검증하십시오.
 
 처음부터 시작하는 것과 사전훈련된 신경망을 사용하는 것의 차이를 보여주고 Caffe와 DIGITs에서 흔히  
 사용되는 두 가지 인기 있는 사전훈련된 신경망(AlexNet, GoogLeNet)에서 어떻게 실행하는 지 보여주기
 위해 우리는 이러한 3단계를 거칠 것입니다. 
 
-우리는 훈련 시도에 돌고래와 해마의 작은 데이터세트를 사용할 것입니다. [data/dolphins-and-seahorses](data/dolphins-and-seahorses)에 제가 사용했던 이미지들을 넣어두었습니다. 2개 이상의 카테고리가 필요하고 여러분은 더
+우리는 훈련 시도에 돌고래와 해마의 작은 데이터셋를 사용할 것입니다. [data/dolphins-and-seahorses](data/dolphins-and-seahorses)에 제가 사용했던 이미지들을 넣어두었습니다. 2개 이상의 카테고리가 필요하고 여러분은 더
 많은 카테고리들을 가질 수도 있습니다(사용할 신경망 중 일부는 1000개 이상의 이미지 카테고리에 대해 
 훈련되었습니다). 우리의 목표는 우리의 신경망에 이미지를 주고 그것이 돌고래인지 해마인지 우리에게 
 알려주게하는 것입니다.
 
-### 데이터세트 준비
+### 데이터셋 준비
 
 가장 쉬운 방법은 이미지들을 분류된 디렉토리 배치로 나누는 것입니다.:
 
@@ -250,19 +250,17 @@ dolphins-and-seahorses/
 DIGITS가 제공하는 기본 설정값을 사용하고 [data/dolphins-and-seahorses](data/dolphins-and-seahorses) 
 폴더 경로에 **Training Images**를 지정합니다. DIGITS는 카테고리(`돌고래`와 `해마`)를 사용하여 
 스쿼시된 256 x 256 Training (75%) 및 Testing (25%) 이미지의 데이터베이스를 만듭니다. 
-We’ll use the defaults DIGITSS gives us, and point training Images at the path to our folder. DIGITS will use the categories (`dolphin` and `seahorse`) to create a database of squashed, 256 x 256 Training (75%) and Testing (25%) images.
 
 Dataset에 `dolphins-and-seahorses`라는 이름을 지정하고, **Create**를 클릭합니다.
 
 ![New Image Classification Dataset](images/new-image-classification-dataset.png?raw=true "New Image Classification Dataset")
 
-This will create our dataset, which took only 4s on my laptop.  In the end I
-have 92 Training images (49 dolphin, 43 seahorse) in 2 categories, with 30
-Validation images (16 dolphin, 14 seahorse).  It’s a really small dataset, but perfect
-for our experimentation and learning purposes, because it won’t take forever to train
-and validate a network that uses it. 
+이제 우리의 데이터셋이 생성될 것입니다. 제 노트북에선 4초만에 생성되었죠. 마지막으로 2개의 카테고리 속 92개의 
+훈련 이미지*Training images* (돌고래 49개, 해마 43개)와 30개의 검증 이미지*Validation images* (돌고래 16개,
+해마 14개)가 있습니다. 이것은 매우 작은 데이터셋이지만, 신경망을 훈련하고 검증하는 데 오랜 시간이 
+걸리지 않기 때문에 우리의 활동과 학습 목적에 알맞습니다.
 
-You can **Explore the db** if you want to see the images after they have been squashed. 
+이미지가 스쿼시된 후 이미지를 확인하려면 **DB 탐색-Explore the db-**을 하면 됩니다.
 
 ![Explore the db](images/explore-dataset.png?raw=true "Explore the db")
 
