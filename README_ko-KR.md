@@ -99,19 +99,15 @@ Caffe 설치는 저희가 할 것들 중 가장 어려운 일입니다. 꽤 멋�
 > Q: “신경망을 훈련시키려면 강력한 장비가 필요할까요? 좋은 GPU에 접근할 수 
 > 없다면 어떻게 해야할까요?"
 
-It’s true, deep neural networks require a lot of computing power and energy to
-train...if you’re training them from scratch and using massive datasets.
-We aren’t going to do that.  The secret is to use a pretrained network that someone
-else has already invested hundreds of hours of compute time training, and then to fine
-tune it to your particular dataset.  We’ll look at how to do this below, but suffice
-it to say that everything I’m going to show you, I’m doing on a year old MacBook
-Pro without a fancy GPU.
+사실 심층 신경망은 훈련시키기 위한 많은 연산능력과 에너지를 필요로 합니다.. 대규모 데이터셋을 이용해 처음부터 훈련시키는 경우라면 말입니다.
+우리는 그렇게 하지 않을 거예요. 비결은 다른 사람이 이미 수백 시간에 걸쳐 훈련시켜논 사전 훈련된 신경망을 사용하여, 각자의 데이터셋에 맞게
+미세하게 조정하는 것입니다. 아래에서 이 작업을 어떻게 하는 지 알아보겠지만, 제가 여러분에게 보여드릴 것은 최신 GPU가 탑재되지 않은 1년 
+된 맥북 프로를 사용하고 있습니다. 
 
-As an aside, because I have an integrated Intel graphics card vs. an nVidia GPU,
-I decided to use the [OpenCL Caffe branch](https://github.com/BVLC/caffe/tree/opencl),
-and it’s worked great on my laptop.
+이와는 별도로, 전 통합 인텔 그래픽 카드와 엔비디아 GPU를 가지고 있기 때문에 [OpenCL Caffe branch]
+(https://github.com/BVLC/caffe/tree/opencl)를 사용하기로 결정했고, 제 노트북에서 잘 작동했습니다. 
 
-When you’re done installing Caffe, you should have, or be able to do all of the following:
+Caffe 설치가 완료되면 다음 작업을 수행하거나 수행해야 합니다:
 
 * A directory that contains your built caffe.  If you did this in the standard way,
 there will be a `build/` dir which contains everything you need to run caffe,
