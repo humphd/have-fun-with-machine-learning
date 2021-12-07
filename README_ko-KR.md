@@ -256,11 +256,11 @@ Dataset에 `dolphins-and-seahorses`라는 이름을 지정하고, **Create**를 
 ![New Image Classification Dataset](images/new-image-classification-dataset.png?raw=true "New Image Classification Dataset")
 
 이제 우리의 데이터셋이 생성될 것입니다. 제 노트북에선 4초만에 생성되었죠. 마지막으로 2개의 카테고리 속 92개의 
-훈련 이미지*Training images* (돌고래 49개, 해마 43개)와 30개의 검증 이미지*Validation images* (돌고래 16개,
+훈련 이미지-*Training images*- (돌고래 49개, 해마 43개)와 30개의 검증 이미지-*Validation images*- (돌고래 16개,
 해마 14개)가 있습니다. 이것은 매우 작은 데이터셋이지만, 신경망을 훈련하고 검증하는 데 오랜 시간이 
 걸리지 않기 때문에 우리의 활동과 학습 목적에 알맞습니다.
 
-이미지가 스쿼시된 후 이미지를 확인하려면 **DB 탐색-Explore the db-**을 하면 됩니다.
+이미지가 스쿼시된 후 이미지를 확인하려면 **DB 탐색-*Explore the db*-**을 하면 됩니다.
 
 ![Explore the db](images/explore-dataset.png?raw=true "Explore the db")
 
