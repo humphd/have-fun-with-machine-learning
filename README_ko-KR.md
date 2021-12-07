@@ -32,7 +32,8 @@
 
 지금부터 살펴볼 내용은 다음과 같습니다:
 
-* 특히 기존의 오픈 소스 머신러닝 기술을 설정하고 사용합니다.([Caffe](http://caffe.berkeleyvision.org/)와 [DIGITS](https://developer.nvidia.com/digits))
+* 특히 기존의 오픈 소스 머신러닝 기술을 설정하고 사용합니다.([Caffe](http://caffe.berkeleyvision.org/)와
+ [DIGITS](https://developer.nvidia.com/digits))
 * 이미지 데이터 세트를 만듭니다.
 * 신경망을 처음부터 훈련시킵니다.
 * 본 적 없는 이미지로 신경망을 테스트합니다.
@@ -51,7 +52,9 @@
 
 * 이 멋진 [블로그 게시물](https://jalammar.github.io/visual-interactive-guide-basics-neural-networks/) 
 은 직관적인 예제들을 이용하여 신경망의 개념을 소개합니다.
-* 비슷하게, [브랜든 로러](https://www.youtube.com/channel/UCsBKTrp45lTfHa_p49I2AEQ)가 소개하는 [이 영상](https://www.youtube.com/watch?v=FmpDIaiMIeA) 은 우리가 사용하게 될 나선형 신경망에 대한 좋은 소개입니다.
+* 비슷하게, [브랜든 로러](https://www.youtube.com/channel/UCsBKTrp45lTfHa_p49I2AEQ)가 소개하는 
+[이 영상](https://www.youtube.com/watch?v=FmpDIaiMIeA) 은 우리가 사용하게 될 나선형 신경망에 대
+한 좋은 소개입니다.
 * 이론을 좀 더 알고 싶다면,  [마이클 닐슨](http://michaelnielsen.org/) 의 [온라인 책](http://neuralnetworksanddeeplearning.com/chap1.html) 을 추천합니다.
 
 ## 설정
@@ -67,38 +70,34 @@
 > Q: “잠깐만요, 왜 Caffe죠? Tensorflow와 같은 것을 사용하는 것은 어떨까요?
 > 요즘 모두가 말하는 것이잖아요...”  
 
-좋은 선택지가 많이 있고, 여러분은 모든 선택지를 살펴봐야 합니다. [TensorFlow](https://www.tensorflow.org/) 는 훌륭하고 여러분은 TensorFlow를 사용해도 좋습니다. 하지만 전 여러가지 이유로 Caffe를 사용하고 있습니다:
+좋은 선택지가 많이 있고, 여러분은 모든 선택지를 살펴봐야 합니다. [TensorFlow](https://www.tensorflow.org/)는
+훌륭하고 여러분은 TensorFlow를 사용해도 좋습니다. 하지만 전 여러가지 이유로 Caffe를 사용하고 있습니다:
 
-* It’s tailormade for computer vision problems
-* It has support for C++, Python, (with [node.js support](https://github.com/silklabs/node-caffe) coming)
-* It’s fast and stable
+* 컴퓨터 비전 문제에 적격입니다. 
+* C++, 파이썬을 지원합니다.([node.js 지원](https://github.com/silklabs/node-caffe) 예정)
+* 빠르고 안정적입니다.
 
-But the **number one reason** I’m using Caffe is that you **don’t need to write any code** to work
-with it.  You can do everything declaratively (Caffe uses structured text files to define the
-network architecture) and using command-line tools.  Also, you can use some nice front-ends for Caffe to make
-training and validating your network a lot easier.  We’ll be using
-[nVidia’s DIGITS](https://developer.nvidia.com/digits) tool below for just this purpose.
+하지만 제가 Caffe를 사용하는 **첫번째 이유**는 **어떤 코드도 쓸 필요없기** 때문입니다. 여러분은 선언과 커맨드라인
+도구로 모든 것을 할 수 있습니다.(Caffe는 구조화된 텍스트 파일을 사용하여 네트워크 아키텍처를 정의합니다.) 또한, 
+여러분은 여러분의 네트워크를 더 쉽게 훈련하고 검증하기 위해 Caffe의 좋은 프론트 엔드들을 사용할 수 있습니다. 
+우리는 [nVidia의 DIGITS](https://developer.nvidia.com/digits)도구를 이러한 목적으로 사용할 것입니다.
 
-Caffe can be a bit of work to get installed.  There are [installation instructions](http://caffe.berkeleyvision.org/installation.html)
-for various platforms, including some prebuilt Docker or AWS configurations.  
+Caffe는 설치하기에 힘들 수 있습니다. 미리 만들어진 Docker와 AWS 구성을 포함하여 다양한 플랫폼에 대한 [설치 지침](http://caffe.berkeleyvision.org/installation.html)이 있습니다.
 
-**NOTE:** when making my walkthrough, I used the following non-released version of Caffe from their Github repo:
+**NOTE:** 저는 Github repo에서 출시되지 않은 다음 버전의 Caffe를 사용했습니다:
 https://github.com/BVLC/caffe/commit/5a201dd960840c319cefd9fa9e2a40d2c76ddd73
 
-On a Mac it can be frustrating to get working, with version issues halting
-your progress at various steps in the build.  It took me a couple of days
-of trial and error.  There are a dozen guides I followed, each with slightly
-different problems.  In the end I found [this one](https://gist.github.com/doctorpangloss/f8463bddce2a91b949639522ea1dcbe4) to be the closest.
-I’d also recommend [this post](https://eddiesmo.wordpress.com/2016/12/20/how-to-set-up-caffe-environment-and-pycaffe-on-os-x-10-12-sierra/),
-which is quite recent and links to many of the same discussions I saw. 
+Mac에서는 버전 문제로 인해 빌드 내의 여러 단계에서 진행이 중단되어 작업을 시작하는 것이 어려울 수
+있습니다. 이틀동안 시행착오를 겪었습니다. 여러 가이드를 따라해봤지만, 각각은 약간씩 다른 문제들을
+가지고 있었습니다. 그 중 [이 가이드](https://gist.github.com/doctorpangloss/f8463bddce2a91b949639522ea1dcbe4)가
+가장 가까웠습니다.
+또한, [이 게시물](https://eddiesmo.wordpress.com/2016/12/20/how-to-set-up-caffe-environment-and-pycaffe-on-os-x-10-12-sierra/)을 추천합니다. 최근에 제가 봤던 많은 토론들과 연결되어 있습니다.  
 
-Getting Caffe installed is by far the hardest thing we'll do, which is pretty
-neat, since you’d assume the AI aspects would be harder!  Don’t give up if you have
-issues, it’s worth the pain.  If I was doing this again, I’d probably use an Ubuntu VM
-instead of trying to do it on Mac directly.  There's also a [Caffe Users](https://groups.google.com/forum/#!forum/caffe-users) group, if you need answers.
+Caffe 설치는 저희가 할 것들 중 가장 어려운 일입니다. 꽤 멋진 일이죠. AI쪽은 더 어려울 거라고 생각하셨을테니까요!
+몇가지 문제를 겪으시더라도 포기하지마세요. 그것은 그럴 가치가 있습니다. 만약 제가 이 작업을 다시 수행한다면, Mac에서 직접 수행하지 않고 Ubuntu VM을 사용할 것입니다. 도움이 더 필요하시다면, [Caffe 사용자들](https://groups.google.com/forum/#!forum/caffe-users)그룹도 존재합니다.
 
-> Q: “Do I need powerful hardware to train a neural network? What if I don’t have
-> access to fancy GPUs?”
+> Q: “신경망을 훈련시키려면 강력한 장비가 필요할까요? 좋은 GPU에 접근할 수 
+> 없다면 어떻게 해야할까요?"
 
 It’s true, deep neural networks require a lot of computing power and energy to
 train...if you’re training them from scratch and using massive datasets.
