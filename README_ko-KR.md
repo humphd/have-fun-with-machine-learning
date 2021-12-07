@@ -62,7 +62,7 @@
 사용할 소프트웨어(Caffe와 DIGITS)는 플랫폼 및 운영체제 버전에 따라 설치가 어려울 수 있습니다. 가장 쉬운 방법은 
 도커(Docker)를 사용하는 것입니다. 아래에서 도커(Docker)로 하는 방법과 기본으로 설치하는 방법을 살펴봅시다.
 
-### Option 1a: 기본으로 Caffe 설치
+### Option 1a: 네이티브하게 Caffe 설치
 
 먼저, 우리는 버클리 비전 및 학습 센터의 [Caffe 딥러닝 프레임워크](http://caffe.berkeleyvision.org/)
 를 사용할 것입니다.(BSD licensed)
@@ -109,16 +109,15 @@ Caffe 설치는 저희가 할 것들 중 가장 어려운 일입니다. 꽤 멋�
 
 Caffe 설치가 완료되면 다음 작업을 수행하거나 수행해야 합니다:
 
-* A directory that contains your built caffe.  If you did this in the standard way,
-there will be a `build/` dir which contains everything you need to run caffe,
-the Python bindings, etc.  The parent dir that contains `build/` will be your
-`CAFFE_ROOT` (we’ll need this later).
-* Running `make test && make runtest` should pass
-* After installing all the Python deps (doing `pip install -r requirements.txt` in `python/`),
-running `make pycaffe && make pytest` should pass
-* You should also run `make distribute` in order to create a distributable version of caffe with all necessary headers, binaries, etc. in `distribute/`.
+*  빌드된 caffe가 포함된 디렉토리입니다. 표준으로 이 작업을 수행했다면, caffe, python 바인딩 등을 실행하는
+ 데 필요한 모든 것이 `build/` 디렉터로에 있을 것입니다. `build/`의 상위 디렉토리는 `CAFFE_ROOT`(나중에 필요)입니다. 
+* `make test && make runtest` 는 실행하지 마십시오.
+* 모든 python deps를 설치한 후(`python/`에서 `pip install -r requirements.txt` 실행), 
+`make pycaffe && make pytest`는 실행하지 마십시오.
+* 또한 `distribute/` 안에 있는 모든 필수적인 헤더, 바이너리 등을 포함하는 배포 가능한 버전의 caffe를 생성하려면
+ `make distribute`를 실행해야 합니다. 
 
-On my machine, with Caffe fully built, I’ve got the following basic layout in my CAFFE_ROOT dir:
+Caffe가 완전히 빌드된 컴퓨터에서, CARRE_ROOT 디렉토리는 다음과 같은 기본 레이아웃을 따릅니다:
 
 ```
 caffe/
@@ -126,7 +125,7 @@ caffe/
         python/
         lib/
         tools/
-            caffe ← this is our main binary 
+            caffe ← 메인 바이너리입니다.
     distribute/
         python/
         lib/
@@ -135,28 +134,27 @@ caffe/
         proto/
 ```
 
-At this point, we have everything we need to train, test, and program with neural
-networks.  In the next section we’ll add a user-friendly, web-based front end to
-Caffe called DIGITS, which will make training and testing our networks much easier.
+이 시점에서 우리는 신경망으로 훈련, 테스트 및 프로그래밍하는 데 필요한 모든 것을 갖추고 있습니다. 다음 섹션에서는
+사용자 친화적인 웹 기반 프론트 엔드를 DIGITS라고 불리는 caffe에 추가하여 신경망을 훨씬 쉽게 교육하고 테스트할
+수 있습니다.
 
-### Option 1b: Installing DIGITS Natively
+### Option 1b: 네이티브하게 DIGITS 설치
 
-nVidia’s [Deep Learning GPU Training System, or DIGITS](https://github.com/NVIDIA/DIGITS),
-is BSD-licensed Python web app for training neural networks.  While it’s
-possible to do everything DIGITS does in Caffe at the command-line, or with code,
-using DIGITS makes it a lot easier to get started.  I also found it more fun, due
-to the great visualizations, real-time charts, and other graphical features.
-Since you’re experimenting and trying to learn, I highly recommend beginning with DIGITS.
+nVidia의 [딥러닝 GPU 훈련시스템(DIGITS)](https://github.com/NVIDIA/DIGITS)는 신경망 훈련을 위한
+BSD 라이선스의 python 웹 앱입니다. 커맨드 라인이나 코드로 DIGITS가 Caffe에서 하는 모든 작업들을 실행할 수
+있지만, DIGITS를 사용하면 훨씬 쉽게 시작할 수 있습니다. 또한 뛰어난 시각화, 실시간 차트 및 기타 그래픽 기능들으로
+인해 더 재미있을 것입니다.  배우기 위해선 경험을 쌓고 도전해봐야 하기 때문에 DIGITS로 시작하는 것을 추천합니다. 
 
-There are quite a few good docs at https://github.com/NVIDIA/DIGITS/tree/master/docs,
-including a few [Installation](https://github.com/NVIDIA/DIGITS/blob/master/docs/BuildDigits.md),
-[Configuration](https://github.com/NVIDIA/DIGITS/blob/master/docs/Configuration.md),
-and [Getting Started](https://github.com/NVIDIA/DIGITS/blob/master/docs/GettingStarted.md)
-pages.  I’d recommend reading through everything there before you continue, as I’m not
-an expert on everything you can do with DIGITS.  There's also a public [DIGITS User Group](https://groups.google.com/forum/#!forum/digits-users) if you have questions you need to ask.
+https://github.com/NVIDIA/DIGITS/tree/master/docs 에 
+[Installation](https://github.com/NVIDIA/DIGITS/blob/master/docs/BuildDigits.md)(설치),
+[Configuration](https://github.com/NVIDIA/DIGITS/blob/master/docs/Configuration.md)(구성),
+및 [Getting Started](https://github.com/NVIDIA/DIGITS/blob/master/docs/GettingStarted.md)
+(시작) 페이지들을 포함하는 좋은 문서들이 꽤 있습니다. 전 DIGITS의 모든 것들을 잘 아는 전문가가 아니기 때문에 계속하기
+전에 자세하게 읽어보는 걸 추천합니다. 도움이 더 필요하시다면,  공개 [DIGITS 사용자 그룹](https://groups.google.com/forum/#!forum/digits-users)
+도 있습니다.
 
-There are various ways to install and run DIGITS, from Docker to pre-baked packages
-on Linux, or you can build it from source. I’m on a Mac, so I built it from source.
+Docker부터 리눅스에서 패키지들을 pre-baked하거나 소스에서 빌드하기까지, DIGITS를 설치하고 실행하는 데에는 다양한
+방법이 있습니다. 저는 Mac을 사용하고 있으므로 소스에서 빌드했습니다.
 
 **NOTE:** In my walkthrough I've used the following non-released version of DIGITS
 from their Github repo: https://github.com/NVIDIA/DIGITS/commit/81be5131821ade454eb47352477015d7c09753d9
