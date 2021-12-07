@@ -37,7 +37,7 @@
 * 이미지 데이터셋를 만듭니다.
 * 신경망을 처음부터 훈련시킵니다.
 * 본 적 없는 이미지로 신경망을 테스트합니다.
-* 기존 신경망을 미세하게 튜닝해 신경망의 정확성을 향상시킵니다. (AlexNet 와 GoogLeNet)
+* 기존 신경망을 하게 튜닝 -*fine Tuning*- 해 신경망의 정확성을 향상시킵니다. (AlexNet 와 GoogLeNet)
 * 신경망을 배포하고 사용합니다.
 
 이 가이드는 신경망이 어떻게 설계되는지, 많은 이론을 다루거나, 수학적 표현을 사용하는 법을
@@ -101,7 +101,7 @@ Caffe 설치는 저희가 할 것들 중 가장 어려운 일입니다. 꽤 멋�
 
 사실 심층 신경망은 훈련시키기 위한 많은 연산능력과 에너지를 필요로 합니다.. 대규모 데이터셋을 이용해 처음부터 훈련시키는 경우라면 말입니다.
 우리는 그렇게 하지 않을 거예요. 비결은 다른 사람이 이미 수백 시간에 걸쳐 훈련시켜논 사전 훈련된 신경망을 사용하여, 각자의 데이터셋에 맞게
-미세하게 조정하는 것입니다. 아래에서 이 작업을 어떻게 하는 지 알아보겠지만, 제가 여러분에게 보여드릴 것은 최신 GPU가 탑재되지 않은 1년 
+미세하게 조정하는 것 -*Fine Tuning*-입니다. 아래에서 이 작업을 어떻게 하는 지 알아보겠지만, 제가 여러분에게 보여드릴 것은 최신 GPU가 탑재되지 않은 1년 
 된 맥북 프로를 사용하고 있습니다. 
 
 이와는 별도로, 전 통합 인텔 그래픽 카드와 엔비디아 GPU를 가지고 있기 때문에 [OpenCL Caffe branch]
@@ -320,52 +320,46 @@ existence, since we’ll have to modify them in later steps. AlextNet protxt 파
 
 여기서 완전히 실패합니다. 해마를 돌고래로 착각하는데, 최악인 것은 높은 자신감으로 해마라고 합니다.  
 
-The reality is that our dataset is too small to be useful for training a really good
-neural network.  We really need 10s or 100s of thousands of images, and with that, a
-lot of computing power to process everything.
+현실은 우리의 데이터셋이 너무 작아 정말 좋은 신경망을 훈련시키는 데에는 쓸만 하지 않다는 것입니다.
+모든 것을 처리하기 위해선 높은 연산능력과 10초에서 100초 정도의 수천 개의 이미지들이 필요합니다.
 
-### Training: Attempt 2, Fine Tuning AlexNet
+### 훈련: 시도 2, AlexNet Fine Tuning
 
-#### How Fine Tuning works
+#### Fine Tuning 하는 법 
 
-Designing a neural network from scratch, collecting data sufficient to train
-it (e.g., millions of images), and accessing GPUs for weeks to complete the
-training is beyond the reach of most of us.  To make it practical for smaller amounts
-of data to be used, we employ a technique called **Transfer Learning**, or **Fine Tuning**.
-Fine tuning takes advantage of the layout of deep neural networks, and uses
-pretrained networks to do the hard work of initial object detection.
+신경망을 처음부터 설계하고, 훈련하기에 충분한 데이터(e.g. 수백만의 이미지)를 수집하고,
+훈련을 완료하기 위해 몇 주 동안 GPU에 엑세스하는 것은 우리가 하기엔 벅찹니다. 더 적은 
+양의 데이터로도 사용될 수 있도록 우리는 **Transfer Learning** 또는 **Fine Tuning**이라는 
+기술을 사용할 것입니다. Fine Tuning은 심층 신경망의 레이아웃을 활용하고 사전훈련된 신경망을
+이용해 첫번째 객체 감지 작업을 수행합니다. 
 
-Imagine using a neural network to be like looking at something far away with a 
-pair of binoculars.  You first put the binoculars to your eyes, and everything is
-blurry.  As you adjust the focus, you start to see colours, lines, shapes, and eventually
-you are able to pick out the shape of a bird, then with some more adjustment you can
-identify the species of bird.
+쌍안경으로 멀리 있는 것을 보는 것처럼 신경망을 사용하는 것을 상상해보십시오. 먼저,
+쌍안경을 눈에 대보면 모든 게 흐릿해집니다. 초점을 맞추면, 색깔, 선, 모양이 보이기 
+시작하고 마지막엔 새의 형태를 인식할 수 있게 됩니다. 그리고 조금 더 조정한다면 새의
+종까지 구분해낼 수 있게 됩니다.  
 
-In a multi-layered network, the initial layers extract features (e.g., edges), with
-later layers using these features to detect shapes (e.g., a wheel, an eye), which are
-then feed into final classification layers that detect items based on accumulated 
-characteristics from previous layers (e.g., a cat vs. a dog).  A network has to be 
-able to go from pixels to circles to eyes to two eyes placed in a particular orientation, 
-and so on up to being able to finally conclude that an image depicts a cat.
+다중 계층 신경망에서, 초기 계층은 특징(e.g. 가장자리)을 추출하고, 다음 계층은 형태
+(e.g. 바퀴, 눈)를 알아내기 위해 이러한 특징들을 사용합니다. 즉, 이전 계층들의 누적된 특성을
+기반으로 각각의 항목들을 분류하는 최종 분류 계층에 반영됩니다(e.g. 고양이 vs. 개). 신경망은 
+픽셀 단위에서 직사각형으로, 다리로, 특정 방향으로 걷는 두 개의 다리까지 인식할 수 
+있어야 하며, 마지막엔 이미지가 고양이를 가리킨다는 결론을 내릴 수 있어야 합니다.
 
-What we’d like to do is to specialize an existing, pretrained network for classifying 
-a new set of image classes instead of the ones on which it was initially trained. Because
-the network already knows how to “see” features in images, we’d like to retrain 
-it to “see” our particular image types.  We don’t need to start from scratch with the 
-majority of the layers--we want to transfer the learning already done in these layers 
-to our new classification task.  Unlike our previous attempt, which used random weights, 
-we’ll use the existing weights of the final network in our training.  However, we’ll 
-throw away the final classification layer(s) and retrain the network with *our* image 
-dataset, fine tuning it to our image classes.
+우리가 하고자 하는 것은 기존에 훈련되어있던 이미지 클래스 대신 새로운 이미지 클래스 세트로
+분류하기 위해 사전훈련된 기존 신경망을 전문적으로 다루는 것입니다. 신경망은 이미 이미지의 
+특징을 "인식"하는 법을 알고 있으므로 특정한 이미지 형태로 "인식"하기 위해 우리가 신경망을 
+재훈련하고자 합니다. 계층들의 대부분은 처음부터 시작할 필요가 없습니다--이런 계층에서 이미 
+수행했던 학습을 새로운 분류 작업으로 이전하고자 합니다. 랜덤한 가중치를 사용했던 이전 
+시도와는 달리, 우리는 최종 신경망의 기존 가중치를 훈련시키는 데 사용할 것입니다. 그러나 
+우리는 최종 분류 계층을 버리고, *우리의* 이미지 데이터셋을 사용해 신경망을 재교육하여 
+이미지 클래스에 맞게 미세 조정 -*fine tuning*- 할 것입니다.
 
-For this to work, we need a pretrained network that is similar enough to our own data
-that the learned weights will be useful.  Luckily, the networks we’ll use below were 
-trained on millions of natural images from [ImageNet](http://image-net.org/), which 
-is useful across a broad range of classification tasks.
+이것이 실행되기 위해서는 학습된 가중치가 쓸만할 만큼 우리의 데이터와 충분히 비슷한 결과가 나오는
+사전훈련된 신경망이 필요합니다. 다행히도 우리가 아래에서 사용할 신경망은 [ImageNet](http://image-net.org/)
+의 수백만 개의 자연이미지로 훈련되었으며, 광범위한 분류 작업에 뛰어난 성능을 보입니다. 
 
-This technique has been used to do interesting things like screening for eye diseases 
-from medical imagery, identifying plankton species from microscopic images collected at 
-sea, to categorizing the artistic style of Flickr images.
+이 테크닉은 의학이미지에서 눈병을 검사하고, 바다에서 수집한 현미경이미지에서 플랑크톤 종을 
+식별하며, Flickr 이미지의 미술 양식을 분류하는 것과 같은 흥미로운 일들을 하는데 사용되어 
+왔습니다. 
 
 Doing this perfectly, like all of machine learning, requires you to understand the
 data and network architecture--you have to be careful with overfitting of the data, 
