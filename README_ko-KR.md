@@ -506,10 +506,9 @@ For both of these pretrained models, we can use the defaults DIGITs provides
 
 ![New Classification Model](images/new-image-classification-model-attempt3.png?raw=true "New Classification Model")
 
-We rename all references to the three fully connected classification layers,
-`loss1/classifier`, `loss2/classifier`, and `loss3/classifier`, and redefine
-the number of categories (`num_output: 2`).  Here are the changes we need to make
-in order to rename the 3 classifier layers, as well as to change from 1000 to 2 categories:
+완전히 연결된 세 가지 분류 계층인 `loss1/classifier`, `loss2/classifier`, `loss3/classifier`의 
+모든 참조들의 이름을 변경하고 카테고리 수를 재정의합니다(`num_output: 2`). 여기에 3개의 분류 계층의 
+이름을 변경하고 카테고리 수를 1000개에서 2개로 변경하기 위해 해야할 사항들이 있습니다:
 
 ```diff
 @@ -917,10 +917,10 @@
@@ -670,21 +669,19 @@ in order to rename the 3 classifier layers, as well as to change from 1000 to 2 
  }
 ```
 
-I’ve put the complete file in [src/googlenet-customized.prototxt](src/googlenet-customized.prototxt).
+전체파일을 [src/googlenet-customized.prototxt](src/googlenet-customized.prototxt)에 저장했습니다.
 
-> Q: "What about changes to the prototext definitions of these networks?
-> We changed the fully connected layer name(s), and the number of categories.
-> What else could, or should be changed, and in what circumstances?"
+> Q: "이러한 신경망의 prototext 정의를 변경하는 건 어떻게 하나요?
+> 우리는 완전히 연결된 계층의 이름과 카테고리의 수를 변경해보았습니다.
+> 그 밖에 어떤 것이 변경될 수 있으며 어떤 상황에서 변경되어야 하나요?
 
-Great question, and it's something I'm wondering, too.  For example, I know that we can
-["fix" certain layers](https://github.com/BVLC/caffe/wiki/Fine-Tuning-or-Training-Certain-Layers-Exclusively)
-so the weights don't change.  Doing other things involves understanding how the layers work,
-which is beyond this guide, and also beyond its author at present!
+좋은 질문입니다. 그건 저도 궁금한 것입니다. 예를 들어, 저는 가중치가 변하지 않도록 [특정 계층을 "수정"](https://github.com/BVLC/caffe/wiki/Fine-Tuning-or-Training-Certain-Layers-Exclusively)
+할 수 있다는 것을 알고 있습니다. 그 밖에 다른 것들을 하는 것은 계층들이 어떻게 작동하는지 
+이해해야 합니다. 이것은 이 안내서를 넘어선 일이고, 지금의 저자도 넘어서는 것입니다!
 
-Like we did with fine tuning AlexNet, we also reduce the learning rate by
-10% from `0.01` to `0.001`.
+앞에서 했던 AlexNet 미세 조정과 마찬가지로, 학습률을 `0.01`에서 `0.001`로 10% 낮춥니다.
 
-> Q: "What other changes would make sense when fine tuning these networks?
+> Q: "이러한 신경망을 미세 조정할 때 그 외에 어떤 변경이 의미가 있나요?
 > What about different numbers of epochs, batch sizes, solver types (Adam, AdaDelta, AdaGrad, etc),
 > learning rates, policies (Exponential Decay, Inverse Decay, Sigmoid Decay, etc),
 > step sizes, and gamma values?"
