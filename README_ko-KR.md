@@ -296,8 +296,8 @@ existence, since we’ll have to modify them in later steps. AlextNet protxt 파
 이상적으로는 우리는 오류(작은 손실 -*loss*-)이 거의 없는, 매우 정확하게 예측할 수 있는 신경망을
 원합니다.
 
-**NOTE:** 몇몇 사람들이 이 훈련을 시키면서 [DIGITS에서 hit 오류가 보고](https://github.com/humphd/have-fun-with-machine-learning/issues/17)
-했습니다. 대부분의 경우, 이 문제는 가용 메모리와 관련된 것입니다(프로세스가 실행하려면 많은
+**NOTE:** 몇몇 사람들이 이 훈련을 시키면서 [DIGITS에서 hit 오류가 일어났다](https://github.com/humphd/have-fun-with-machine-learning/issues/17)
+고 보고했습니다. 대부분의 경우, 이 문제는 가용 메모리와 관련된 것입니다(프로세스가 실행하려면 많은
 메모리가 필요합니다). 여러분이 Docker를 사용하고 있다면, DIGITS에서 사용할 수 있는 메모리 양을 
 늘릴 수 있습니다. (Docker에서, 환경설정 -*preferences*- -> 고급 -*preferences*- -> 메모리 -*preferences*- )
 
@@ -400,31 +400,32 @@ For both of these pretrained models, we can use the defaults DIGITs provides
 
 ![Upload Pretrained Model](images/upload-pretrained-model.png?raw=true "Upload Pretrained Model")
 
-Repeat this process for both AlexNet and GoogLeNet, as we’ll use them both in the coming steps.
+다음 단계에서 AlexNet과 GoogLeNet을 모두 사용할 것이므로 이 과정을 반복하십시오.
 
-> Q: "Are there other networks that would be good as a basis for fine tuning?"
+> Q: "미세 조정 -fine tuning- 의 기반으로 적합한 다른 신경망이 있을까요?"
 
-The [Caffe Model Zoo](http://caffe.berkeleyvision.org/model_zoo.html) has quite a few other
-pretrained networks that could be used, see https://github.com/BVLC/caffe/wiki/Model-Zoo.
+[Caffe Model Zoo](http://caffe.berkeleyvision.org/model_zoo.html) 는 다른 사전훈련된 
+신경망들을 꽤 많이 가지고 있습니다. https://github.com/BVLC/caffe/wiki/Model-Zoo 을 
+참조하십시오.
 
-#### Fine Tuning AlexNet for Dolphins and Seahorses
+#### 돌고래와 해마로 AlexNet을 미세 조정하기 -Fine Tuning-
 
-Training a network using a pretrained Caffe Model is similar to starting from scratch,
-though we have to make a few adjustments.  First, we’ll adjust the **Base Learning Rate**
-to 0.001 from 0.01, since we don’t need to make such large jumps (i.e., we’re fine tuning).
-We’ll also use a **Pretrained Network**, and **Customize** it.
+사전훈련된 Caffe 모델을 사용하여 신경망을 훈련하는 것은 몇 가지 조정을 해야하지만, 처음부터 
+시작하는 것과 비슷합니다. 먼저, 이렇게 크게 변화할 필요가 없으므로(즉, *미세*하게 조정 
+중입니다.) **기본 학습 속도 -Base Learning Rate-** 를 0.01에서 0.001로 조정합니다. 우리는 
+또한 **사전훈련된 신경망 -Pretrained Network-** 을 사용하여 **커스터마이징 -Customize-** 할 
+것입니다.
 
 ![New Image Classification](images/new-image-classification-model-attempt2.png?raw=true "New Image Classification")
 
-In the pretrained model’s definition (i.e., prototext), we need to rename all
-references to the final **Fully Connected Layer** (where the end result classifications
-happen).  We do this because we want the model to re-learn new categories from
-our dataset vs. its original training data (i.e., we want to throw away the current
-final layer).  We have to rename the last fully connected layer from “fc8” to
-something else, “fc9” for example.  Finally, we also need to adjust the number
-of categories from `1000` to `2`, by changing `num_output` to `2`.
+사전훈련된 모델의 정의(i.e. prototext)에서는 모든 참조의 이름을 **완전히 연결된 계층-*Fully Connected Layer*-**(최종 
+결과 분류가 이루어지는 곳)로 변경해야 합니다. 모델이 원래의 훈련 데이터와 비교해 새로운 
+카테고리를 다시 학습하기를 원하기 때문입니다(즉, 현재의 마지막 계층은 폐기하고자 합니다). 
+우리는 최종적으로 완전히 연결된 계층-*fully connected layer*-의 이름을 변경해야만 합니다. 
+예를 들면, "fc8"에서 "fc9"로 말입니다. 마지막으로, 우리는 또한 `num_output`을 `2`로 변경하여, 
+카테고리 수를 `1000`에서 `2`로 조정해야 합니다. 
 
-Here are the changes we need to make:
+여기 우리가 변경해야 할 사항이 있습니다:
 
 ```diff
 @@ -332,8 +332,8 @@
@@ -468,40 +469,40 @@ Here are the changes we need to make:
    include { stage: "deploy" }
 ```
 
-I’ve included the fully modified file I’m using in [src/alexnet-customized.prototxt](src/alexnet-customized.prototxt).
+제가 사용하고 있는 완전히 수정된 파일을 [src/alexnet-customized.prototxt](src/alexnet-customized.prototxt)
+에 포함했습니다.
 
-This time our accuracy starts at ~60% and climbs right away to 87.5%, then to 96%
-and all the way up to 100%, with the Loss steadily decreasing. After 5 minutes we
-end up with an accuracy of 100% and a loss of 0.0009.
+이번에는 정확도가 ~60%에서 시작해 87.5%로 급등하며 96%까지 이윽고 100%까지 상승하며, 
+손실 *Loss* 은 꾸준히 감소했습니다. 5분이 지나면 100%의 정확도와 0.0009의 손실이 발생합니다.
 
 ![Model Attempt 2](images/model-attempt2.png?raw=true "Model Attempt 2")
 
-Testing the same seahorse image our previous network got wrong, we see a complete
-reversal: 100% seahorse.
+이전 신경망이 오류를 일으킨 것과 같은 해마 이미지를 테스트한 결과, 우리는 완전한 반전을 
+볼 수 있습니다: 100% 해마!
 
 ![Model 2 Classify 1](images/model-attempt2-classify1.png?raw=true "Model 2 Classify 1")
 
-Even a children’s drawing of a seahorse works:
+심지어 어린이들이 그린 해마 이미지에도 효과가 있습니다:
 
 ![Model 2 Classify 2](images/model-attempt2-classify2.png?raw=true "Model 2 Classify 2")
 
-The same goes for a dolphin:
+돌고래도 마찬가지입니다:
 
 ![Model 2 Classify 3](images/model-attempt2-classify3.png?raw=true "Model 2 Classify 3")
 
-Even with images that you think might be hard, like this one that has multiple dolphins
-close together, and with their bodies mostly underwater, it does the right thing:
+이처럼 여러 마리의 돌고래들이 서로 가까이 붙어 있고, 그들의 몸 대부분이 물 속에 잠겨 있어 식별하기에
+어려워보이는 이미지들임에도 불구하고, 잘 작동됩니다:
 
 ![Model 2 Classify 4](images/model-attempt2-classify4.png?raw=true "Model 2 Classify 4")
 
-### Training: Attempt 3, Fine Tuning GoogLeNet
+### 훈련: 시도 3, GoogLeNet 미세 조정-*Fine Tuning*-
 
-Like the previous AlexNet model we used for fine tuning, we can use GoogLeNet as well.
-Modifying the network is a bit trickier, since you have to redefine three fully
-connected layers instead of just one.
+우리가 미세 조정-*Fine Tuning*-을 위해 사용했던 이전의 AlexNet 모델과 마찬가지로, GoogLeNet도 
+사용할 수 있습니다. 신경망을 수정하는 것은 하나의 계층이 아니라 3개의 완전히 연결된 계층을 
+재정의해야 하기 때문에 좀 더 까다롭습니다. 
 
-To fine tune GoogLeNet for our use case, we need to once again create a
-new **Classification Model**:
+우리의 유스케이스에 맞게 GoogLeNet을 미세 조정하려면, 우리는 또 다시 새로운 **분류 모델-*Classification Model*-** 
+을 만들어야 합니다:
 
 ![New Classification Model](images/new-image-classification-model-attempt3.png?raw=true "New Classification Model")
 
