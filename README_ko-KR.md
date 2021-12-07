@@ -255,48 +255,51 @@ Dataset에 `dolphins-and-seahorses`라는 이름을 지정하고, **Create**를 
 
 ![New Image Classification Dataset](images/new-image-classification-dataset.png?raw=true "New Image Classification Dataset")
 
-이제 우리의 데이터셋이 생성될 것입니다. 제 노트북에선 4초만에 생성되었죠. 마지막으로 2개의 카테고리 속 92개의 
-훈련 이미지-*Training images*- (돌고래 49개, 해마 43개)와 30개의 검증 이미지-*Validation images*- (돌고래 16개,
+이제 데이터셋이 생성될 것입니다. 제 노트북에선 4초만에 생성되었죠. 마지막으로 2개의 카테고리 속 92개의 
+훈련 이미지 -*Training images*- (돌고래 49개, 해마 43개)와 30개의 검증 이미지 -*Validation images*- (돌고래 16개,
 해마 14개)가 있습니다. 이것은 매우 작은 데이터셋이지만, 신경망을 훈련하고 검증하는 데 오랜 시간이 
 걸리지 않기 때문에 우리의 활동과 학습 목적에 알맞습니다.
 
-이미지가 스쿼시된 후 이미지를 확인하려면 **DB 탐색-*Explore the db*-**을 하면 됩니다.
+이미지가 스쿼시된 후 이미지를 확인하려면 **DB 탐색** -*Explore DB*- 을 하면 됩니다.
 
 ![Explore the db](images/explore-dataset.png?raw=true "Explore the db")
 
-### Training: Attempt 1, from Scratch
+### 훈련: 시도 1, 처음부터
 
-Back in the DIGITS Home screen, we need to create a new **Classification Model**:
+DIGITS 홈 화면으로 돌아가서, 우리는 새로운 **분류 모델** -*Classification Model*- 을 생성해야 합니다:
 
 ![Create Classification Model](images/create-classification-model.png?raw=true "Create Classification Model")
 
-We’ll start by training a model that uses our `dolphins-and-seahorses` dataset,
-and the default settings DIGITS provides.  For our first network, we’ll choose to
-use one of the standard network architectures, [AlexNet (pdf)](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf). [AlexNet’s design](http://vision.stanford.edu/teaching/cs231b_spring1415/slides/alexnet_tugce_kyunghee.pdf)
-won a major computer vision competition called ImageNet in 2012.  The competition
-required categorizing 1000+ image categories across 1.2 million images.
+우리는 우리의 `dolphins-and-seahorses` 데이터셋과 DIGITS가 제공하는 기본 설정값을 
+사용하는 모델을 훈련시키는 것부터 시작할 것입니다 첫번째 신경망으로는 표준 신경망 
+아키텍처 중 하나인 [AlexNet (pdf)](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)
+을 사용할 것입니다. [AlexNet 설계](http://vision.stanford.edu/teaching/cs231b_spring1415/slides/alexnet_tugce_kyunghee.pdf)
+는 2012년 ImageNet이라는 큰 컴퓨터 비전 대회에서 우승했습니다. 이 대회는 120만
+개의 이미지에 걸쳐 1000개 이상의 이미지 카테고리를 분류해야 했습니다. 
  
 ![New Classification Model 1](images/new-image-classification-model-attempt1.png?raw=true "Model 1")
 
-Caffe uses structured text files to define network architectures.  These text files
-are based on [Google’s Protocol Buffers](https://developers.google.com/protocol-buffers/).
-You can read the [full schema](https://github.com/BVLC/caffe/blob/master/src/caffe/proto/caffe.proto) Caffe uses.
+Caffe는 구조화된 텍스트 파일을 사용해 신경망 아키텍처를 정의합니다. 이러한 텍스트 파일은
+[Google의 프로토콜 버퍼](https://developers.google.com/protocol-buffers/)를 기반으로 합니다.
+여러분은 Caffe가 사용하는 [전체 도식](https://github.com/BVLC/caffe/blob/master/src/caffe/proto/caffe.proto)
+을 읽어보실 수 있습니다.
+대부분의 파트에서 우리는 이것들을 사용하지 않겠지만, 나중에 그것들을 수정해줘야 하기 때문에 
+이러한 것들이 있다는 것을 알아두는 것이 좋습니다.
 For the most part we’re not going to work with these, but it’s good to be aware of their
-existence, since we’ll have to modify them in later steps.  The AlexNet prototxt file
-looks like this, for example: https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt. 
+existence, since we’ll have to modify them in later steps. AlextNet protxt 파일은 다음과 
+같습니다: https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt. 
 
-We’ll train our network for **30 epochs**, which means that it will learn (with our
-training images) then test itself (using our validation images), and adjust the
-network’s weights depending on how well it’s doing, and repeat this process 30 times.
-Each time it completes a cycle we’ll get info about **Accuracy** (0% to 100%,
-where higher is better) and what our **Loss** is (the sum of all the mistakes that were
-made, where lower is better).  Ideally we want a network that is able to predict with
-high accuracy, and with few errors (small loss).
+**epoch는 30**으로 신경망을 훈련시킵니다. 즉, 신경망이 학습(우리의 training image를 통해)하면 
+자체적으로 테스트(validation image을 사용해)하며 결과에 따라 신경망의 가중치를 조정하하는 것을 
+30번 반복합니다. 한 사이클이 완료될 때마다 **Accuracy** (0% ~ 100%, 높을수록 좋은 값)와 
+**Loss**가 얼마인지(발생한 모든 오류의 합계, 낮을 수록 좋은 값)에 대한 정보를 얻을 수 있습니다.
+이상적으로는 우리는 오류(작은 손실 -*loss*-)이 거의 없는, 매우 정확하게 예측할 수 있는 신경망을
+원합니다.
 
-**NOTE:** some people have [reported hitting errors in DIGITS](https://github.com/humphd/have-fun-with-machine-learning/issues/17)
-doing this training run. For many, the problem related to available memory (the process
-needs a lot of memory to work).  If you're using Docker, you might want to try
-increasing the amount of memory available to DIGITS (in Docker, preferences -> advanced -> memory).
+**NOTE:** 몇몇 사람들이 이 훈련을 시키면서 [DIGITS에서 hit 오류가 보고](https://github.com/humphd/have-fun-with-machine-learning/issues/17)
+했습니다. 대부분의 경우, 이 문제는 가용 메모리와 관련된 것입니다(프로세스가 실행하려면 많은
+메모리가 필요합니다). 여러분이 Docker를 사용하고 있다면, DIGITS에서 사용할 수 있는 메모리 양을 
+늘릴 수 있습니다. (Docker에서, 환경설정 -*preferences*- -> 고급 -*preferences*- -> 메모리 -*preferences*- )
 
 Initially, our network’s accuracy is a bit below 50%.  This makes sense, because at first it’s
 just “guessing” between two categories using randomly assigned weights.  Over time
