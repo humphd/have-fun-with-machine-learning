@@ -156,66 +156,64 @@ https://github.com/NVIDIA/DIGITS/tree/master/docs 에
 Docker부터 리눅스에서 패키지들을 pre-baked하거나 소스에서 빌드하기까지, DIGITS를 설치하고 실행하는 데에는 다양한
 방법이 있습니다. 저는 Mac을 사용하고 있으므로 소스에서 빌드했습니다.
 
-**NOTE:** In my walkthrough I've used the following non-released version of DIGITS
-from their Github repo: https://github.com/NVIDIA/DIGITS/commit/81be5131821ade454eb47352477015d7c09753d9
+**NOTE:** 이 가이드에선 Github repo에서 출시되지 않은 DIGITS의 다음 버전을 사용했습니다 : https://github.com/NVIDIA/DIGITS/commit/81be5131821ade454eb47352477015d7c09753d9
 
-Because it’s just a bunch of Python scripts, it was fairly painless to get working.
-The one thing you need to do is tell DIGITS where your `CAFFE_ROOT` is by setting
-an environment variable before starting the server:
+python 스크립트 묶음이기 때문에 작업하는 것은 힘들지 않았습니다. 여러분이 해야 할 것은 서버를
+시작하기 전에 환경 변수를 설정하여 `CAFFE_ROOT`의 위치를 DIGITS에 알려주는 것입니다:
 
 ```bash
 export CAFFE_ROOT=/path/to/caffe
 ./digits-devserver
 ```
 
-NOTE: on Mac I had issues with the server scripts assuming my Python binary was
-called `python2`, where I only have `python2.7`.  You can symlink it in `/usr/bin`
-or modify the DIGITS startup script(s) to use the proper binary on your system.
+NOTE: Mac에서 파이썬 바이너리가 `pyhon2`라고 가정하고 서버 스크립트에 문제가 있었는데, 여기서 저는
+`python2.7`만 가지고 있었습니다. 이것은 `/usr/bin`에서 심볼릭링크로 접근하거나 DIGITS 부팅시
+스크립트를 조정하여 해결할 수 있습니다. 서버가 시작되면 http://localhost:5000 에 웹 브라우저를 
+통해 밑에서 다룰 모든 작업을 수행할 수 있습니다.
 
-Once the server is started, you can do everything else via your web browser at http://localhost:5000, which is what I'll do below.
+### Option 2: Docker를 사용한 Caffe와 DIGITS 
 
-### Option 2: Caffe and DIGITS using Docker
-
-Install [Docker](https://www.docker.com/), if not already installed, then run the following command
-in order to pull and run a full Caffe + Digits container.  A few things to note:
-* make sure port 8080 isn't allocated by another program. If so, change it to any other port you want.
-* change `/path/to/this/repository` to the location of this cloned repo, and `/data/repo` within the container
-will be bound to this directory.  This is useful for accessing the images discussed below.
+[Docker](https://www.docker.com/)를 설치하고(설치되어 있지 않은 경우) 전체 Caffe + Digits 
+컨테이너를 꺼내기 위해 다음 명령을 실행합니다. 몇 가지의 주의할 사항:
+* 포트 8080이 다른 프로그램에 할당되진 않았는지 확인하십시오. 만약 그렇다면, 임의의 다른 포트로
+ 변경하십시오.
+* 이 복제(clone)된 repo의 위치를 `/path/to/this/repostiory`로 옮기십시오. 그러면 컨테이너
+ 내의 `/data/repo`가 이 디렉토리에 바인딩됩니다. 이것은 아래 설명된 이미지에 접근하는 데
+ 유용합니다. 
 
 ```bash
 docker run --name digits -d -p 8080:5000 -v /path/to/this/repository:/data/repo kaixhin/digits
 ```
 
-Now that we have our container running you can open up your web browser and open `http://localhost:8080`. Everything in the repository is now in the container directory `/data/repo`.  That's it. You've now got Caffe and DIGITS working.
-
-If you need shell access, use the following command:
+이제 컨테이너가 실행 중이므로 우리는 웹 브라우저를 열고 `http://localhost:8080`에 접근할 수 있습니다.
+이 레포지토리의 모든 내용은 이제 컨테이너 디렉토리 `/data/repo`에 있습니다. 이제 다 했습니다. 이제 Caffe
+와 DIGITS가 실행되고 있습니다. 
+셸에 접근이 필요한 경우, 다음 명령을 따라하십시오:
 
 ```bash
 docker exec -it digits /bin/bash
 ```
 
-## Training a Neural Network
+## 신경망 훈련
 
-Training a neural network involves a few steps:
+신경망을 훈련시키는 것은 몇 가지 단계를 수반합니다:
 
-1. Assemble and prepare a dataset of categorized images
-2. Define the network’s architecture
-3. Train and Validate this network using the prepared dataset
+1. 분류된 이미지의 데이터세트를 구성하고 준비하십시오
+2. 신경망의 아키텍처를 규정하십시오
+3. 준비된 데이터세트를 사용해 이 신경망을 훈련시키고 검증하십시오.
 
-We’re going to do this 3 different ways, in order to show the difference
-between starting from scratch and using a pretrained network, and also to show
-how to work with two popular pretrained networks (AlexNet, GoogLeNet) that are
-commonly used with Caffe and DIGITs.
+처음부터 시작하는 것과 사전훈련된 신경망을 사용하는 것의 차이를 보여주고 Caffe와 DIGITs에서 흔히  
+사용되는 두 가지 인기 있는 사전훈련된 신경망(AlexNet, GoogLeNet)에서 어떻게 실행하는 지 보여주기
+위해 우리는 이러한 3단계를 거칠 것입니다. 
 
-For our training attempts, we’ll use a small dataset of Dolphins and Seahorses.
-I’ve put the images I used in [data/dolphins-and-seahorses](data/dolphins-and-seahorses).
-You need at least 2 categories, but could have many more (some of the networks
-we’ll use were trained on 1000+ image categories).  Our goal is to be able to
-give an image to our network and have it tell us whether it’s a Dolphin or a Seahorse.
+우리는 훈련 시도에 돌고래와 해마의 작은 데이터세트를 사용할 것입니다. [data/dolphins-and-seahorses](data/dolphins-and-seahorses)에 제가 사용했던 이미지들을 넣어두었습니다. 2개 이상의 카테고리가 필요하고 여러분은 더
+많은 카테고리들을 가질 수도 있습니다(사용할 신경망 중 일부는 1000개 이상의 이미지 카테고리에 대해 
+훈련되었습니다). 우리의 목표는 우리의 신경망에 이미지를 주고 그것이 돌고래인지 해마인지 우리에게 
+알려주게하는 것입니다.
 
-### Prepare the Dataset
+### 데이터세트 준비
 
-The easiest way to begin is to divide your images into a categorized directory layout:
+가장 쉬운 방법은 이미지들을 분류된 디렉토리 배치로 나누는 것입니다.:
 
 ```
 dolphins-and-seahorses/
@@ -231,32 +229,30 @@ dolphins-and-seahorses/
         ...
 ```
 
-Here each directory is a category we want to classify, and each image within
-that category dir an example we’ll use for training and validation. 
+여기 각 디렉토리는 분류할 카테고리이며, 해당 카테고리 디렉토리 내의 각 이미지는 훈련 및 검증에
+사용할 예제입니다. 
 
-> Q: “Do my images have to be the same size?  What about the filenames, do they matter?”
+> Q: “이미지들의 사이즈가 같아야 하나요? 파일명은 어떻게 하죠, 그게 중요한가요?”
 
-No to both. The images sizes will be normalized before we feed them into
-the network.  We’ll eventually want colour images of 256 x 256 pixels, but
-DIGITS will crop or squash (we'll squash) our images automatically in a moment.
-The filenames are irrelevant--it’s only important which category they are contained
-within.
+둘 다 아닙니다. 이미지 크기는 우리가 신경망에 입력하기 전에 정규화될 것입니다. 우리는 마지막엔
+256 x 256 픽셀의 컬러 이미지를 사용하겠지만, DIGITS는 이미지를 자동으로 자르거나 스쿼시할 
+것입니다. 파일 이름은 관련이 없습니다--어떤 카테고리에 포함되느냐가 중요할 뿐입니다.  
 
-> Q: “Can I do more complex segmentation of my categories?”
+> Q: “제 카테고리들을 더 복잡하게 세분화해도 되나요?”
 
-Yes. See https://github.com/NVIDIA/DIGITS/blob/digits-4.0/docs/ImageFolderFormat.md.
+네. https://github.com/NVIDIA/DIGITS/blob/digits-4.0/docs/ImageFolderFormat.md 를 참고하세요.
 
-We want to use these images on disk to create a **New Dataset**, and specifically,
-a **Classification Dataset**.
+우리는 이 이미지를 디스크에 사용하여 **New Dataset**, 그 중에서도 **Classification Dataset**를
+생성하려고 합니다.
 
 ![Create New Dataset](images/create-new-dataset.png?raw=true "Create New Dataset")
 
-We’ll use the defaults DIGITS gives us, and point **Training Images** at the path
-to our [data/dolphins-and-seahorses](data/dolphins-and-seahorses) folder.
-DIGITS will use the categories (`dolphin` and `seahorse`) to create a database
-of squashed, 256 x 256 Training (75%) and Testing (25%) images.
+DIGITS가 제공하는 기본 설정값을 사용하고 [data/dolphins-and-seahorses](data/dolphins-and-seahorses) 
+폴더 경로에 **Training Images**를 지정합니다. DIGITS는 카테고리(`돌고래`와 `해마`)를 사용하여 
+스쿼시된 256 x 256 Training (75%) 및 Testing (25%) 이미지의 데이터베이스를 만듭니다. 
+We’ll use the defaults DIGITSS gives us, and point training Images at the path to our folder. DIGITS will use the categories (`dolphin` and `seahorse`) to create a database of squashed, 256 x 256 Training (75%) and Testing (25%) images.
 
-Give your Dataset a name,`dolphins-and-seahorses`, and click **Create**.
+Dataset에 `dolphins-and-seahorses`라는 이름을 지정하고, **Create**를 클릭합니다.
 
 ![New Image Classification Dataset](images/new-image-classification-dataset.png?raw=true "New Image Classification Dataset")
 
