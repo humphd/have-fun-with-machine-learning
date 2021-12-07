@@ -361,44 +361,43 @@ existence, since we’ll have to modify them in later steps. AlextNet protxt 파
 식별하며, Flickr 이미지의 미술 양식을 분류하는 것과 같은 흥미로운 일들을 하는데 사용되어 
 왔습니다. 
 
-Doing this perfectly, like all of machine learning, requires you to understand the
-data and network architecture--you have to be careful with overfitting of the data, 
-might need to fix some of the layers, might need to insert new layers, etc. However,
-my experience is that it “Just Works” much of the time, and it’s worth you simply doing
-an experiment to see what you can achieve using our naive approach.
+모든 머신러닝과 마찬가지로 이 작업을 완벽하게 수행하려면 데이터 및 신경망 아키텍처를 이해해야 
+합니다--데이터의 과적합에 주의해야 하며 일부 계층을 수정해야 하거나 새 계층을 삽입해야 하는 
+경우도 있습니다. 하지만, 제 경험상, 대부분의 경우에 "단지 작동"할 뿐이며 그저 경험을 쌓고
+우리의 단순한 접근법을 사용하여 무엇을 달성할 수 있는지 확인하는 것만으로 가치있습니다.
 
-#### Uploading Pretrained Networks
+#### 사전훈련된 신경망 업로드
 
-In our first attempt, we used AlexNet’s architecture, but started with random
-weights in the network’s layers.  What we’d like to do is download and use a
-version of AlexNet that has already been trained on a massive dataset.
+첫 번째 시도에서는 Alexnet의 아키텍처를 사용했지만, 신경망 계층에서 랜덤한 가중치로 시작했습니다.
+우리는 대규모 데이터셋에 대해 이미 훈련받은 버전의 AlexNet을 다운로드하고 사용하고자 합니다.
 
-Thankfully we can do exactly this.  A snapshot of AlexNet is available for download: https://github.com/BVLC/caffe/tree/master/models/bvlc_alexnet.
-We need the binary `.caffemodel` file, which is what contains the trained weights, and it’s
-available for download at http://dl.caffe.berkeleyvision.org/bvlc_alexnet.caffemodel.
+다행히도 우리는 이것을 바로 할 수 있습니다. AlexNet의 스냅샷은 여기서 다운로드할 수 있습니다: https://github.com/BVLC/caffe/tree/master/models/bvlc_alexnet.
+우리는 훈련된 가중치를 포함하고 있는 이진 파일 `.caffemodel` 도 필요하고, http://dl.caffe.berkeleyvision.org/bvlc_alexnet.caffemodel 에서 다운로드할 수 있습니다. 
+ 
+사전훈련된 모델을 받는 동안, 하나 더 해봅시다. 
+2014년에 Google은 [GoogLeNet](https://research.google.com/pubs/pub43022.html)으로 같은 
+ImageNet 대회에서 우승했습니다 (코드명 Inception):
+22계층의 신경망, GoogLeNet의 스냅샷도 다운로드할 수 있습니다. https://github.com/BVLC/caffe/tree/master/models/bvlc_googlenet 을 참조하십시오.
+다시 말하지만, 우리는  http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel 에서 다운로드
+할 수 있는 모든 사전훈련된 가중치들로 구성된 `.caffemodel` 파일이 필요합니다.
 
-While you’re downloading pretrained models, let’s get one more at the same time.
-In 2014, Google won the same ImageNet competition with [GoogLeNet](https://research.google.com/pubs/pub43022.html) (codenamed Inception):
-a 22-layer neural network. A snapshot of GoogLeNet is available for download
-as well, see https://github.com/BVLC/caffe/tree/master/models/bvlc_googlenet.
-Again, we’ll need the `.caffemodel` file with all the pretrained weights,
-which is available for download at http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel. 
-
-With these `.caffemodel` files in hand, we can upload them into DIGITs.  Go to
-the **Pretrained Models** tab in DIGITs home page and choose **Upload Pretrained Model**:
+우리는 `.caffemodel` 파일을 가지고 DIGITs에 업로드할 수 있습니다. DIGITS 홈페이지에 
+**Pretrained Models** 탭으로 이동하여 **Upload Pretrained Model**을 클릭합니다:
 
 ![Load Pretrained Model](images/load-pretrained-model.png?raw=true "Load Pretrained Model")
 
+이러한 사전훈련된 두 모델은 모두 DIGITS가 제공하는 기본설정값을 사용할 수 있습니다(i.e. 
+256 x 256의 스쿼시된 컬러 이미지). 
 For both of these pretrained models, we can use the defaults DIGITs provides
-(i.e., colour, squashed images of 256 x 256).  We just need to provide the 
-`Weights (**.caffemodel)` and `Model Definition (original.prototxt)`.
-Click each of those buttons to select a file.
+(i.e., colour, squashed images of 256 x 256). 우리는 `가중치 -Weights- (**.caffemodel)`
+및 ` 모델 정의 -Model Definition- (original.prototxt)`만 제공하면 됩니다.
+각 버튼을 클릭하여 파일을 선택하십시오.
 
-For the model definitions we can use https://github.com/BVLC/caffe/blob/master/models/bvlc_googlenet/train_val.prototxt
-for GoogLeNet and https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt
-for AlexNet.  We aren’t going to use the classification labels of these networks,
-so we’ll skip adding a `labels.txt` file:
- 
+모델 정의(model definitions)에 대해서는 GoogLeNet의 경우에는 https://github.com/BVLC/caffe/blob/master/models/bvlc_googlenet/train_val.prototxt 을 
+참조하고 AlexNet의 경우에는 https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt
+을 참조할 수 있습니다. 우리는 이러한 분류 레이블들을 사용하지 않을 것이므로 `labels.txt` 파일 추가는
+생략하겠습니다:
+
 ![Upload Pretrained Model](images/upload-pretrained-model.png?raw=true "Upload Pretrained Model")
 
 Repeat this process for both AlexNet and GoogLeNet, as we’ll use them both in the coming steps.
