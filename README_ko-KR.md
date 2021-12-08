@@ -770,22 +770,22 @@ Python 인터페이스를 사용하는 분류 버전의 경우, DIGITS에 [좋�
 
 ### 파이썬 예제
 
-Let's write a program that uses our fine-tuned GoogLeNet model to classify the untrained images
-we have in [data/untrained-samples](data/untrained-samples).  I've cobbled this together based on
-the examples above, as well as the `caffe` [Python module's source](https://github.com/BVLC/caffe/tree/master/python),
-which you should prefer to anything I'm about to say.
+미세 조정된 GoogLeNet 모델을 사용하여 [data/untrained-samples](data/untrained-samples)에 
+있는 훈련되지 않은 이미지를 분류하는 프로그램을 작성합시다. 위의 예제들과 `caffe` [Python module's source](https://github.com/BVLC/caffe/tree/master/python)를 바탕으로 종합해보았습니다. 여러분은 
+이제부터 알려드릴 것을 좋아하실 겁니다.
 
-A full version of what I'm going to discuss is available in [src/classify-samples.py](src/classify-samples.py).
-Let's begin!
+제가 말하고자 하는 내용의 전체 버전은 [src/classify-samples.py](src/classify-samples.py)에서 
+확인하실 수 있습니다.
+시작하겠습니다.
 
-First, we'll need the [NumPy](http://www.numpy.org/) module.  In a moment we'll be using [NumPy](http://www.numpy.org/)
-to work with [`ndarray`s](https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html), which Caffe uses a lot.
-If you haven't used them before, as I had not, you'd do well to begin by reading this
-[Quickstart tutorial](https://docs.scipy.org/doc/numpy-dev/user/quickstart.html).
+먼저, [NumPy](http://www.numpy.org/) 모듈이 필요합니다. 잠시 후에 [NumPy](http://www.numpy.org/)
+를 이용해 Caffe에서 많이 쓰이는 [`ndarray`s](https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html)
+를 사용할 것입니다. 안써보셨다면, 저도 안 써봤지만, 이 [퀵스타트 튜토리얼](https://docs.scipy.org/doc/numpy-dev/user/quickstart.html)
+을 읽어보시는 건 어떨까요?
 
-Second, we'll need to load the `caffe` module from our `CAFFE_ROOT` dir.  If it's not already included
-in your Python environment, you can force it to load by adding it manually. Along with it we'll
-also import caffe's protobuf module:
+두 번째로 우리는 `CAFFE_ROOT` 디렉토리로부터 `caffe` 모듈을 적재해야 합니다. 파이썬 환경에 포함되어 
+있지 않은 경우에는 수동으로 추가하여 강제로 적재할 수 있습니다. 마찬가지로 우리는 caffe의 protobuf 
+모듈도 가져와야 합니다:
 
 ```python
 import numpy as np
@@ -796,20 +796,21 @@ import caffe
 from caffe.proto import caffe_pb2
 ```
 
-Next we need to tell Caffe whether to [use the CPU or GPU](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L50-L52).
-For our experiments, the CPU is fine:
+다음으로 [CPU 또는 GPU](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L50-L52)
+중 어떤 것을 사용하는지 Caffe에 알려야 합니다.
+실험에서 CPU는 잘 작동합니다:
 
 ```python
 caffe.set_mode_cpu()
 ```
 
-Now we can use `caffe` to load our trained network.  To do so, we'll need some of the files we downloaded
-from DIGITS, namely:
+이제 우리는 `caffe`에서 훈련된 신경망을 적재해보겠습니다. 그러려면 DIGITS에서 다운로드한 
+파일 중 일부가 필요합니다:
 
-* `deploy.prototxt` - our "network file", the description of the network.
-* `snapshot_iter_90.caffemodel` - our trained "weights"
+* `deploy.prototxt` - our "신경망 파일", 신경망에 대한 서술.
+* `snapshot_iter_90.caffemodel` - 훈련된 "가중치"
 
-We obviously need to provide the full path, and I'll assume that my files are in a dir called `model/`:
+분명하게 전체 경로를 제공해줘야 하며, 전 제 파일들이 `model/` 디렉토리에 있다고 가정하겠습니다:
 
 ```python
 model_dir = 'model'
@@ -818,22 +819,22 @@ weights_file = os.path.join(model_dir, 'snapshot_iter_90.caffemodel')
 net = caffe.Net(deploy_file, caffe.TEST, weights=weights_file)
 ```
 
-The `caffe.Net()` [constructor](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L91-L117)
-takes a network file, a phase (`caffe.TEST` or `caffe.TRAIN`), as well as an optional weights filename.  When
-we provide a weights file, the `Net` will automatically load them for us. The `Net` has a number of
-[methods and attributes](https://github.com/BVLC/caffe/blob/master/python/caffe/pycaffe.py) you can use.
+`caffe.Net()` [생성자](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L91-L117)
+는 신경망 파일, 단계-*phase*-(`caffe.TEST` 또는 `caffe.TRAIN`) 및 부가 가중치 파일 이름을 
+사용합니다. 우리가 가중치 파일을 주면, `Net`이 자동으로 적재합니다. `Net`에는 여러분이 사용할 
+수 있는 몇 가지 [method와 attribute](https://github.com/BVLC/caffe/blob/master/python/caffe/pycaffe.py)
+가 있습니다.
 
-**Note:** There is also a [deprecated version of this constructor](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L119-L134),
-which seems to get used often in sample code on the web. It looks like this, in case you encounter it:
+**Note:** [생성자의 deprecated version](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/_caffe.cpp#L119-L134),
+도 있으며, 웹 상에 샘플 코드에서 자주 사용되어 집니다. 이렇게 생겼습니다:
 
 ```python
 net = caffe.Net(str(deploy_file), str(model_file), caffe.TEST)
 ```
 
-We're interested in loading images of various sizes into our network for testing. As a result,
-we'll need to *transform* them into a shape that our network can use (i.e., colour, 256x256).
-Caffe provides the [`Transformer` class](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L98)
-for this purpose.  We'll use it to create a transformation appropriate for our images/network:
+우리는 테스트를 위해 다양한 크기의 이미지를 신경망에 업로드하는 데 관심있습니다. 따라서, 신경망에서 
+사용할 수 있는 형태(i.e. 컬러, 256x256)로 *변형*해야 하는데, 이를 위해 Caffe에서  [`Transformer` class](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L98)
+를 제공하고 있습니다. 우리는 이것을 이미지/신경망에 알맞게 변형하기 위해 사용할 것입니다:
 
 ```python
 transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
