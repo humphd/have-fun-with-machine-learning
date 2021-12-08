@@ -833,7 +833,7 @@ net = caffe.Net(str(deploy_file), str(model_file), caffe.TEST)
 ```
 
 우리는 테스트를 위해 다양한 크기의 이미지를 신경망에 업로드하는 데 관심있습니다. 따라서, 신경망에서 
-사용할 수 있는 형태(i.e. 컬러, 256x256)로 *변형*해야 하는데, 이를 위해 Caffe에서  [`Transformer` class](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L98)
+사용할 수 있는 형태(i.e. 컬러, 256x256)로 *변형*해야 하는데, 이를 위해 Caffe에서  [`Transformer` 클래스](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L98)
 를 제공하고 있습니다. 우리는 이것을 이미지/신경망에 알맞게 변형하기 위해 사용할 것입니다:
 
 ```python
@@ -846,7 +846,7 @@ transformer.set_raw_scale('data', 255)
 transformer.set_channel_swap('data', (2, 1, 0))
 ```
 
-We can also use the `mean.binaryproto` file DIGITS gave us to set our transformer's mean:
+또한 transformer의 mean을 설정하기 위해 DIGITS가 제공하는 `mean.binaryproto` 파일을 사용하겠습니다:
 
 ```python
 # This code for setting the mean from https://github.com/NVIDIA/DIGITS/tree/master/examples/classification
@@ -866,16 +866,16 @@ with open(mean_file, 'rb') as infile:
     transformer.set_mean('data', pixel)
 ```
 
-If we had a lot of labels, we might also choose to read in our labels file, which we can use
-later by looking up the label for a probability using its position (e.g., 0=dolphin, 1=seahorse):
+레이블이 많이 있다면 레이블 파일-*labels file*-을 가져올 수도 있는데,  나중에 레이블의 상태-*position*-(e.g. 0=dolphin, 1=seahorse)를 사용하여 확률에 대해 레이블을 조회하고 사용할 수 있습니다:
 
 ```python
 labels_file = os.path.join(model_dir, 'labels.txt')
 labels = np.loadtxt(labels_file, str, delimiter='\n')
 ``` 
 
-Now we're ready to classify an image.  We'll use [`caffe.io.load_image()`](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L279)
-to read our image file, then use our transformer to reshape it and set it as our network's data layer:
+이제 이미지를 분류하기 위한 준비를 마쳤습니다. [`caffe.io.load_image()`](https://github.com/BVLC/caffe/blob/61944afd4e948a4e2b4ef553919a886a8a8b8246/python/caffe/io.py#L279)
+를 사용해 이미지 파일을 읽은 다음 transformer를 사용해 형태를 바꾸고 신경망의 데이터 계층으로 
+설정합니다:
 
 ```python
 # Load the image from disk using caffe's built-in I/O module
@@ -884,9 +884,9 @@ image = caffe.io.load_image(fullpath)
 net.blobs['data'].data[...] = transformer.preprocess('data', image)
 ```
 
-> Q: "How could I use images (i.e., frames) from a camera or video stream instead of files?"
+> Q: "파일 대신에, 카메라나 비디오 스트림의 이미지를 사용하려면 어떻게 해야 하나요?"
 
-Great question, here's a skeleton to get you started:
+좋은 질문입니다. 여기 스켈레톤 코드가 있습니다:
 
 ```python
 import cv2
@@ -908,8 +908,8 @@ while rval:
 webCamCap.release()
 ```
 
-Back to our problem, we next need to run the image data through our network and read out
-the probabilities from our network's final `'softmax'` layer, which will be in order by label category:
+다시 우리의 문제로 돌아가서, 우리는 다음으로 이미지 데이터로 신경망을 실행하고 레이블 
+카테고리별로 순서대로 정렬될 신경망의 마지막 `'softmax'` 계층에서 확률을 읽어야 합니다:
 
 ```python
 # Run the image's pixel data through the network
@@ -926,9 +926,8 @@ filename = os.path.basename(fullpath)
 print '%s is a %s dolphin=%.3f%% seahorse=%.3f%%' % (filename, label, dolphin_prob*100, seahorse_prob*100)
 ```
 
-Running the full version of this (see [src/classify-samples.py](src/classify-samples.py)) using our
-fine-tuned GoogLeNet network on our [data/untrained-samples](data/untrained-samples) images gives
-me the following output:
+[data/untrained-samples](data/untrained-samples) 이미지에서 미세 조정된 GoogLeNet 신경망을 사용하여 
+이것의([src/classify-samples.py](src/classify-samples.py)를 보십시오) 풀 버전을 실행한다면 다음과 같은 결과가 나옵니다:
 
 ```
 [...truncated caffe network output...]
@@ -940,34 +939,32 @@ seahorse2.jpg is a seahorse dolphin=0.000% seahorse=100.000%
 seahorse3.jpg is a seahorse dolphin=0.014% seahorse=99.986%
 ```
 
-I'm still trying to learn all the best practices for working with models in code. I wish I had more
-and better documented code examples, APIs, premade modules, etc to show you here. To be honest,
-most of the code examples I’ve found are terse, and poorly documented--Caffe’s
-documentation is spotty, and assumes a lot.
+저는 계속 코드 상에서 모델로 작동하는 사례들을 살펴보며 공부하는 중입니다. 여기에 보여드릴 
+수 있는 코드 예시, API, free-made 모듈 등이 더 많이, 잘 문서화되면 좋겠습니다. 저도 제가 
+찾은 대부분의 코드 예제가 단순하고 어쩌면 형편없이 문서화되어 있다는 것을 알고 있습니다
+--특히 Caffe 문서는 지저분하고 많은 것을 가정해가며 했습니다.
 
-It seems to me like there’s an opportunity for someone to build higher-level tools on top of the
-Caffe interfaces for beginners and basic workflows like we've done here.  It would be great if
-there were more simple modules in high-level languages that I could point you at that “did the
-right thing” with our model; someone could/should take this on, and make *using* Caffe
-models as easy as DIGITS makes *training* them.  I’d love to have something I could use in node.js,
-for example.  Ideally one shouldn’t be required to know so much about the internals of the model or Caffe.
-I haven’t used it yet, but [DeepDetect](https://deepdetect.com/) looks interesting on this front,
-and there are likely many other tools I don’t know about.
+제가 보기엔 초보자용 Caffe 인터페이스와 여기와 같은 기초적인 워크플로우 위에 더 높은 수준의 
+도구를 구축할 기회가 온 것같습니다. 여러분에게 "잘했어"라고 알려줄 수 있는 고급 언어로 된 더 
+간단한 모듈들이 있다면 좋을텐데 말입니다; 누군가는 이것을 받아들일 수 있고, DIGITS가 *훈련*
+시키는 것만큼 쉽게 Caffe 모델을 사용할 수 있거나 사용해야 할 겁니다. Node.js같은 곳에서 
+사용할 수 있으면 좋을텐데요. 이상적으로는 모델이나 Caffe 내부에 대해 많은 것을 알 필요는 
+없습니다. 아직 사용해본 적은 없지만, [DeepDetect](https://deepdetect.com/)도 이러한 면에서 
+흥미로워 보이고, 제가 알지 못하는 다른 많은 툴이 있을 수 있습니다. 
 
-## Results
+## 결과
 
-At the beginning we said that our goal was to write a program that used a neural network to
-correctly classify all of the images in [data/untrained-samples](data/untrained-samples).
-These are images of dolphins and seahorses that were never used in the training or validation
-data:
+처음에 우리는 신경망을 이용하여 [data/untrained-samples](data/untrained-samples)의 모든 이미지를 
+올바르게 분류하는 프로그램을 작성하는 것이 목표라고 했었죠? 이건 훈련이나 검증 데이터로 쓰인 적 없는 
+돌고래와 해마의 이미지입니다:
 
-### Untrained Dolphin Images
+### 훈련에 쓰인 적 없는 돌고래 이미지
 
 ![Dolphin 1](data/untrained-samples/dolphin1.jpg?raw=true "Dolphin 1")
 ![Dolphin 2](data/untrained-samples/dolphin2.jpg?raw=true "Dolphin 2")
 ![Dolphin 3](data/untrained-samples/dolphin3.jpg?raw=true "Dolphin 3")
 
-### Untrained Seahorse Images
+### 훈련에 쓰인 적 없는 해마 이미지
 
 ![Seahorse 1](data/untrained-samples/seahorse1.jpg?raw=true "Seahorse 1")
 ![Seahorse 2](data/untrained-samples/seahorse2.jpg?raw=true "Seahorse 2")
@@ -975,7 +972,7 @@ data:
 
 Let's look at how each of our three attempts did with this challenge:
 
-### Model Attempt 1: AlexNet from Scratch (3rd Place)
+### 모델 시도 1: AlexNet, 처음부터 (3rd Place)
 
 | Image | Dolphin | Seahorse | Result | 
 |-------|---------|----------|--------|
@@ -986,7 +983,7 @@ Let's look at how each of our three attempts did with this challenge:
 |[seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 56.64% | 43.36 |  :confused: |
 |[seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 7.06% | 92.94% |  :grin: |
 
-### Model Attempt 2: Fine Tuned AlexNet (2nd Place)
+### Model Attempt 2: AlexNet, 미세 조정 (2nd Place)
 
 | Image | Dolphin | Seahorse | Result | 
 |-------|---------|----------|--------|
@@ -997,7 +994,7 @@ Let's look at how each of our three attempts did with this challenge:
 |[seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 0% | 100% |  :sunglasses: |
 |[seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 0% | 100% |  :sunglasses: |
 
-### Model Attempt 3: Fine Tuned GoogLeNet (1st Place)
+### Model Attempt 3: GoogLeNet, 미세 조정 (1st Place)
 
 | Image | Dolphin | Seahorse | Result | 
 |-------|---------|----------|--------|
@@ -1008,7 +1005,7 @@ Let's look at how each of our three attempts did with this challenge:
 |[seahorse2.jpg](data/untrained-samples/seahorse2.jpg)| 0% | 100% |  :sunglasses: |
 |[seahorse3.jpg](data/untrained-samples/seahorse3.jpg)| 0.02% | 99.98% |  :sunglasses: |
 
-## Conclusion
+## 결론
 
 It’s amazing how well our model works, and what’s possible by fine tuning a pretrained network.
 Obviously our dolphin vs. seahorse example is contrived, and the dataset overly limited--we really
