@@ -695,7 +695,7 @@ GoogLeNet은 architecture보다 더 복잡한 아키텍처이므로 미세 조�
 
 ![Model Attempt 3](images/model-attempt3.png?raw=true "Model Attempt 3")
 
-AlexNet의 미세 조정에서 살펴본 것처럼, 수정된 GoogLeNet은 잘 작동합니다--지금까지 중 가장 뛰어난 성능으로:
+AlexNet의 미세 조정에서 살펴본 것처럼, 수정된 GoogLeNet은 잘 작동합니다--지금까지 중 가장 뛰어난 성능:
 
 ![Model Attempt 3 Classify 1](images/model-attempt3-classify1.png?raw=true "Model Attempt 3 Classify 1")
 
@@ -705,13 +705,11 @@ AlexNet의 미세 조정에서 살펴본 것처럼, 수정된 GoogLeNet은 잘 �
 
 ## 모델 사용
 
-With our network trained and tested, it’s time to download and use it.  Each of the models
-we trained in DIGITS has a **Download Model** button, as well as a way to select different
-snapshots within our training run (e.g., `Epoch #30`):
+신경망을 훈련하고 테스트하였으니, 이제 다운받아 사용할 시간입니다. DIGITS로 훈련한 각 모델은 **Download Model** 버튼과 훈련 실행 중 서로 다른 스냅샷을 선택하는 방법이 있습니다(e.g. `Epoch #30`):
 
 ![Trained Models](images/trained-models.png?raw=true "Trained Models")
 
-Clicking **Download Model** downloads a `tar.gz` archive containing the following files:
+**Download Model** 를 클릭하면 다음 파일들이 압축된 `tar.gz` 파일이 다운로드됩니다:
 
 ```
 deploy.prototxt
@@ -724,51 +722,53 @@ snapshot_iter_90.caffemodel
 train_val.prototxt
 ```
 
-There’s a [nice description](https://github.com/BVLC/caffe/wiki/Using-a-Trained-Network:-Deploy) in
-the Caffe documentation about how to use the model we just built.  It says:
+Caffe 문서에 우리가 방금 만든 모델의 사용법에 대한 [멋진 설명](https://github.com/BVLC/caffe/wiki/Using-a-Trained-Network:-Deploy)
+이 있습니다. 다음과 같이 쓰여 있습니다:
 
-> A network is defined by its design (.prototxt), and its weights (.caffemodel). As a network is
-> being trained, the current state of that network's weights are stored in a .caffemodel. With both
-> of these we can move from the train/test phase into the production phase.
+> 신경망은 구조(.prototxt)와 가중치로(.caffemodel) 정의됩니다. 신경망이 훈련될 때
+> 가중치의 현재 상태-*current state*-는 .caffemodel에 저장됩니다. 이 두 가지를 통해 
+> 우리는 훈련/테스트 단계에서 생산-*production*- 단계로 이동할 수 있습니다.
+> 
+> 현재 상태로서는 신경망의 구조는 배포용으로 설계되어 있지 않습니다. 신경망을 제품으로 
+> 출시하기 전에 몇 가지 방법으로 신경망을 수정해야합니다:
 >
-> In its current state, the design of the network is not designed for deployment. Before we can
-> release our network as a product, we often need to alter it in a few ways:
->
-> 1. Remove the data layer that was used for training, as for in the case of classification we are no longer providing labels for our data.
-> 2. Remove any layer that is dependent upon data labels.
-> 3. Set the network up to accept data.
-> 4. Have the network output the result.
+> 1. 분류-*classification*-에 관해서 데이터의 레이블을 더이상 제공하지 않으므로 훈련에 사용된 데이터 계층을 제거하십시오
+> 2. 데이터 레이블에 종속된 계층을 제거하십시오.
+> 3. 데이터를 수신하도록 신경망을 설정하십시오.
+> 4. 신경망이 결과를 출력하게 하십시오.
 
-DIGITS has already done the work for us, separating out the different versions of our `prototxt` files.
-The files we’ll care about when using this network are:
+DIGITS는 `prototxt` 파일의 각각 다른 버전들을 구분하여 이미 할 일을 끝냈습니다.
+신경망을 사용할 때 주의해야할 파일:
 
-* `deploy.prototxt` - the definition of our network, ready for accepting image input data
-* `mean.binaryproto` - our model will need us to subtract the image mean from each image that it processes, and this is the mean image.
-* `labels.txt` - a list of our labels (`dolphin`, `seahorse`) in case we want to print them vs. just the category number
-* `snapshot_iter_90.caffemodel` - these are the trained weights for our network
+* `deploy.prototxt` - 이미지 입력 데이터를 받아들일 준비가 된 신경망의 정의
+* `mean.binaryproto` - 모델이 처리하는 각각의 이미지에서 빼야할 이미지가 있는데, 그 빼야할 이미지를 말한다.
+* `labels.txt` - 출력하고자 하는 레이블 (`dolphin`, `seahorse`)과 카테고리 번호만 출력하는 경우를 위한 목록
+* `snapshot_iter_90.caffemodel` - 이것들은 우리 신경망을 위해 훈련된 가중치들이다.
 
-We can use these files in a number of ways to classify new images.  For example, in our
-`CAFFE_ROOT` we can use `build/examples/cpp_classification/classification.bin` to classify one image:
+우리는 이 파일들을 새로운 이미지로 분류하기 위해 다양한 방법들을 사용할 수 있습니다. 예를 들어, 
+`CAFFE_ROOT`에서는 `build/examples/cpp_classification/classification.bin`을 사용해 하나의 
+이미지를 분류할 수 있습니다:
 
 ```bash
 $ cd $CAFFE_ROOT/build/examples/cpp_classification
 $ ./classification.bin deploy.prototxt snapshot_iter_90.caffemodel mean.binaryproto labels.txt dolphin1.jpg
 ```
 
-This will spit out a bunch of debug text, followed by the predictions for each of our two categories:
+이러면 디버그 텍스트 다발들을 뱉어내고, 이어서는 두 카테고리에 대한 예측이 뒤따를 것입니다:
 
 ```
 0.9997 - “dolphin”
 0.0003 - “seahorse”
 ```
 
-You can read the [complete C++ source](https://github.com/BVLC/caffe/tree/master/examples/cpp_classification)
-for this in the [Caffe examples](https://github.com/BVLC/caffe/tree/master/examples).
+[전체 C++ 소스](https://github.com/BVLC/caffe/tree/master/examples/cpp_classification)는 
+[Caffe 예제들](https://github.com/BVLC/caffe/tree/master/examples)에서 확인할 수 있습니다.
 
-For a classification version that uses the Python interface, DIGITS includes a [nice example](https://github.com/NVIDIA/DIGITS/tree/master/examples/classification).  There's also a fairly
-[well documented Python walkthrough](https://github.com/BVLC/caffe/blob/master/examples/00-classification.ipynb) in the Caffe examples.
+Python 인터페이스를 사용하는 분류 버전의 경우, DIGITS에 [좋은 예제](https://github.com/NVIDIA/DIGITS/tree/master/examples/classification)
+가 있습니다.또한 Caffe 예제들 안에는 [꽤 잘 문서화된 파이썬 워크스루](https://github.com/BVLC/caffe/blob/master/examples/00-classification.ipynb) 
+도 있습니다.
 
-### Python example
+### 파이썬 예제
 
 Let's write a program that uses our fine-tuned GoogLeNet model to classify the untrained images
 we have in [data/untrained-samples](data/untrained-samples).  I've cobbled this together based on
