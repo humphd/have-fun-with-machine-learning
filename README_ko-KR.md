@@ -682,22 +682,20 @@ For both of these pretrained models, we can use the defaults DIGITs provides
 앞에서 했던 AlexNet 미세 조정과 마찬가지로, 학습률을 `0.01`에서 `0.001`로 10% 낮춥니다.
 
 > Q: "이러한 신경망을 미세 조정할 때 그 외에 어떤 변경이 의미가 있나요?
-> What about different numbers of epochs, batch sizes, solver types (Adam, AdaDelta, AdaGrad, etc),
-> learning rates, policies (Exponential Decay, Inverse Decay, Sigmoid Decay, etc),
-> step sizes, and gamma values?"
+> 다른 epoch 수, batch size,  솔버 유형 (Adam, AdaDelta, AdaGrad 등), 학습률, 정책
+> (Exponential Decay, Inverse Decay, Sigmoid Decay 등), 단계 크기, 감마 값은 어떻나요?"
 
-Great question, and one that I wonder about as well.  I only have a vague understanding of these
-and it’s likely that there are improvements we can make if you know how to alter these
-values when training.  This is something that needs better documentation.
+좋은 질문이고 마찬가지로 저도 궁금한 것들입니다. 저는 이것들에 대해 막연하게 이해하고 있으며, 
+훈련시 이러한 값들을 어떤 식으로 변경해야할지 안다면 개선할 수 있을 것입니다. 물론 이보다 
+더 좋은 문서를 필요로 할 것입니다.
 
-Because GoogLeNet has a more complicated architecture than AlexNet, fine tuning it requires
-more time.  On my laptop, it takes 10 minutes to retrain GoogLeNet with our dataset,
-achieving 100% accuracy and a loss of 0.0070:
+GoogLeNet은 architecture보다 더 복잡한 아키텍처이므로 미세 조정에 더 많은 시간이 필요합니다.
+제 노트북에서는 데이터셋으로 GoogLeNet을 재훈련시키는데 10분이 소요되어 100% 정확도와 0.0070의 
+손실을 달성했습니다:
 
 ![Model Attempt 3](images/model-attempt3.png?raw=true "Model Attempt 3")
 
-Just as we saw with the fine tuned version of AlexNet, our modified GoogLeNet
-performs amazing well--the best so far:
+AlexNet의 미세 조정에서 살펴본 것처럼, 수정된 GoogLeNet은 잘 작동합니다--지금까지 중 가장 뛰어난 성능으로:
 
 ![Model Attempt 3 Classify 1](images/model-attempt3-classify1.png?raw=true "Model Attempt 3 Classify 1")
 
@@ -705,7 +703,7 @@ performs amazing well--the best so far:
 
 ![Model Attempt 3 Classify 3](images/model-attempt3-classify3.png?raw=true "Model Attempt 3 Classify 3")
 
-## Using our Model
+## 모델 사용
 
 With our network trained and tested, it’s time to download and use it.  Each of the models
 we trained in DIGITS has a **Download Model** button, as well as a way to select different
