@@ -1007,17 +1007,15 @@ Let's look at how each of our three attempts did with this challenge:
 
 ## 결론
 
-It’s amazing how well our model works, and what’s possible by fine tuning a pretrained network.
-Obviously our dolphin vs. seahorse example is contrived, and the dataset overly limited--we really
-do want more and better data if we want our network to be robust.  But since our goal was to examine
-the tools and workflows of neural networks, it’s turned out to be an ideal case, especially since it
-didn’t require expensive equipment or massive amounts of time.
+우리가 만든 모델이 얼마나 잘 작동하는지, 사전훈련된 신경망을 미세 조정함으로써 무엇이 가능한지는 정말 
+놀랍지않나요? 물론 돌고래 vs 해마의 예제는 인위적이며 데이터셋이 지나치게 제한적이었습니다. 신경망이 
+강력해지기 위해선 훨씬 더 많은 데이터를 필요로 합니다. 하지만 우리의 목표는 신경망의 툴과 워크플로우를 
+조사하는 것이었기 때문에, 특히 비싼 장비나 많은 시간은 없었기 때문에 우리에겐 알맞은 케이스였습니다.
 
-Above all I hope that this experience helps to remove the overwhelming fear of getting started.
-Deciding whether or not it’s worth investing time in learning the theories of machine learning and
-neural networks is easier when you’ve been able to see it work in a small way.  Now that you’ve got
-a setup and a working approach, you can try doing other sorts of classifications.  You might also look
-at the other types of things you can do with Caffe and DIGITS, for example, finding objects within an
-image, or doing segmentation.
+무엇보다 이 경험이 시작에 대한 벅찬 두려움을 없애는 데 도움이 되길 바랍니다. 머시러닝과 신경망의 이론을 
+배우는 데 시간을 투자할 가치가 있는 지를 결정하는 것은 간소화된 방식으로 볼 수 있을 때 더 쉬울 겁니다. 
+이제 설정하는 법과 접근 방식을 알았으므로 다른 종류의 분류도 해볼 수 있을 것입니다. Caffe와 DIGITS로 
+수행할 수 있는 다른 유형들도 살펴볼 수 있게 되었습니다. 예를 들어, 이미지 내의 개체를 찾거나 분리하는 
+것 등입니다. 
 
-Have fun with machine learning!
+머신러닝을 즐겨보세요!
