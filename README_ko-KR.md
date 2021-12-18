@@ -1,6 +1,9 @@
 # Have Fun with Machine Learning: 초보자를 위한 가이드
 
-> Author: David Humphrey (original [English version](README.md))   
+> Author: David Humphrey (original [English version](README.md))  
+> 한국어 번역：[zaysverse](https://github.com/zaysverse)
+
+
   
 
 ## 머리말
@@ -109,8 +112,8 @@ Caffe 설치는 저희가 할 것들 중 가장 어려운 일입니다. 꽤 멋�
 
 Caffe 설치가 완료되면 다음 작업을 수행하거나 수행해야 합니다:
 
-*  빌드된 caffe가 포함된 디렉입니다. 표준으로 이 작업을 수행했다면, caffe, python 바인딩 등을 실행하는
- 데 필요한 모든 것이 `build/` 디렉터로에 있을 것입니다. `build/`의 상위 디렉터리는 `CAFFE_ROOT`(나중에 필요)입니다. 
+*  빌드된 caffe가 포함된 디렉터리입니다. 표준 방식으로 이 작업을 수행했다면, caffe, python 바인딩 등을 실행하는
+ 데 필요한 모든 것이 `build/` 디렉터리에 있을 것입니다. `build/`의 상위 디렉터리는 `CAFFE_ROOT`(나중에 필요)입니다. 
 * `make test && make runtest` 는 실행하지 마십시오.
 * 모든 python deps를 설치한 후(`python/`에서 `pip install -r requirements.txt` 실행), 
 `make pycaffe && make pytest`는 실행하지 마십시오.
@@ -198,15 +201,15 @@ docker exec -it digits /bin/bash
 
 신경망을 훈련시키는 것은 몇 가지 단계를 수반합니다:
 
-1. 분류된 이미지의 데이터셋를 구성하고 준비하십시오
+1. 분류된 이미지의 데이터셋을 구성하고 준비하십시오
 2. 신경망의 아키텍처를 규정하십시오
-3. 준비된 데이터셋를 사용해 이 신경망을 훈련시키고 검증하십시오.
+3. 준비된 데이터셋을 사용해 이 신경망을 훈련시키고 검증하십시오.
 
 처음부터 시작하는 것과 사전훈련된 신경망을 사용하는 것의 차이를 보여주고 Caffe와 DIGITs에서 흔히  
 사용되는 두 가지 인기 있는 사전훈련된 신경망(AlexNet, GoogLeNet)에서 어떻게 실행하는 지 보여주기
 위해 우리는 이러한 3단계를 거칠 것입니다. 
 
-우리는 훈련 시도에 돌고래와 해마의 작은 데이터셋를 사용할 것입니다. [data/dolphins-and-seahorses](data/dolphins-and-seahorses)에 제가 사용했던 이미지들을 넣어두었습니다. 2개 이상의 카테고리가 필요하고 여러분은 더
+우리는 훈련 시도에 돌고래와 해마의 작은 데이터셋을 사용할 것입니다. [data/dolphins-and-seahorses](data/dolphins-and-seahorses)에 제가 사용했던 이미지들을 넣어두었습니다. 2개 이상의 카테고리가 필요하고 여러분은 더
 많은 카테고리들을 가질 수도 있습니다(사용할 신경망 중 일부는 1000개 이상의 이미지 카테고리에 대해 
 훈련되었습니다). 우리의 목표는 우리의 신경망에 이미지를 주고 그것이 돌고래인지 해마인지 우리에게 
 알려주게하는 것입니다.
