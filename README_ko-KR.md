@@ -68,7 +68,7 @@
 ### Option 1a: 네이티브하게 Caffe 설치
 
 먼저, 우리는 버클리 비전 및 학습 센터의 [Caffe 딥러닝 프레임워크](http://caffe.berkeleyvision.org/)
-를 사용할 것입니다.(BSD licensed)
+를 사용할 것입니다.(BSD 라이센스)
 
 > Q: “잠깐만요, 왜 Caffe죠? Tensorflow와 같은 것을 사용하는 것은 어떨까요?
 > 요즘 모두가 말하는 것이잖아요...”  
@@ -284,13 +284,12 @@ DIGITS 홈 화면으로 돌아가서, 우리는 새로운 **분류 모델** -*Cl
 
 Caffe는 구조화된 텍스트 파일을 사용해 신경망 아키텍처를 정의합니다. 이러한 텍스트 파일은
 [Google의 프로토콜 버퍼](https://developers.google.com/protocol-buffers/)를 기반으로 합니다.
-여러분은 Caffe가 사용하는 [전체 도식](https://github.com/BVLC/caffe/blob/master/src/caffe/proto/caffe.proto)
+여러분은 Caffe가 사용하는 [전체적인 도식](https://github.com/BVLC/caffe/blob/master/src/caffe/proto/caffe.proto)
 을 읽어보실 수 있습니다.
 대부분의 파트에서 우리는 이것들을 사용하지 않겠지만, 나중에 그것들을 수정해줘야 하기 때문에 
 이러한 것들이 있다는 것을 알아두는 것이 좋습니다.
-For the most part we’re not going to work with these, but it’s good to be aware of their
-existence, since we’ll have to modify them in later steps. AlextNet protxt 파일은 다음과 
-같습니다: https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt. 
+AlextNet protxt 파일은 다음과 같습니다:
+https://github.com/BVLC/caffe/blob/master/models/bvlc_alexnet/train_val.prototxt. 
 
 **epoch는 30**으로 신경망을 훈련시킵니다. 즉, 신경망이 학습(우리의 training image를 통해)하면 
 자체적으로 테스트(validation image을 사용해)하며 결과에 따라 신경망의 가중치를 조정하하는 것을 
@@ -321,7 +320,7 @@ existence, since we’ll have to modify them in later steps. AlextNet protxt 파
 
 ![Model 1 Classify 3](images/model-attempt1-classify3.png?raw=true "Model 1 Classify 3")
 
-여기서 완전히 실패합니다. 해마를 돌고래로 착각하는데, 최악인 것은 높은 자신감으로 해마라고 합니다.  
+여기서 완전히 실패합니다. 해마를 돌고래로 착각하는데, 최악은 높은 자신감으로 해마라고 판별하는 것입니다.  
 
 현실은 우리의 데이터셋이 너무 작아 정말 좋은 신경망을 훈련시키는 데에는 쓸만 하지 않다는 것입니다.
 모든 것을 처리하기 위해선 높은 연산능력과 10초에서 100초 정도의 수천 개의 이미지들이 필요합니다.
@@ -375,11 +374,11 @@ existence, since we’ll have to modify them in later steps. AlextNet protxt 파
 우리는 대규모 데이터셋에 대해 이미 훈련받은 버전의 AlexNet을 다운로드하고 사용하고자 합니다.
 
 다행히도 우리는 이것을 바로 할 수 있습니다. AlexNet의 스냅샷은 여기서 다운로드할 수 있습니다: https://github.com/BVLC/caffe/tree/master/models/bvlc_alexnet.
-우리는 훈련된 가중치를 포함하고 있는 이진 파일 `.caffemodel` 도 필요하고, http://dl.caffe.berkeleyvision.org/bvlc_alexnet.caffemodel 에서 다운로드할 수 있습니다. 
+우리는 훈련된 가중치를 포함하고 있는 이진 파일 `.caffemodel` 도 필요하고, 그것은 http://dl.caffe.berkeleyvision.org/bvlc_alexnet.caffemodel 에서 다운로드할 수 있습니다. 
  
 사전훈련된 모델을 받는 동안, 하나 더 해봅시다. 
 2014년에 Google은 [GoogLeNet](https://research.google.com/pubs/pub43022.html)으로 같은 
-ImageNet 대회에서 우승했습니다 (코드명 Inception):
+ImageNet 대회에서 우승했습니다 (코드명 Inception):  
 22계층의 신경망, GoogLeNet의 스냅샷도 다운로드할 수 있습니다. https://github.com/BVLC/caffe/tree/master/models/bvlc_googlenet 을 참조하십시오.
 다시 말하지만, 우리는  http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel 에서 다운로드
 할 수 있는 모든 사전훈련된 가중치들로 구성된 `.caffemodel` 파일이 필요합니다.
@@ -390,9 +389,7 @@ ImageNet 대회에서 우승했습니다 (코드명 Inception):
 ![Load Pretrained Model](images/load-pretrained-model.png?raw=true "Load Pretrained Model")
 
 이러한 사전훈련된 두 모델은 모두 DIGITS가 제공하는 기본설정값을 사용할 수 있습니다(i.e. 
-256 x 256의 스쿼시된 컬러 이미지). 
-For both of these pretrained models, we can use the defaults DIGITs provides
-(i.e., colour, squashed images of 256 x 256). 우리는 `가중치 -Weights- (**.caffemodel)`
+256 x 256의 스쿼시된 컬러 이미지). 우리는 `가중치 -Weights- (**.caffemodel)`
 및 ` 모델 정의 -Model Definition- (original.prototxt)`만 제공하면 됩니다.
 각 버튼을 클릭하여 파일을 선택하십시오.
 
@@ -481,7 +478,7 @@ For both of these pretrained models, we can use the defaults DIGITs provides
 ![Model Attempt 2](images/model-attempt2.png?raw=true "Model Attempt 2")
 
 이전 신경망이 오류를 일으킨 것과 같은 해마 이미지를 테스트한 결과, 우리는 완전한 반전을 
-볼 수 있습니다: 100% 해마!
+볼 수 있습니다: 100% 해마.
 
 ![Model 2 Classify 1](images/model-attempt2-classify1.png?raw=true "Model 2 Classify 1")
 
@@ -783,7 +780,7 @@ Python 인터페이스를 사용하는 분류 버전의 경우, DIGITS에 [좋�
 
 먼저, [NumPy](http://www.numpy.org/) 모듈이 필요합니다. 잠시 후에 [NumPy](http://www.numpy.org/)
 를 이용해 Caffe에서 많이 쓰이는 [`ndarray`s](https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html)
-를 사용할 것입니다. 안써보셨다면, 저도 안 써봤지만, 이 [퀵스타트 튜토리얼](https://docs.scipy.org/doc/numpy-dev/user/quickstart.html)
+를 사용할 것입니다. 안 써보셨다면, 저도 안 써봤지만, 이 [퀵스타트 튜토리얼](https://docs.scipy.org/doc/numpy-dev/user/quickstart.html)
 을 읽어보시는 건 어떨까요?
 
 두 번째로 우리는 `CAFFE_ROOT` 디렉터리로부터 `caffe` 모듈을 적재해야 합니다. 파이썬 환경에 포함되어 
@@ -973,7 +970,7 @@ seahorse3.jpg is a seahorse dolphin=0.014% seahorse=99.986%
 ![Seahorse 2](data/untrained-samples/seahorse2.jpg?raw=true "Seahorse 2")
 ![Seahorse 3](data/untrained-samples/seahorse3.jpg?raw=true "Seahorse 3")
 
-Let's look at how each of our three attempts did with this challenge:
+이 과제를 해결하기 위한 세 가지 시도를 각각 살펴보겠습니다:
 
 ### 모델 시도 1: AlexNet, 처음부터 (3rd Place)
 
