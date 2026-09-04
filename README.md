@@ -975,7 +975,7 @@ seahorse3.jpg is a seahorse dolphin=0.014% seahorse=99.986%
 ```
 
 I'm still trying to learn all the best practices for working with models in code. I wish I had more
-and better documented code examples, APIs, premade modules, etc to show you here. To be honest,
+and better documented code examples, APIs, pre-made modules, etc to show you here. To be honest,
 most of the code examples I’ve found are terse, and poorly documented--Caffe’s
 documentation is spotty, and assumes a lot.
 
